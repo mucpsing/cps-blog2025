@@ -1,0 +1,31 @@
+# 本文件需要配合build.sh或者test.sh使用
+# 需要重新获取当前项目用户
+# 使用docker部署容易发生权限问题
+networks:
+  wxyibu:
+    name: wxyibu
+    driver: bridge
+    external: true
+    ipam:
+      config:
+        - subnet: 172.25.0.0/24
+
+services:
+  nginx:
+    image: nginx:1.22
+    container_name: wxyibu-nginx
+    pull_policy: never
+    networks:
+      wxyibu:
+        ipv4_address: 172.25.0.99
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ${APP_PATH}/nginx:/app
+      - ${APP_PATH}/server/public:/app/public
+    stdin_open: true
+    command: ["nginx", "-c", "/app/nginx.conf", "-g", "daemon off;"]
+    # command: /bin/bash -c "while true; do echo hello world; sleep 10; done"
+    # depends_on:
+    #   - server

@@ -1,0 +1,42 @@
+{
+  "name": "cps-blog",
+  "version": "0.0.1",
+  "private": true,
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=10"
+  },
+  "scripts": {
+    "dev-dv3": "pnpm --filter docusaurus-v3 run start",
+    "dev-fumav1": "pnpm --filter fumadocs-v1 run dev"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.6.0",
+    "gsap": "^3.13.0",
+    "live-server": "^1.2.2",
+    "lodash": "^4.17.21",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router": "7.9.4",
+    "tailwindcss": "^4.1.16",
+    "typed.js": "^2.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.16",
+    "@tailwindcss/vite": "^4.1.16",
+    "@types/fs-extra": "^11.0.4",
+    "@types/lodash": "^4.17.15",
+    "@types/node": "^24.9.1",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "autoprefixer": "^10.4.20",
+    "commitizen": "^4.3.0",
+    "commitlint-config-cz": "^0.13.3",
+    "cz-customizable": "^7.0.0",
+    "fs-extra": "^11.3.0",
+    "globals": "^15.15.0",
+    "postcss": "^8.5.6",
+    "typescript": "^5.9.3",
+    "vite": "^6.2.0"
+  }
+}

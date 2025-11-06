@@ -1,0 +1,18 @@
+.grid-container {
+  contain: strict; /* 提升渲染性能 */
+  will-change: grid-template-columns; /* 提示浏览器优化 */
+}
+
+.grid-item {
+  will-change: transform, width, height;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.grid-item:hover {
+  z-index: 2; /* 确保放大元素在最上层 */
+}

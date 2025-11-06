@@ -1,0 +1,23 @@
+{
+  "name": "demo-html",
+  "version": "1.0.0",
+  "private": true,
+  "description": "简易的现代html快速编辑环境",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "live-server --port=3080 --ignore=node_modules,*.log"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "typescript": "*",
+    "gsap": "*"
+  },
+  "author": "CPS",
+  "license": "ISC",
+  "packageManager": "pnpm@10.20.0",
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=10"
+  }
+}

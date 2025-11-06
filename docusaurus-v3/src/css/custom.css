@@ -1,0 +1,133 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* @tailwind base; */
+@tailwind components;
+@tailwind utilities;
+
+/* 必须引入，否则部分居中等样式会异常 */
+@import "rc-banner-anim/assets/index.css";
+/* @import "@site/src/components/BubbleText/bubble.css"; */
+/* @import "@site/src/components/FallingItemsList/style.css"; */
+
+/* You can override the default Infima variables here. */
+/* :root {
+  --ifm-color-primary: #2e8555;
+  --ifm-color-primary-dark: #29784c;
+  --ifm-color-primary-darker: #277148;
+  --ifm-color-primary-darkest: #205d3b;
+  --ifm-color-primary-light: #33925d;
+  --ifm-color-primary-lighter: #359962;
+  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+} */
+
+:root {
+  /* #006dfe hsl(214deg, 100%, 60%); */
+  /* --ifm-color-primary: #23affc;
+  --ifm-color-primary-dark: #119cc5;
+  --ifm-color-primary-darker: #05879d;
+  --ifm-color-primary-darkest: #007a87;
+  --ifm-color-primary-light: hsl(214deg, 100%, 75%);
+  --ifm-color-primary-lighter: #c6ebfc;
+  --ifm-color-primary-lightest: #f2fbff; */
+
+  --ifm-color-primary: #ff4058;
+  --ifm-color-primary-dark: #ff203c;
+  --ifm-color-primary-darker: #ff102e;
+  --ifm-color-primary-darkest: #df001c;
+  --ifm-color-primary-light: #ff6074;
+  --ifm-color-primary-lighter: #ff7082;
+  --ifm-color-primary-lightest: #ffa0ac;
+
+  --ifm-code-font-size: 95%;
+
+  /* --ifm-font-family-base: "Songti SC", "Noto Serif SC", STZhongsong, STKaiti, KaiTi, Roboto, serif; */
+  /* --ifm-font-family-name: "Songti SC", "Noto Serif SC", STZhongsong, STKaiti, KaiTi, Roboto, serif; */
+  /* --ifm-font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; */
+  /* --ifm-heading-font-family: "Songti SC", "Noto Serif SC", STZhongsong, STKaiti, KaiTi, Roboto, serif; */
+  /* --content-font-family: "Raleway", "Kai", "楷体", "Kaiti", serif; */
+
+  --ifm-navbar-shadow: 0px 4px 28px rgba(0, 0, 0, 0.1);
+  --ifm-toc-border-color: #f7f7f7;
+  --text-color: #2b333e;
+  /* --ifm-heading-color: hsl(200deg, 20%, 20%); */
+
+  --ifm-menu-color: #0d203a;
+
+  /* 搜索框 */
+  --search-local-modal-background: hsl(0deg, 0%, 100%);
+  --search-local-modal-shadow: 0px 0px 48px hsl(0deg, 0%, 0%, 0.12);
+
+  /* 进度条背景 */
+  --progress-bar-background-color: #f3f3f3;
+
+  /* 卡片背景 */
+  --card-background: #ffffff;
+
+  /* 选中未选中 */
+  --btn-selected: var(--ifm-color-primary);
+  --btn-unselected: #cecece;
+
+  /* 标签背景 */
+  --tag-background: var(--ifm-color-primary);
+  --tag-background-dark: #0179fa77;
+  --tag-background-light: #1982bb;
+
+  /* 代码块背景 */
+  --ifm-code-background: #23affc1a;
+  --ifm-code-color: #3887fe;
+
+  --ifm-bg-color: #f5f5f5;
+  --ifm-text-color: #333;
+  --ifm-secondary-text-color: #555;
+
+  --site-primary-hue-saturation: 167 68%;
+  --site-primary-hue-saturation-light: 167 56%; /* do we really need this extra one? */
+
+  --site-primary-hue-saturation: 167 68%;
+  --site-primary-hue-saturation-light: 167 56%; /* do we really need this extra one? */
+  --site-color-favorite-background: #f6fdfd;
+  --site-color-tooltip: #fff;
+  --site-color-tooltip-background: #353738;
+  --site-color-svg-icon-favorite: #e9669e;
+  --site-color-checkbox-checked-bg: hsl(167deg 56% 73% / 25%);
+  --site-color-feedback-background: #fff;
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme="dark"] {
+  --ifm-color-primary: #25c2a0;
+  --ifm-color-primary-dark: #21af90;
+  --ifm-color-primary-darker: #1fa588;
+  --ifm-color-primary-darkest: #1a8870;
+  --ifm-color-primary-light: #29d5b0;
+  --ifm-color-primary-lighter: #32d8b4;
+  --ifm-color-primary-lightest: #4fddbf;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+.home-swiper-icon-default {
+  @apply transition-all cursor-pointer hover:text-sky-500 hover:translate-y-5;
+}
+
+input {
+  display: none;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg); /* 初始角度 */
+  }
+  to {
+    transform: rotate(360deg); /* 最终角度 */
+  }
+}
+
+body {
+  overflow-x: hidden;
+}

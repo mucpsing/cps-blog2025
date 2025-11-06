@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "demo"
+		},
+		{
+			"path": "demo-html"
+		},
+		{
+			"path": "docusaurus-v3"
+		},
+		{
+			"path": "fumadocs-v1"
+		}
+	],
+	"settings": {}
+}

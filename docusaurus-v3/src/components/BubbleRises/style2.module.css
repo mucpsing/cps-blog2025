@@ -1,0 +1,17 @@
+.footer {
+  z-index: -1;
+  --footer-background: #303846;
+  display: grid;
+  position: relative;
+  grid-area: footer;
+  background: #fff;
+  overflow-x: clip;
+}
+
+.background {
+  z-index: 2;
+  display: flex;
+  padding: 2rem;
+  background: var(--footer-background);
+  height: 100%;
+}

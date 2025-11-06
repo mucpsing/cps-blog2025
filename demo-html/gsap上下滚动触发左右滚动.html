@@ -1,0 +1,84 @@
+<!--
+ * @Author: cpasion-office-win10 373704015@qq.com
+ * @Date: 2025-11-03 10:40:23
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-11-05 09:54:20
+ * @FilePath: \cps-blog\demo-html\gspa滚动.html
+ * @Description: 这是gsap的上下滚动，加入了平滑插件的基础效果
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gsap 滚动示例</title>
+    <script src="./asset/js/gsap@3.13.0/ScrollTrigger.min.js"></script>
+    <script src="./asset/js/gsap@3.13.0/ScrollSmoother.min.js"></script>
+    <script src="./asset/js/gsap@3.13.0/gsap.min.js"></script>
+  </head>
+  <body>
+    <style>
+      .btn-wrapper {
+        position: fixed;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100vw;
+        height: 60px;
+        justify-content: center;
+        bottom: 15%;
+        /* transform: translate(-50%, -50%); */
+      }
+
+      .btn {
+        width: 20vw;
+        height: 50px;
+      }
+
+      #app-wrapper {
+        height: 100vh;
+        width: 100vw;
+        /* display: flex; */
+        /* align-items: center; */
+        /* justify-content: center; */
+      }
+
+      #my-component {
+        width: 1000px;
+        height: 300px;
+        background-color: #ffa579;
+        display: flex;
+      }
+
+      .step-base {
+        height: 300px;
+        width: 100%;
+        /* overflow-x: hidden; */
+        font-size: larger;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .space {
+        width: 100%;
+        height: 80rem;
+        background-color: yellowgreen;
+      }
+    </style>
+    <div id="app-wrapper">
+      <div id="app-content">
+        <div class="space">step 1</div>
+
+        <div id="my-component">
+          <div class="step-base step-1" style="background-color: #78c3f4">step1</div>
+          <div class="step-base step-2" style="background-color: #f1fa93">step2</div>
+          <div class="step-base step-3" style="background-color: #fc67a0">step3</div>
+          <div class="step-base step-4" style="background-color: #85fcf6">step4</div>
+          <div class="step-base step-5" style="background-color: #c48afc">step5</div>
+        </div>
+
+        <div class="space">step 2</div>
+      </div>
+    </div>
+    <script src="./asset/js/gsap上下滚动触发左右滚动.js"></script>
+  </body>
+</html>

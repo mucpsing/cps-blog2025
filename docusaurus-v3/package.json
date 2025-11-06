@@ -1,0 +1,101 @@
+{
+  "name": "docusaurus-v3",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "docusaurus": "docusaurus",
+    "start": "docusaurus start --port 3001 --host 0.0.0.0",
+    "build": "docusaurus build ",
+    "build:github-page-test": "npx cross-env PAGE_TYPE=github BUILD_TEST=true docusaurus build --out-dir blog-docusaurus-v3",
+    "build:github-page": "npx cross-env PAGE_TYPE=github  docusaurus build --out-dir blog-docusaurus-v3",
+    "swizzle": "docusaurus swizzle",
+    "deploy": "docusaurus deploy",
+    "clear": "docusaurus clear",
+    "serve": "docusaurus serve",
+    "write-translations": "docusaurus write-translations",
+    "write-heading-ids": "docusaurus write-heading-ids",
+    "typecheck": "tsc",
+    "changelog1": "npx conventional-changelog -p angular -i CHANGELOG.md -w -r 0",
+    "changelog2": "npx conventional-changelog -p -i CHANGELOG.md -s -r 0",
+    "git": "npx conventional-changelog -p -i CHANGELOG.md -s -r 0 & git add . & git cz",
+    "push": "npx conventional-changelog -p -i CHANGELOG.md -s -r 0 & git add . & git cz & git push origin master"
+  },
+  "dependencies": {
+    "@ant-design/icons": "catalog:",
+    "@docusaurus/core": "catalog:docusaurus-v3",
+    "@docusaurus/plugin-ideal-image": "catalog:docusaurus-v3",
+    "@docusaurus/plugin-svgr": "catalog:docusaurus-v3",
+    "@docusaurus/preset-classic": "catalog:docusaurus-v3",
+    "@docusaurus/theme-mermaid": "catalog:docusaurus-v3",
+    "@easyops-cn/docusaurus-search-local": "catalog:docusaurus-v3",
+    "@mdx-js/react": "catalog:docusaurus-v3",
+    "@types/three": "^0.172.0",
+    "classnames": "^2.5.1",
+    "clsx": "catalog:docusaurus-v3",
+    "docusaurus-plugin-sass": "^0.2.6",
+    "gsap": "catalog:",
+    "is-mobile": "^5.0.0",
+    "lodash": "catalog:",
+    "prism-react-renderer": "^2.4.1",
+    "raw-loader": "^4.0.2",
+    "rc-banner-anim": "^2.4.5",
+    "rc-queue-anim": "^2.0.0",
+    "rc-tween-one": "^3.0.6",
+    "react": "catalog:react19",
+    "react-dom": "catalog:react19",
+    "sass": "catalog:",
+    "sharp": "^0.33.5",
+    "tailwindcss": "catalog:",
+    "three": "^0.172.0",
+    "typed.js": "catalog:",
+    "ua-parser-js": "^2.0.0",
+    "autoprefixer": "catalog:",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "3.7.0",
+    "@docusaurus/tsconfig": "3.7.0",
+    "@docusaurus/types": "3.7.0",
+    "@gsap/react": "^2.1.2",
+    "@types/fs-extra": "^11.0.4",
+    "@types/lodash": "catalog:",
+    "@types/react": "catalog:react19",
+    "@types/react-dom": "catalog:react19",
+    "@types/conventional-changelog": "^3.1.5",
+    "commitizen": "catalog:",
+    "commitlint-config-cz": "catalog:",
+    "conventional-changelog": "^5.1.0",
+    "conventional-changelog-cli": "^4.1.0",
+    "cross-env": "^7.0.3",
+    "cz-custom": "^0.0.2",
+    "fs-extra": "catalog:",
+    "postcss": "^8.5.1",
+    "react-popper": "catalog:",
+    "sass-loader": "catalog:",
+    "stylus": "catalog:",
+    "stylus-loader": "catalog:",
+    "typescript": "catalog:",
+    "unist-util-visit": "^5.0.0",
+    "yaml": "catalog:"
+  },
+  "browserslist": {
+    "production": [
+      ">0.5%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 3 chrome version",
+      "last 3 firefox version",
+      "last 5 safari version"
+    ]
+  },
+  "engines": {
+    "node": ">=21.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-custom"
+    }
+  }
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>[codepen]文字向左变色</title>
+    <script src="./asset/js/gsap@3.13.0/ScrollTrigger.min.js"></script>
+    <script src="./asset/js/gsap@3.13.0/ScrollSmoother.min.js"></script>
+    <script src="./asset/js/gsap@3.13.0/gsap.min.js"></script>
+    <style>
+      .container {
+        --target: 100%;
+        width: 100%;
+        background: linear-gradient(to right, #000 var(--target), #fff var(--target));
+        display: flex;
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+      }
+      h1 {
+        color: white;
+        font-size: clamp(2.5rem, 8vw, 6rem);
+        text-align: center;
+        letter-spacing: -0.02em;
+        background: linear-gradient(to right, #fff var(--target), #000 var(--target));
+        -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text;
+        background-clip: text;
+        width: 100%;
+        display: block;
+        line-height: 0.95;
+      }
+      h1 span {
+        font-size: 0.5em;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>motiontricks.com <span>is super awesome!</span></h1>
+    </div>
+    <div class="container">
+      <h1>motiontricks.com <span>is super awesome!</span></h1>
+    </div>
+    <script type="text/javascript">
+      //   gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+      gsap.registerPlugin(ScrollTrigger);
+
+      document.addEventListener("DOMContentLoaded", (event) => {
+        console.clear();
+        gsap.config({ trialWarn: false });
+
+        gsap.utils.toArray(".container").forEach((container, index) => {
+          const start = index == 0 ? "top top" : "top center";
+          gsap.to(container, {
+            "--target": "0%",
+            ease: "none",
+            scrollTrigger: {
+              trigger: container,
+              markers: true,
+              start,
+              end: "+=1000",
+              pin: true,
+              scrub: 1,
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

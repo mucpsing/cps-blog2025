@@ -1,0 +1,49 @@
+.features {
+  display: flex;
+  align-items: center;
+  padding: 2rem 0;
+  width: 100%;
+}
+
+.featureSvg {
+  height: 200px;
+  width: 200px;
+}
+
+.heroBanner {
+  padding: 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* @media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 2rem;
+  }
+} */
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.containerRight {
+  flex-grow: 999;
+  min-width: 60%;
+  min-height: 450px;
+  max-height: 450px;
+  background-color: aqua;
+}
+
+.containerLeft {
+  display: flex;
+  min-width: 40%;
+  flex-direction: column;
+  padding: 0 3rem;
+}

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>GSAP ScrollTrigger 双向横向滚动示例</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        overflow-x: hidden;
+      }
+      #app-wrapper {
+        width: 100vw;
+        overflow-x: hidden;
+      }
+
+      .space {
+        width: 100%;
+        height: 80rem;
+        background-color: yellowgreen;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+      }
+
+      /* 横向组件通用样式 */
+      .horizontal-section {
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+        align-items: center;
+        position: relative;
+      }
+
+      .step-base {
+        height: 80vh;
+        width: 100vw;
+        flex: 0 0 100vw;
+        font-size: larger;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app-wrapper">
+      <div id="app-content">
+        <div class="space">上方内容 - step 1</div>
+
+        <!-- 第一个横向滚动 -->
+        <div id="my-component" class="horizontal-section">
+          <div class="step-base" style="background-color: #78c3f4">step1</div>
+          <div class="step-base" style="background-color: #f1fa93">step2</div>
+          <div class="step-base" style="background-color: #fc67a0">step3</div>
+          <div class="step-base" style="background-color: #85fcf6">step4</div>
+          <div class="step-base" style="background-color: #c48afc">step5</div>
+        </div>
+
+        <div class="space">中间内容 - step 2</div>
+
+        <!-- 第二个横向滚动（方向相反） -->
+        <div id="my-component2" class="horizontal-section">
+          <div class="step-base" style="background-color: #ffb6b9">A</div>
+          <div class="step-base" style="background-color: #fae3d9">B</div>
+          <div class="step-base" style="background-color: #bbded6">C</div>
+          <div class="step-base" style="background-color: #8ac6d1">D</div>
+        </div>
+
+        <div class="space">下方内容 - step 3</div>
+      </div>
+    </div>
+
+    <!-- GSAP + ScrollTrigger -->
+    <script src="./asset/js/gsap@3.13.0/ScrollTrigger.min.js"></script>
+    <script src="./asset/js/gsap@3.13.0/ScrollSmoother.min.js"></script>
+    <script src="./asset/js/gsap@3.13.0/gsap.min.js"></script>
+    <script>
+      gsap.registerPlugin(ScrollTrigger);
+
+      function createHorizontalScroll(containerSelector, reverse = false) {
+        const container = document.querySelector(containerSelector);
+        const sections = gsap.utils.toArray(container.querySelectorAll(".step-base"));
+        sections.forEach((s) => (s.style.width = window.innerWidth + "px"));
+
+        const totalScroll = container.scrollWidth - window.innerWidth;
+        const direction = reverse ? 1 : -1; // 反向控制移动方向
+
+        gsap.to(sections, {
+          xPercent: direction * 100 * (sections.length - 1),
+          ease: "none",
+          scrollTrigger: {
+            trigger: container,
+            start: "top top",
+            end: () => "+=" + totalScroll,
+            pin: true,
+            scrub: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            markers: false,
+          },
+        });
+      }
+
+      window.addEventListener("load", () => {
+        createHorizontalScroll("#my-component", false); // 正向滚动
+        createHorizontalScroll("#my-component2", true); // 反向滚动
+
+        // 处理窗口变化
+        window.addEventListener("resize", () => {
+          document.querySelectorAll(".step-base").forEach((s) => {
+            s.style.width = window.innerWidth + "px";
+          });
+          ScrollTrigger.refresh();
+        });
+      });
+    </script>
+  </body>
+</html>

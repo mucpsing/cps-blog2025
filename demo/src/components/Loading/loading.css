@@ -1,0 +1,220 @@
+<<<<<<< HEAD
+html {
+  font-size: 16px;
+}
+
+#__cps_loading-background {
+=======
+#__cps_loading-warp {
+>>>>>>> c3b4187aa9430f034b319736ac7d17c6e6f6eaf4
+  position: fixed;
+  display: flex;
+  flex-flow: column;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  justify-content: space-between;
+  align-items: center;
+  color: #eee;
+  z-index: 9998;
+  pointer-events: none;
+  animation: show 1.2s cubic-bezier(1, 0.03, 0.2, 1.18);
+  background: linear-gradient(60deg, rgba(84, 58, 183, 1) 0%, rgba(0, 172, 193, 1) 100%);
+}
+
+#__cps_loading-mainTextWarp {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  font-family: "Lato", sans-serif;
+  z-index: 9999;
+}
+
+#__cps_loading-mainText {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2rem;
+  font-weight: 1;
+  letter-spacing: 0.2rem;
+}
+
+#__cps_loading-subText {
+  font-size: 0.7rem;
+}
+
+#__cps_loading-colorSlash {
+  display: inline-block;
+  animation: slash-rotate 2s cubic-bezier(0.4, 0, 0.2, 1) 1s infinite;
+  transform-origin: center;
+  transform-style: preserve-3d;
+}
+
+.__cps_loading-colorSlash {
+  animation: slash-color 20s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes slash-rotate {
+  0% {
+    transform: rotateX(360deg); /* 动画开始 */
+  }
+  50% {
+    transform: rotateX(360deg); /* 动画在第1秒完成 */
+  }
+  100% {
+    transform: rotateX(0deg); /* 保持状态到第2秒（间隔1秒） */
+  }
+}
+
+@keyframes slash-color {
+  0% {
+    color: #ff4058;
+  }
+  10% {
+    color: #f6b429;
+  }
+
+  20% {
+    color: #64d487;
+  }
+  30% {
+    color: #1d72b8;
+  }
+  40% {
+    color: #ff7f32;
+  }
+  50% {
+    color: #8e44ad;
+  }
+  60% {
+    color: #7fdad3;
+  }
+  70% {
+    color: #da7fd3;
+  }
+  80% {
+    color: #ff6b8a;
+  }
+  90% {
+    color: #8a7fff;
+  }
+  100% {
+    color: #ff4058;
+  }
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.dots > .dot {
+  display: inline-block;
+  animation: bounce 2s infinite ease-in-out;
+  margin: 0 0.2rem;
+}
+
+/* 错开动画延迟 */
+.dots > .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.dots > .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* 弹跳关键帧 */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  20% {
+    transform: translateY(-1rem);
+  }
+  30% {
+    transform: translateY(0);
+  }
+}
+#__cps_loading-wavesWarp {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 25vh;
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+}
+
+.waves {
+  width: 100%;
+  height: 50%;
+  flex-grow: 1;
+  /* margin-bottom: -7px; Fix for safari gap */
+}
+
+.wavesFooter {
+  width: 100%;
+  height: 50%;
+  flex-grow: 999;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #000;
+}
+
+/* Animation */
+.parallax > use {
+  animation: move-forever 25s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
+}
+.parallax > use:nth-child(1) {
+  animation-delay: -2s;
+  animation-duration: 7s;
+}
+.parallax > use:nth-child(2) {
+  animation-delay: -3s;
+  animation-duration: 10s;
+}
+.parallax > use:nth-child(3) {
+  animation-delay: -4s;
+  animation-duration: 13s;
+}
+.parallax > use:nth-child(4) {
+  animation-delay: -5s;
+  animation-duration: 20s;
+}
+
+@keyframes move-forever {
+  0% {
+    transform: translate3d(-90px, 0, 0);
+  }
+  100% {
+    transform: translate3d(85px, 0, 0);
+  }
+}
+
+/*Shrinking for mobile*/
+@media (max-width: 768px) {
+  .waves {
+    height: 40px;
+    min-height: 40px;
+  }
+  .content {
+    height: 30vh;
+  }
+  h1 {
+    font-size: 24px;
+  }
+}

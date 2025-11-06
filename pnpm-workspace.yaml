@@ -1,0 +1,71 @@
+packages:
+  - "docusaurus-v3"
+  - "fumadocs-v1"
+  - "demo"
+  - "demo-html"
+
+catalog:
+  "next": "16.0.1"
+  "@ant-design/icons": "^5.6.0"
+  "autoprefixer": "^10.4.20"
+  "commitizen": "^4.3.0"
+  "commitlint-config-cz": "^0.13.3"
+  "cz-customizable": "^7.0.0"
+  "fs-extra": "^11.3.0"
+  "gsap": "3.13.0"
+  "lodash": "^4.17.21"
+  "react-popper": "^2.3.0"
+  "sass": "^1.84.0"
+  "sass-loader": "^16.0.4"
+  "stylus": "^0.64.0"
+  "stylus-loader": "^8.1.1"
+  "tailwindcss": "^3.4.1"
+  "typed.js": "^2.1.0"
+  "typescript": "^5.2.2"
+  "yaml": "^2.7.0"
+  "@types/mdx": "^2.0.13"
+  "postcss": "^8.5.6"
+  "@types/fs-extra": "^11.0.4"
+  "@types/lodash": "^4.17.15"
+
+
+catalogs:
+  docusaurus-v2:
+    "@docusaurus/core": "2.4.0"
+    "@docusaurus/preset-classic": "2.4.0"
+    "@docusaurus/theme-mermaid": "2.4.0"
+    "@mdx-js/react": "^1.6.22"
+    "clsx": "^1.2.1"
+  docusaurus-v3:
+    "@docusaurus/core": "3.9.2"
+    "@docusaurus/plugin-ideal-image": "3.9.2"
+    "@docusaurus/plugin-svgr": "3.9.2"
+    "@docusaurus/preset-classic": "3.9.2"
+    "@docusaurus/theme-mermaid": "3.9.2"
+    "@docusaurus/theme-search-algolia": "3.9.2"
+    "@easyops-cn/docusaurus-search-local": "^0.48.4"
+    "@mdx-js/react": "^3.1.0"
+    "clsx": "^2.1.1"
+  node24:
+    "@types/node": "^24.9.1"
+  react17:
+    "react": "17.0.2"
+    "react-dom": "17.0.2"
+  react18:
+    "@types/react": "18.3.1"
+    "@types/react-dom": "18.3.1"
+    "react": "18.3.1"
+    "react-dom": "18.3.1"
+  react19:
+    "@react-router/dev": "7.9.4"
+    "@react-router/node": "7.9.4"
+    "@react-router/serve": "7.9.4"
+    "@types/react": "19.2.2"
+    "@types/react-dom": "19.2.2"
+    "react": "19.2.0"
+    "react-dom": "19.2.0"
+    "react-router": "7.9.4"
+  tailwindcss4:
+    "@tailwindcss/vite": "^4.1.16"
+    "tailwindcss": "^4.1.16"
+    "@tailwindcss/postcss": "^4.1.16"

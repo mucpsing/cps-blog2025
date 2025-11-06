@@ -1,0 +1,35 @@
+@keyframes falldown {
+  0% {
+    transform: translateY(-180px) scaleX(0.1) scaleY(0.3);
+    opacity: 0;
+  }
+  20% {
+    transform: translateY(-200px) scaleX(0.6) scaleY(0.3);
+  }
+  75% {
+    transform: translateY(0) scaleX(0.6) scaleY(0.3);
+  }
+  100% {
+    transform: translateY(0) scaleX(1) scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes riseup {
+  0% {
+    transform: translateY(0) scaleX(1) scaleY(1); /* 初始状态（正常大小，位置在原点） */
+    opacity: 0; /* 初始时透明 */
+  }
+  25% {
+    transform: translateY(30px) scaleX(0.8) scaleY(0.8); /* 向上轻微移动并缩小 */
+    opacity: 0.5; /* 渐渐变得更不透明 */
+  }
+  75% {
+    transform: translateY(-50px) scaleX(0.6) scaleY(0.6); /* 继续上升并变得更小 */
+    opacity: 0.9; /* 进一步变得不透明 */
+  }
+  100% {
+    transform: translateY(0) scaleX(1) scaleY(1); /* 最终位置恢复正常，完全不透明 */
+    opacity: 1;
+  }
+}

@@ -1,0 +1,9 @@
+.eachChar {
+  font-family: Arial, Geneva, Tahoma, sans-serif;
+  font-weight: bold;
+  /* font-family: EmerlandRegular, Geneva, Tahoma, sans-serif; */
+}
+
+.eachMainChar {
+  min-width: 1rem; /* 确保空字符有宽度 */
+}

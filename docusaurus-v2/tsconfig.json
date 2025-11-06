@@ -1,0 +1,19 @@
+{
+  // This file is not used in compilation. It is here just for a nice editor experience.
+  "extends": "@tsconfig/docusaurus/tsconfig.json",
+
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs",
+      "target": "es6",
+      "noImplicitAny": true,
+      "outDir": "./dist",
+      "sourceMap": true
+    }
+  },
+
+  "compilerOptions": {
+    "baseUrl": ".",
+    "sourceMap": true
+  }
+}

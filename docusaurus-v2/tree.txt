@@ -1,0 +1,80 @@
+DIR:cps-blog                                                                   # 
+   |-- blog/                                                                   # 「blog」
+   |-- 2021-08-26-welcome/                                                     # 
+   |   |-- index.md                                                            # 
+   |   `-- docusaurus-plushie-banner.jpeg                                      # 
+   |-- index.md                                                                # 
+   `-- authors.yml                                                             # 
+   |-- build/                                                                  # 「build」
+   |-- assets/                                                                 # 「assets」
+   |-- blog/                                                                   # 「blog」
+   |   |-- archive/                                                            # 「archive」
+   |   |   `-- index.html                                                      # 
+   |   |-- index/                                                              # 「index」
+   |   |   `-- index.html                                                      # 
+   |   |-- tags/                                                               # 「tags」
+   |   |   |-- docusaurus/                                                     # 「docusaurus」
+   |   |   |   `-- index.html                                                  # 
+   |   |   |-- facebook/                                                       # 「facebook」
+   |   |   |   `-- index.html                                                  # 
+   |   |   |-- hello/                                                          # 「hello」
+   |   |   |   `-- index.html                                                  # 
+   |   |   `-- index.html                                                      # 
+   |   |-- welcome/                                                            # 「welcome」
+   |   |   `-- index.html                                                      # 
+   |   |-- rss.xml                                                             # 
+   |   |-- index.html                                                          # 
+   |   `-- atom.xml                                                            # 
+   |-- css/                                                                    # 「css」 
+   |   `-- globalcss.css                                                       # 
+   |-- docs/                                                                   # 「docs」 笔记文件夹，使用md标准文件格式
+   |   |-- 【00】编程相关/                                                           # 
+   |   |-- 【01】前端相关/                                                           # 
+   |   |-- 【02】后端相关/                                                           # 
+   |   |-- 【03】运维相关/                                                           # 
+   |   |-- 【04】开源相关/                                                           # 
+   |   |-- 【05】单片机/                                                             # 
+   |   |-- 【05】项目经历/                                                           # 
+   |   |-- 【06】电子工程/                                                           # 
+   |   |-- 【07】常识科普/                                                           # 
+   |   |-- 【08】SurfacePro7/                                                       # 
+   |   |-- 【10】work/                                                              # 
+   |   |-- 【12】个人分享/                                                           # 
+   |   |-- 【13】Game/                                                              # 
+   |   |-- 【14】面试相关/                                                           # 
+   |   |-- 【15】常见错误汇总/                                                        # 
+   |   |-- 【17】读书笔记/                                                           # 
+   |   |-- 【18】副业开发/                                                           # 
+   |   |-- 【19】AR增强现实/                                                         # 
+   |   |-- 【20】单词/                                                               # 
+   |-- img/                                                                    # 「img」
+   |-- logo/                                                                   # 「logo」
+   |-- project/                                                                # 「project」
+   |-- screenshot/                                                             # 「screenshot」
+   |-- scripts/                                                                # 「scripts」
+   |-- sitemap.xml                                                             # 
+   |-- index.html                                                              # 
+   |-- 404.html                                                                # 
+   `-- .nojekyll                                                               # 
+   |-- config/                                                                 # 「config」
+   |-- data/                                                                   # 「data」
+   |-- demo/                                                                   # 「demo」
+   |-- docs/                                                                   # 「docs」
+   |-- scripts/                                                                # 「scripts」
+   |-- src/                                                                    # 「src」
+   |-- static/                                                                 # 「static」
+   |-- yarn.lock                                                               # 
+   |-- yarn-error.log                                                          # 
+   |-- tsconfig.json                                                           # 
+   |-- tailwind.config.js                                                      # 
+   |-- sidebars.js                                                             # 
+   |-- README.md                                                               # 
+   |-- postcss.config.js                                                       # 
+   |-- package.json                                                            # 
+   |-- docusaurus.config.js                                                    # 
+   |-- dev.bat                                                                 # 
+   |-- commitlint.config.js                                                    # 
+   |-- babel.config.js                                                         # 
+   |-- .hintrc                                                                 # 
+   |-- .gitignore                                                              # 
+   `-- .cz-config.js                                                           # 

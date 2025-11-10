@@ -1,275 +1,284 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>GSAP ScrollTrigger 横向联动示例</title>
-    <style>
-      ::-webkit-scrollbar {
-        width: 0;
-        height: 0;
-      }
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-      }
-      .btn-wrapper {
-        position: fixed;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        width: 100vw;
-        height: 60px;
-        justify-content: center;
-        bottom: 15%;
-      }
-      .btn {
-        width: 20vw;
-        height: 50px;
-      }
+    <head>
+        <meta charset="utf-8" />
+        <title>GSAP ScrollTrigger 横向联动示例</title>
+        <style>
+            ::-webkit-scrollbar {
+                width: 0;
+                height: 0;
+            }
+            html,
+            body {
+                height: 100%;
+                margin: 0;
+            }
+            .btn-wrapper {
+                position: fixed;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                width: 100vw;
+                height: 60px;
+                justify-content: center;
+                bottom: 15%;
+            }
+            .btn {
+                width: 20vw;
+                height: 50px;
+            }
 
-      #app-wrapper {
-        width: 100vw;
-        overflow-x: hidden;
-      } /* 防止横向滚动条出现 */
+            #app-wrapper {
+                width: 100vw;
+                overflow-x: hidden;
+            } /* 防止横向滚动条出现 */
 
-      .space {
-        width: 100%;
-        height: 100vh;
-        background-color: yellowgreen;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-      }
+            .space {
+                width: 100%;
+                height: 100vh;
+                background-color: yellowgreen;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2rem;
+            }
 
-      /* 横向组件容器：高度撑满视口（或你想要的高度） */
-      #my-component {
-        height: 100vh; /* 让 pin 时占据整屏高度，避免上下内容出现缝隙 */
-        display: flex;
-        /* 不设置固定宽度，让内部按 100vw 布局 */
-        overflow: hidden; /* 隐藏溢出的横向内容（被动画移动） */
-        box-sizing: border-box;
-        align-items: center;
-      }
+            /* 横向组件容器：高度撑满视口（或你想要的高度） */
+            #horizontal-area {
+                height: 100vh; /* 让 pin 时占据整屏高度，避免上下内容出现缝隙 */
+                display: flex;
+                /* 不设置固定宽度，让内部按 100vw 布局 */
+                overflow: hidden; /* 隐藏溢出的横向内容（被动画移动） */
+                box-sizing: border-box;
+                align-items: center;
+            }
 
-      /* 每个"页面"占满视口宽度，且不收缩 */
-      .step-base {
-        height: 100vh; /* 内部内容高度（可调整） */
-        width: 100vw; /* 关键：占满视口宽度 */
-        flex: 0 0 100vw; /* 阻止缩放或收缩，保证横向铺满 */
-        font-size: larger;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-sizing: border-box;
-        margin: 0;
-      }
+            /* 每个“页面”占满视口宽度，且不收缩 */
+            .step-horizontal {
+                height: 100vh; /* 内部内容高度（可调整） */
+                width: 100vw; /* 关键：占满视口宽度 */
+                flex: 0 0 100vw; /* 阻止缩放或收缩，保证横向铺满 */
+                font-size: larger;
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-sizing: border-box;
+                margin: 0;
+            }
 
-      .controller {
-        position: fixed;
-        bottom: 0;
-        width: 100vw;
-        z-index: 50;
-        height: 300px;
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        align-items: center;
-      }
+            .controller {
+                position: fixed;
+                bottom: 0;
+                width: 100vw;
+                z-index: 50;
+                height: 300px;
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+                align-items: center;
+            }
 
-      .controller > button {
-        width: 200px;
-        height: 70px;
-        font-size: 20px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="controller">
-      <button id="btn-prev">prev</button>
-      <button id="btn-next">next</button>
-    </div>
-    <div id="app-wrapper">
-      <div id="app-content">
-        <div class="space step-0">上方内容 - step 0</div>
-
-        <!-- 左右滑动内容 -->
-        <div id="my-component">
-          <div class="step-base step-1" style="background-color: #78c3f4">step1</div>
-          <div class="step-base step-2" style="background-color: #f1fa93">step2</div>
-          <div class="step-base step-3" style="background-color: #fc67a0">step3</div>
-          <div class="step-base step-4" style="background-color: #85fcf6">step4</div>
-          <div class="step-base step-5" style="background-color: #c48afc">step5</div>
+            .controller > button {
+                width: 200px;
+                height: 70px;
+                font-size: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="controller">
+            <button id="btn-prev">prev</button>
+            <button id="btn-test">test</button>
+            <button id="btn-next">next</button>
         </div>
+        <div id="app-wrapper">
+            <div id="app-content">
+                <div id="step-0" class="space step-vertical">上方内容 - step 0</div>
 
-        <!-- <div class="space">下方内容 - step 2</div> -->
-      </div>
-    </div>
-    <script src="./asset/js/gsap@3.13.0/ScrollTrigger.min.js"></script>
-    <script src="./asset/js/gsap@3.13.0/ScrollSmoother.min.js"></script>
-    <script src="./asset/js/gsap@3.13.0/gsap.min.js"></script>
+                <!-- 左右滑动内容 -->
+                <div id="horizontal-area">
+                    <div class="step-horizontal" id="step-1" style="background-color: #78c3f4">step1</div>
+                    <div class="step-horizontal" id="step-2" style="background-color: #f1fa93">step2</div>
+                    <div class="step-horizontal" id="step-3" style="background-color: #fc67a0">step3</div>
+                    <div class="step-horizontal" id="step-4" style="background-color: #85fcf6">step4</div>
+                    <div class="step-horizontal" id="step-5" style="background-color: #c48afc">step5</div>
+                    <div class="step-horizontal" id="step-6" style="background-color: #38df93">step6</div>
+                </div>
 
-    <!-- 全局配置部分 -->
-    <script type="text/javascript">
-      gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
-      const smoother = ScrollSmoother.create({
-        wrapper: '#app-wrapper',
-        content: '#app-content',
-        smooth: 2.5,
-      });
+                <div class="space step-vertical">下方内容 - step 7</div>
+            </div>
+        </div>
+        <script src="./asset/js/gsap@3.13.0/ScrollTrigger.min.js"></script>
+        <script src="./asset/js/gsap@3.13.0/ScrollSmoother.min.js"></script>
+        <script src="./asset/js/gsap@3.13.0/gsap.min.js"></script>
 
-      window.HorizontalScroller = {
-        trigger: null,
-        smoother: smoother,
-        pageCount: 0, // 总页面数（包括step-0）
-        pageScrollDistance: 0,
-        horizontalDistance: 0,
-        currentPage: 0,
-        // 新增：step-0的位置信息
-        step0Element: null,
-        step0Height: 0,
-        horizontalStartPosition: 0, // 横向滚动开始的位置
-      };
-    </script>
+        <!-- 全局配置部分 -->
+        <script type="text/javascript">
+            gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+            const smoother = ScrollSmoother.create({
+                wrapper: '#app-wrapper',
+                content: '#app-content',
+                smooth: 2.5, // 滚动系数，数值越大，滑动惯性越大 1.5~3 之间已经很丝滑
+                // onUpdate: self => console.log('self.progress: ', self.progress.toFixed(3)),
+            });
 
-    <!-- 【独立功能】横向滚动部分 -->
-    <script>
-      function initHorizontalScroller() {
-        const container = document.querySelector('#my-component');
-        const sections = gsap.utils.toArray('#my-component .step-base');
-        const step0Element = document.querySelector('.step-0');
+            window.CpsScroller = {
+                allElement: document.querySelectorAll('.step'),
+                trigger: null, // ScrollTrigger 实例（会在 init 时赋值）
+                smoother, // ScrollSmoother 实例
+                pageCount: 0, // 页面数量（横向页数）
+                horizontalDistance: 0, // 总的横向对应的垂直滚动距离（总长度）
+                currentPage: 0, // 当前页（务必保持为 number）
+                sections: [], // string<HTMLDivElement>[]
+            };
+        </script>
 
-        // 确保每个 section 的宽度为视口宽
-        sections.forEach(s => (s.style.width = window.innerWidth + 'px'));
+        <!-- 页面滚动功能 -->
+        <script type="text/javascript">
+            function initCpsScroller() {
+                const container = document.querySelector('#horizontal-area');
+                const sections = document.querySelectorAll('.step-horizontal');
+                const horizontalDistance = container.scrollWidth - window.innerWidth;
+                console.log('horizontalDistance: ', horizontalDistance);
+                const each = horizontalDistance / sections.length
+                console.log('each: ', each)
+                console.log('window.innerWidth: ', window.innerWidth)
 
-        // 计算横向需要滚动的距离
+                // 清理之前的 ScrollTriggers
+                ScrollTrigger.getAll().forEach(st => st.kill());
+
+                // 创建时间轴
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        id: 'horizontalScroll',
+                        trigger: container,
+                        start: 'top top',
+                        end: () => '+=' + horizontalDistance,
+                        pin: true,
+                        scrub: true,
+                        anticipatePin: 1,
+                        invalidateOnRefresh: true,
+                    },
+                });
+
+                const scrollTrigger = tl.scrollTrigger;
+
+                // 添加横向滚动动画到时间轴
+                tl.to(sections, {
+                    xPercent: -100 * (sections.length - 1),
+                    ease: 'none',
+                });
+
+                // ⭐⭐ 把关键对象暴露到全局供分页脚本使用 ⭐⭐
+                window.CpsScroller.trigger = scrollTrigger;
+                window.CpsScroller.pageCount = sections.length;
+                window.CpsScroller.horizontalDistance = horizontalDistance;
+            }
+        </script>
+        <!-- 使用gsap.to()实现 -->
+        <!--     <script>
+      function initCpsScroller() {
+        const container = document.querySelector('#horizontal-area'); // 横向滚动的容器
+        const sections = document.querySelectorAll('.step-horizontal'); // 横向滚动的元素
+
+        // 计算横向需要滚动的距离：总宽 - 可见宽
         const horizontalDistance = container.scrollWidth - window.innerWidth;
 
-        // 获取step-0的高度（用于计算横向滚动开始位置）
-        const step0Height = step0Element.offsetHeight;
+        // 清理之前的 ScrollTriggers（热重载/调试时用）
+        ScrollTrigger.getAll().forEach(st => st.kill()); // 如果你只有这一个 trigger，可以选择性清理
 
-        // 清理之前的 ScrollTriggers
-        ScrollTrigger.getAll().forEach(st => {
-          if (st.vars && st.vars.id === 'horizontalScroll') {
-            st.kill();
-          }
-        });
-
-        // 创建横向动画
+        // 创建横向动画（移动所有 section 的 x）
         const scrollTrigger = gsap.to(sections, {
           xPercent: -100 * (sections.length - 1),
           ease: 'none',
           scrollTrigger: {
             id: 'horizontalScroll',
             trigger: container,
-            start: `top+=${step0Height} top`, // 在step-0之后开始
-            end: () => `+=${horizontalDistance}`,
+            start: 'top top',
+            end: () => '+=' + horizontalDistance, // 精确匹配需要的垂直滚动距离
             pin: true,
             scrub: true,
             anticipatePin: 1,
             invalidateOnRefresh: true,
-            markers: true,
           },
         }).scrollTrigger;
 
-        window.addEventListener('resize', () => {
-          sections.forEach(s => (s.style.width = window.innerWidth + 'px'));
-          ScrollTrigger.refresh();
-        });
+        // ScrollTrigger 会在 resize 时自动 refresh（因为 invalidateOnRefresh: true）
+        window.addEventListener('resize', () => ScrollTrigger.refresh());
 
-        // 暴露关键对象到全局
-        window.HorizontalScroller.trigger = scrollTrigger;
-        window.HorizontalScroller.pageCount = sections.length + 1; // 包括step-0
-        window.HorizontalScroller.horizontalDistance = horizontalDistance;
-        window.HorizontalScroller.pageScrollDistance = horizontalDistance / (sections.length - 1);
-        window.HorizontalScroller.step0Element = step0Element;
-        window.HorizontalScroller.step0Height = step0Height;
-        window.HorizontalScroller.horizontalStartPosition = step0Height; // 横向滚动开始位置
+        // ⭐⭐ 把关键对象暴露到全局供分页脚本使用 ⭐⭐
+        window.CpsScroller.trigger = scrollTrigger;
+        window.CpsScroller.pageCount = sections.length;
+        window.CpsScroller.horizontalDistance = horizontalDistance;
       }
-    </script>
+    </script> -->
 
-    <!-- 【独立功能】页面切换功能 -->
-    <script type="text/javascript">
-      window.HorizontalScroller.currentPage = 0;
+        <!-- 页面控制部分 -->
+        <script>
+            const computePagePositions = () => {
+                const { trigger, sections, horizontalDistance } = window.CpsScroller;
+                const pagePositions = [0, window.innerHeight]; // step-0 永远是顶部
 
-      const initPagingControls = () => {
-        const scroller = window.HorizontalScroller;
+                const pagesInside = sections.length;
+                const segment = horizontalDistance / (pagesInside - 1);
+                console.log('trigger.start: ', trigger.start);
 
-        // 如果尚未初始化，稍后再试
-        if (!scroller || !scroller.trigger) {
-          requestAnimationFrame(initPagingControls);
-          return;
-        }
+                for (let i = 0; i < pagesInside; i++) {
+                    pagePositions.push(trigger.start + segment * i);
+                }
 
-        const btnPrev = document.getElementById('btn-prev');
-        const btnNext = document.getElementById('btn-next');
-        if (!btnPrev || !btnNext) return;
+                CpsScroller.pagePositions = pagePositions;
+                console.log('CpsScroller.pagePositions: ', CpsScroller.pagePositions);
+            };
 
-        // 修复的goToPage函数
-        function goToPage(index) {
-          console.log('跳转到页面:', index);
-          const clamped = Math.max(0, Math.min(index, scroller.pageCount - 1));
-          scroller.currentPage = clamped;
-          
-          let targetPosition;
-          
-          if (clamped === 0) {
-            // step-0：滚动到页面顶部
-            targetPosition = 0;
-          } else {
-            // 横向滚动页面：计算在横向滚动区域内的位置
-            // 注意：clamped=1对应第一个横向页面（step1），进度为0
-            const horizontalProgress = (clamped - 1) / (scroller.pageCount - 2); // 横向页面数量
-            const horizontalScroll = horizontalProgress * scroller.horizontalDistance;
-            targetPosition = scroller.horizontalStartPosition + horizontalScroll;
-          }
-          
-          console.log('目标位置:', targetPosition);
-          scroller.smoother.scrollTo(targetPosition, true);
-        }
+            const initPagingControls = () => {
+                const scroller = window.CpsScroller;
+                const { smoother } = scroller;
 
-        btnNext.onclick = () => {
-          // goToPage(scroller.currentPage + 1);
-        };
+                scroller.sections = document.querySelectorAll('.step-horizontal');
+                scroller.pageCount = scroller.sections.length + 1; // 包含 step-0
+                scroller.currentPage = 0;
 
-        btnPrev.onclick = () => {
-          // goToPage(scroller.currentPage - 1);
-        };
+                computePagePositions();
 
-        // 监听滚动更新当前页面
-        ScrollTrigger.addEventListener('refresh', () => {
-          updateCurrentPage();
-        });
+                window.addEventListener('resize', computePagePositions);
 
-        // 添加滚动监听
-        // scroller.smoother.addEventListener('scroll', updateCurrentPage);
+                function goToPage(index) {
+                    index = Math.max(0, Math.min(index, scroller.pageCount - 1));
+                    scroller.currentPage = index;
+                    smoother.scrollTo(scroller.pagePositions[index], true);
+                    console.log(`📍 前往第 ${index} 页 → scrollTo(${scroller.pagePositions[index]})`);
+                }
 
-        // function updateCurrentPage() {
-        //   const scrollTop = scroller.smoother.scrollTop();
-        //   const scrollerObj = window.HorizontalScroller;
-          
-        //   if (scrollTop < scrollerObj.horizontalStartPosition) {
-        //     // 在step-0区域
-        //     scrollerObj.currentPage = 0;
-        //   } else {
-        //     // 在横向滚动区域
-        //     const horizontalScroll = scrollTop - scrollerObj.horizontalStartPosition;
-        //     const progress = Math.min(1, horizontalScroll / scrollerObj.horizontalDistance);
-        //     const horizontalPage = Math.round(progress * (scrollerObj.pageCount - 2));
-        //     scrollerObj.currentPage = 1 + horizontalPage;
-        //   }
-        // }
-      };
-    </script>
+                document.getElementById('btn-prev').onclick = () => goToPage(scroller.currentPage - 1);
+                document.getElementById('btn-next').onclick = () => goToPage(scroller.currentPage + 1);
+                document.getElementById('btn-test').onclick = () => {
+                    const container = document.querySelector('#horizontal-area');
+                    const { trigger, sections, smoother } = window.CpsScroller;
+                    const horizontalDistance = container.scrollWidth - window.innerWidth;
 
-    <script type="text/javascript">
-      window.addEventListener('load', () => {
-        initHorizontalScroller();
-        // 延迟初始化分页控件，确保横向滚动已初始化
-        setTimeout(initPagingControls, 100);
-      });
-    </script>
-  </body>
+                    console.log('window.CpsScroller.horizontalDistance: ', window.CpsScroller.horizontalDistance);
+                    console.log('horizontalDistance: ', horizontalDistance);
+
+                    console.log('trigger.start:', trigger.start);
+                    console.log('trigger.end:', trigger.end);
+
+                    console.log(smoother.offset('#step-3', 'top'));
+                    console.log('smoother.scrollTrigger.start: ', smoother.scrollTrigger.start);
+                    console.log('smoother.scrollTrigger.end: ', smoother.scrollTrigger.end);
+
+                    // 获取当前的位置，这个位置可以被scrollTo(xxx) 直接到达
+                    console.log(window.CpsScroller);
+                };
+            };
+        </script>
+
+        <script type="text/javascript">
+            window.addEventListener('load', () => {
+                initCpsScroller();
+                initPagingControls();
+            });
+        </script>
+    </body>
 </html>

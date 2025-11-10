@@ -135,7 +135,46 @@
     </script>
 
     <!-- 页面滚动功能 -->
-    <script>
+    <script type="text/javascript">
+      function initCpsScroller() {
+        const container = document.querySelector('#horizontal-area');
+        const sections = document.querySelectorAll('.step-horizontal');
+        const horizontalDistance = container.scrollWidth - window.innerWidth;
+
+        // 清理之前的 ScrollTriggers
+        ScrollTrigger.getAll().forEach(st => st.kill());
+
+        // 创建时间轴
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            id: 'horizontalScroll',
+            trigger: container,
+            start: 'top top',
+            end: () => '+=' + horizontalDistance,
+            pin: true,
+            scrub: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        const scrollTrigger = tl.scrollTrigger
+
+        // 添加横向滚动动画到时间轴
+        tl.to(sections, {
+          xPercent: -100 * (sections.length - 1),
+          ease: 'none',
+        });
+
+        window.addEventListener('resize', () => ScrollTrigger.refresh());
+        // ⭐⭐ 把关键对象暴露到全局供分页脚本使用 ⭐⭐
+        window.CpsScroller.trigger = scrollTrigger;
+        window.CpsScroller.pageCount = sections.length;
+        window.CpsScroller.horizontalDistance = horizontalDistance;
+      }
+    </script>
+    <!-- 使用gsap.to()实现 -->
+    <!--     <script>
       function initCpsScroller() {
         const container = document.querySelector('#horizontal-area'); // 横向滚动的容器
         const sections = document.querySelectorAll('.step-horizontal'); // 横向滚动的元素
@@ -159,8 +198,6 @@
             scrub: true,
             anticipatePin: 1,
             invalidateOnRefresh: true,
-            // markers: true, // 调试时改为 true 查看 start/end
-            // onUpdate: self => console.log('self.progress: ', self.progress),
           },
         }).scrollTrigger;
 
@@ -172,7 +209,7 @@
         window.CpsScroller.pageCount = sections.length;
         window.CpsScroller.horizontalDistance = horizontalDistance;
       }
-    </script>
+    </script> -->
 
     <!-- 页面控制部分 -->
     <script>
@@ -220,14 +257,13 @@
           // smoother.scrollTo(8057, true)
 
           // 获取当前的位置，这个位置可以被scrollTo(xxx) 直接到达
-          console.log(parseInt(smoother.scrollTrigger.end * smoother.progress) )
-          
+          console.log(parseInt(smoother.scrollTrigger.end * smoother.progress));
         };
       };
     </script>
 
     <script type="text/javascript">
-      window.addEventListener('load', () => {
+      document.addEventListener('DOMContentLoaded', () => {
         initCpsScroller();
         initPagingControls();
       });

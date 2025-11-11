@@ -106,176 +106,180 @@
                     <div class="step-horizontal" id="step-6" style="background-color: #38df93">step6</div>
                 </div>
 
-                <div class="space step-vertical">下方内容 - step 7</div>
+                <div class="space step-vertical">下方内容 - step 2</div>
             </div>
         </div>
         <script src="./asset/js/gsap@3.13.0/ScrollTrigger.min.js"></script>
         <script src="./asset/js/gsap@3.13.0/ScrollSmoother.min.js"></script>
         <script src="./asset/js/gsap@3.13.0/gsap.min.js"></script>
 
-        <!-- 全局配置部分 -->
         <script type="text/javascript">
             gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
             const smoother = ScrollSmoother.create({
-                wrapper: '#app-wrapper',
-                content: '#app-content',
+                wrapper: "#app-wrapper",
+                content: "#app-content",
                 smooth: 2.5, // 滚动系数，数值越大，滑动惯性越大 1.5~3 之间已经很丝滑
-                // onUpdate: self => console.log('self.progress: ', self.progress.toFixed(3)),
             });
 
             window.CpsScroller = {
-                allElement: document.querySelectorAll('.step'),
+                allElement: document.querySelectorAll(".step"),
                 trigger: null, // ScrollTrigger 实例（会在 init 时赋值）
                 smoother, // ScrollSmoother 实例
                 pageCount: 0, // 页面数量（横向页数）
                 horizontalDistance: 0, // 总的横向对应的垂直滚动距离（总长度）
                 currentPage: 0, // 当前页（务必保持为 number）
                 sections: [], // string<HTMLDivElement>[]
+                pagePositions: [], // 页面位置数组
+                isAutoScrolling: false, // 是否正在自动滚动
+                velocityThreshold: 50, // 速度阈值，低于此值认为滚动停止
+                scrollTimeout: null, // 滚动超时计时器
             };
         </script>
 
         <!-- 页面滚动功能 -->
-        <script type="text/javascript">
+        <script>
             function initCpsScroller() {
-                const container = document.querySelector('#horizontal-area');
-                const sections = document.querySelectorAll('.step-horizontal');
+                const container = document.querySelector("#horizontal-area"); // 横向滚动的容器
+                const sections = document.querySelectorAll(".step-horizontal"); // 横向滚动的元素
+
+                // 计算横向需要滚动的距离：总宽 - 可见宽
                 const horizontalDistance = container.scrollWidth - window.innerWidth;
-                console.log('horizontalDistance: ', horizontalDistance);
-                const each = horizontalDistance / sections.length
-                console.log('each: ', each)
-                console.log('window.innerWidth: ', window.innerWidth)
 
-                // 清理之前的 ScrollTriggers
-                ScrollTrigger.getAll().forEach(st => st.kill());
+                // 清理之前的 ScrollTriggers（热重载/调试时用）
+                ScrollTrigger.getAll().forEach((st) => st.kill());
 
-                // 创建时间轴
-                const tl = gsap.timeline({
+                // 创建横向动画（移动所有 section 的 x）
+                const scrollTrigger = gsap.to(sections, {
+                    xPercent: -100 * (sections.length - 1),
+                    ease: "none",
                     scrollTrigger: {
-                        id: 'horizontalScroll',
+                        id: "horizontalScroll",
                         trigger: container,
-                        start: 'top top',
-                        end: () => '+=' + horizontalDistance,
+                        start: "top top",
+                        end: () => "+=" + horizontalDistance, // 精确匹配需要的垂直滚动距离
                         pin: true,
                         scrub: true,
                         anticipatePin: 1,
                         invalidateOnRefresh: true,
                     },
-                });
+                }).scrollTrigger;
 
-                const scrollTrigger = tl.scrollTrigger;
+                // ScrollTrigger 会在 resize 时自动 refresh
+                window.addEventListener("resize", () => ScrollTrigger.refresh());
 
-                // 添加横向滚动动画到时间轴
-                tl.to(sections, {
-                    xPercent: -100 * (sections.length - 1),
-                    ease: 'none',
-                });
-
-                // ⭐⭐ 把关键对象暴露到全局供分页脚本使用 ⭐⭐
+                // 暴露到全局
                 window.CpsScroller.trigger = scrollTrigger;
                 window.CpsScroller.pageCount = sections.length;
                 window.CpsScroller.horizontalDistance = horizontalDistance;
             }
         </script>
-        <!-- 使用gsap.to()实现 -->
-        <!--     <script>
-      function initCpsScroller() {
-        const container = document.querySelector('#horizontal-area'); // 横向滚动的容器
-        const sections = document.querySelectorAll('.step-horizontal'); // 横向滚动的元素
-
-        // 计算横向需要滚动的距离：总宽 - 可见宽
-        const horizontalDistance = container.scrollWidth - window.innerWidth;
-
-        // 清理之前的 ScrollTriggers（热重载/调试时用）
-        ScrollTrigger.getAll().forEach(st => st.kill()); // 如果你只有这一个 trigger，可以选择性清理
-
-        // 创建横向动画（移动所有 section 的 x）
-        const scrollTrigger = gsap.to(sections, {
-          xPercent: -100 * (sections.length - 1),
-          ease: 'none',
-          scrollTrigger: {
-            id: 'horizontalScroll',
-            trigger: container,
-            start: 'top top',
-            end: () => '+=' + horizontalDistance, // 精确匹配需要的垂直滚动距离
-            pin: true,
-            scrub: true,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-          },
-        }).scrollTrigger;
-
-        // ScrollTrigger 会在 resize 时自动 refresh（因为 invalidateOnRefresh: true）
-        window.addEventListener('resize', () => ScrollTrigger.refresh());
-
-        // ⭐⭐ 把关键对象暴露到全局供分页脚本使用 ⭐⭐
-        window.CpsScroller.trigger = scrollTrigger;
-        window.CpsScroller.pageCount = sections.length;
-        window.CpsScroller.horizontalDistance = horizontalDistance;
-      }
-    </script> -->
 
         <!-- 页面控制部分 -->
         <script>
-            const computePagePositions = () => {
-                const { trigger, sections, horizontalDistance } = window.CpsScroller;
-                const pagePositions = [0, window.innerHeight]; // step-0 永远是顶部
-
-                const pagesInside = sections.length;
-                const segment = horizontalDistance / (pagesInside - 1);
-                console.log('trigger.start: ', trigger.start);
-
-                for (let i = 0; i < pagesInside; i++) {
-                    pagePositions.push(trigger.start + segment * i);
-                }
-
-                CpsScroller.pagePositions = pagePositions;
-                console.log('CpsScroller.pagePositions: ', CpsScroller.pagePositions);
-            };
-
             const initPagingControls = () => {
                 const scroller = window.CpsScroller;
                 const { smoother } = scroller;
 
-                scroller.sections = document.querySelectorAll('.step-horizontal');
+                scroller.sections = document.querySelectorAll(".step-horizontal");
                 scroller.pageCount = scroller.sections.length + 1; // 包含 step-0
                 scroller.currentPage = 0;
 
-                computePagePositions();
+                function computePagePositions() {
+                    const { trigger, sections, horizontalDistance } = window.CpsScroller;
+                    const pagePositions = [0]; // step-0 永远是顶部
 
-                window.addEventListener('resize', computePagePositions);
+                    const pagesInside = sections.length;
+                    const segment = horizontalDistance / (pagesInside - 1);
+
+                    for (let i = 0; i < pagesInside; i++) {
+                        pagePositions.push(trigger.start + segment * i);
+                    }
+
+                    CpsScroller.pagePositions = pagePositions;
+                }
+
+                computePagePositions();
+                window.addEventListener("resize", computePagePositions);
 
                 function goToPage(index) {
                     index = Math.max(0, Math.min(index, scroller.pageCount - 1));
                     scroller.currentPage = index;
+                    scroller.isAutoScrolling = true;
                     smoother.scrollTo(scroller.pagePositions[index], true);
                     console.log(`📍 前往第 ${index} 页 → scrollTo(${scroller.pagePositions[index]})`);
+
+                    // 300ms后重置自动滚动标记（给动画一些时间）
+                    setTimeout(() => {
+                        scroller.isAutoScrolling = false;
+                    }, 300);
                 }
 
-                document.getElementById('btn-prev').onclick = () => goToPage(scroller.currentPage - 1);
-                document.getElementById('btn-next').onclick = () => goToPage(scroller.currentPage + 1);
-                document.getElementById('btn-test').onclick = () => {
-                    const container = document.querySelector('#horizontal-area');
-                    const { trigger, sections, smoother } = window.CpsScroller;
-                    const horizontalDistance = container.scrollWidth - window.innerWidth;
+                // 找到最近的页面索引
+                function findNearestPage(currentPos) {
+                    const { pagePositions } = scroller;
+                    let closestIndex = 0;
+                    let smallestDiff = Math.abs(currentPos - pagePositions[0]);
 
-                    console.log('window.CpsScroller.horizontalDistance: ', window.CpsScroller.horizontalDistance);
-                    console.log('horizontalDistance: ', horizontalDistance);
+                    for (let i = 1; i < pagePositions.length; i++) {
+                        const diff = Math.abs(currentPos - pagePositions[i]);
+                        if (diff < smallestDiff) {
+                            smallestDiff = diff;
+                            closestIndex = i;
+                        }
+                    }
+                    return closestIndex;
+                }
 
-                    console.log('trigger.start:', trigger.start);
-                    console.log('trigger.end:', trigger.end);
+                // 自动吸附到最近的页面
+                function autoSnapToPage() {
+                    if (scroller.isAutoScrolling) return;
 
-                    console.log(smoother.offset('#step-3', 'top'));
-                    console.log('smoother.scrollTrigger.start: ', smoother.scrollTrigger.start);
-                    console.log('smoother.scrollTrigger.end: ', smoother.scrollTrigger.end);
+                    const currentPos = smoother.scrollTop();
+                    const nearestPage = findNearestPage(currentPos);
 
-                    // 获取当前的位置，这个位置可以被scrollTo(xxx) 直接到达
-                    console.log(window.CpsScroller);
+                    // 如果不在当前页面，自动吸附
+                    if (nearestPage !== scroller.currentPage) {
+                        goToPage(nearestPage);
+                    }
+                }
+
+                // 监听滚动状态，实现自动吸附
+                function setupScrollListener() {
+                    smoother.scrollTrigger.addEventListener("update", () => {
+                        // 如果正在自动滚动，不处理
+                        if (scroller.isAutoScrolling) return;
+
+                        // 清除之前的超时
+                        clearTimeout(scroller.scrollTimeout);
+
+                        // 获取当前滚动速度
+                        const velocity = Math.abs(smoother.getVelocity());
+
+                        // 当速度低于阈值时，设置超时检测滚动停止
+                        if (velocity < scroller.velocityThreshold) {
+                            scroller.scrollTimeout = setTimeout(autoSnapToPage, 200);
+                        }
+                    });
+                }
+
+                // 初始化滚动监听
+                setupScrollListener();
+
+                // 按钮事件
+                document.getElementById("btn-prev").onclick = () => goToPage(scroller.currentPage - 1);
+                document.getElementById("btn-next").onclick = () => goToPage(scroller.currentPage + 1);
+                document.getElementById("btn-test").onclick = () => {
+                    const { trigger, sections, smoother, horizontalDistance } = window.CpsScroller;
+                    console.log(smoother.offset("#step-3", "top"));
+                    console.log(smoother.scrollTrigger.start);
+                    console.log(smoother.scrollTrigger.end);
+                    console.log(parseInt(smoother.scrollTrigger.end * smoother.progress));
                 };
             };
         </script>
 
         <script type="text/javascript">
-            window.addEventListener('load', () => {
+            window.addEventListener("load", () => {
                 initCpsScroller();
                 initPagingControls();
             });

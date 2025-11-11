@@ -1,0 +1,223 @@
+<!--
+ * @Author: cpasion-office-win10 373704015@qq.com
+ * @Date: 2025-11-10 15:22:00
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-11-10 23:19:58
+ * @FilePath: \cps-blog\demo-html\[youtube]gsap配合clip-path文字过渡特效.html
+ * @Description: 文字通过css的clip-path进行过渡，配合gsap进行动画控制
+-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>文字通过css的clip-path进行过渡</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            :root {
+                --white: hsl(267, 100%, 94%);
+                --black: hsl(268, 57%, 43%);
+            }
+
+            body {
+                display: grid;
+                place-items: center;
+                height: 100vh;
+                background-color: var(--white);
+            }
+
+            .container {
+                width: 100%;
+                max-width: 800px;
+                height: 300px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .slide-bar {
+                width: 10px;
+                height: 600px;
+                /* background-color: aqua; */
+                position: absolute;
+                top: 50%;
+                left: 100px;
+                z-index: 10;
+                transform: translateY(-50%) rotateZ(15deg);
+            }
+
+            .bar {
+                width: 100%;
+                height: 150px;
+                border-radius: 100px;
+                background-color: var(--black);
+            }
+
+            .text-block {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                display: grid;
+                place-items: center;
+                /* background-color: var(--black); */
+            }
+
+            .text-block h1 {
+                font-size: 5rem;
+                font-weight: 800;
+                font-style: italic;
+                letter-spacing: 2px;
+                position: relative;
+                perspective: 500px;
+                transform-style: preserve-3d;
+                color: var(--black);
+            }
+
+            .text-block h1::after {
+                position: absolute;
+                content: "";
+                width: 100%;
+                height: 100px;
+                left: 0;
+                background: radial-gradient(var(--black), transparent 70%);
+                transform: translateY(100px) rotateX(-60deg);
+                opacity: 0;
+            }
+
+            #changeBtn {
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                border: 3px solid var(--black);
+                background-color: var(--white);
+
+                position: fixed;
+                bottom: 20%;
+                left: 50%;
+                transform: translateX(-50%);
+                cursor: pointer;
+                transition: opacity 0.3s ease-in-out;
+                opacity: 0.4;
+            }
+
+            #changeBtn:hover {
+                opacity: 1;
+            }
+
+            #textone {
+                z-index: 6;
+                clip-path: polygon(0 0, 18% 0, 8% 100%, 0% 100%);
+                background-color: var(--white);
+            }
+
+            #texttwo {
+                z-index: 4;
+                clip-path: polygon(0 0, 91% 0, 81% 100%, 0% 100%);
+                background-color: var(--white);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="slide-bar" id="slidebar">
+                <div class="bar" id="bar"></div>
+            </div>
+
+            <div class="text-block" id="textone">
+                <h1>GSAP</h1>
+            </div>
+
+            <div class="text-block" id="texttwo">
+                <h1>CHALLENGE</h1>
+            </div>
+        </div>
+
+        <button id="changeBtn">&nbsp;</button>
+        <script src="./asset/js/gsap@3.13.0/gsap.min.js"></script>
+        <script xxsrc="./asset/js/[youtube]gsap配合clip-path文字过渡特效.js">
+            const sideTL = gsap.timeline();
+            const maskTL = gsap.timeline();
+            const mainTL = gsap.timeline({
+                repeat: -1,
+                onRepeat: () => {
+                    console.log("onRepeat");
+                    gsap.set("#texttwo", { opacity: 0 });
+                    gsap.set("#bar", { scaleY: 0.1 });
+                    gsap.set("#textone h1", { opacity: 1 });
+                },
+            });
+
+            mainTL.add(sideTL).add(maskTL, 1.5);
+
+            sideTL
+                .to("#bar", {
+                    duration: 1,
+                    y: 225,
+                    scaleY: 1,
+                    ease: "back.out",
+                })
+
+                .to("#slidebar", {
+                    duration: 1.5,
+                    delay: 0.5,
+                    x: 600,
+                    ease: "back.inOut(0.8)",
+                })
+
+                .to("#slidebar", {
+                    duration: 1.5,
+                    delay: 0.5,
+                    x: 0,
+                    ease: "back.inOut(0.8)",
+                })
+
+                .to("#slidebar", {
+                    duration: 1.5,
+                    delay: 0.5,
+                    x: 600,
+                    ease: "back.inOut(0.8)",
+                })
+
+                .to("#bar", {
+                    duration: 1,
+                    y: 500,
+                    scaleY: 0.1,
+                    ease: "back.out",
+                });
+
+            maskTL
+                .to("#textone", {
+                    duration: 1.5,
+                    ease: "back.inOut(0.8)",
+                    clipPath: "polygon(0% 0%, 91% 0%, 81% 100%, 0% 100%)",
+                    onComplete: () => {
+                        gsap.set("#texttwo", { opacity: 1 });
+                    },
+                })
+
+                .to("#textone", {
+                    duration: 1.5,
+                    delay: 0.5,
+                    ease: "back.inOut(0.8)",
+                    clipPath: "polygon(0% 0%, 18% 0%, 8% 100%, 0% 100%)",
+                    onComplete: () => {
+                        gsap.to("#textone h1", { opacity: 0 });
+                    },
+                })
+
+                .to("#textone", {
+                    duration: 1.5,
+                    delay: 0.5,
+                    ease: "back.inOut(0.8)",
+                    clipPath: "polygon(0% 0%, 91% 0%, 81% 100%, 0% 100%)",
+                });
+
+            gsap.set("#texttwo", { opacity: 0 });
+            gsap.set("#bar", { scaleY: 0.1 });
+        </script>
+    </body>
+</html>

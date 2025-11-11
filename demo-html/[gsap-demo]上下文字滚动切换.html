@@ -1,0 +1,113 @@
+<!--
+ * @Author: Capsion 373704015@qq.com
+ * @Date: 2025-11-11 20:52:25
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-11-11 22:58:50
+ * @FilePath: \cps-blog2025\demo-html\[gsap-demo]上下文字滚动切换.html
+ * @Description: https://www.bilibili.com/video/BV1iD2xYoEeb 27:11
+-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>[gsap-demo]上下文字滚动切换</title>
+        <style>
+            * {
+                margin: 0;
+
+                padding: 0;
+
+                box-sizing: border-box;
+            }
+
+            section {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                background-color: #000;
+                color: #fff;
+                flex-direction: column;
+            }
+
+            .text-warpper {
+                font-size: 8vw;
+                display: flex;
+                line-height: 0.75;
+                font-weight: 700;
+                letter-spacing: 0.05em;
+                -webkit-text-stroke: 3px #fff;
+                color: transparent;
+                border: 1px solid red;
+                /* visibility: hidden; */
+                /* overflow: hidden; */
+            }
+
+            .text-warpper span {
+                display: block;
+                position: relative;
+                margin: 5px 0;
+            }
+
+            .text-warpper span:before {
+                content: attr(data-char);
+                position: absolute;
+                left: 0;
+                top: 0;
+                color: #fff;
+                transform: translateY(-120%);
+            }
+        </style>
+    </head>
+    <body>
+        <section>
+            <div class="text-warpper">
+                <span data-char="C">C</span>
+                <span data-char=".">A</span>
+                <span data-char="P">P</span>
+                <span data-char=".">S</span>
+                <span data-char="I">I</span>
+                <span data-char=".">O</span>
+                <span data-char="N">N</span>
+                <span data-char=".">-</span>
+                <span data-char="B">B</span>
+                <span data-char=".">L</span>
+                <span data-char="O">O</span>
+                <span data-char=".">G</span>
+            </div>
+        </section>
+        <script src="./asset/js/gsap@3.13.0/gsap.min.js"></script>
+        <script>
+            const textWarper = document.querySelector(".text-warpper");
+            const char = textWarper.querySelectorAll("span");
+            const replaceChar = textWarper.querySelectorAll('span:not([data-char="."])');
+
+            const timeline1 = gsap.timeline();
+
+            timeline1.set(char, {
+                yPercent: -120,
+            });
+
+            timeline1.set(textWarper, {
+                autoAlpha: 1,
+            });
+
+            timeline1
+                .to(char, {
+                    duration: 1,
+                    yPercent: 0,
+                    stagger: 0.03,
+                    ease: "expo.inOut",
+                })
+                .to(replaceChar, {
+                    duration: 1,
+                    yPercent: 120,
+                    ease: "expo.inOut",
+                    repeat: -1,
+                    stagger: 0.08,
+                    yoyo: true,
+                });
+        </script>
+    </body>
+</html>

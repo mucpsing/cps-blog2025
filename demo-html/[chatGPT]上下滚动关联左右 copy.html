@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>GSAP ScrollTrigger 横向联动示例</title>
+        <style>
+            ::-webkit-scrollbar {
+                width: 0;
+                height: 0;
+            }
+            html,
+            body {
+                height: 100%;
+                margin: 0;
+            }
+            .btn-wrapper {
+                position: fixed;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                width: 100vw;
+                height: 60px;
+                justify-content: center;
+                bottom: 15%;
+            }
+            .btn {
+                width: 20vw;
+                height: 50px;
+            }
+
+            #app-wrapper {
+                width: 100vw;
+                overflow-x: hidden;
+            } /* 防止横向滚动条出现 */
+
+            .space {
+                width: 100%;
+                height: 100vh;
+                background-color: yellowgreen;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2rem;
+            }
+
+            /* 横向组件容器：高度撑满视口（或你想要的高度） */
+            #horizontal-area {
+                height: 100vh; /* 让 pin 时占据整屏高度，避免上下内容出现缝隙 */
+                display: flex;
+                /* 不设置固定宽度，让内部按 100vw 布局 */
+                overflow: hidden; /* 隐藏溢出的横向内容（被动画移动） */
+                box-sizing: border-box;
+                align-items: center;
+            }
+
+            /* 每个“页面”占满视口宽度，且不收缩 */
+            .step-horizontal {
+                height: 100vh; /* 内部内容高度（可调整） */
+                width: 100vw; /* 关键：占满视口宽度 */
+                flex: 0 0 100vw; /* 阻止缩放或收缩，保证横向铺满 */
+                font-size: larger;
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-sizing: border-box;
+                margin: 0;
+            }
+
+            .controller {
+                position: fixed;
+                bottom: 0;
+                width: 100vw;
+                z-index: 50;
+                height: 300px;
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .controller > button {
+                width: 200px;
+                height: 70px;
+                font-size: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="controller">
+            <button id="btn-prev">prev</button>
+            <button id="btn-test">test</button>
+            <button id="btn-next">next</button>
+        </div>
+
+        <div class="space step-vertical">下方内容 - step 2</div>
+      </div>
+    </div>
+    <script src="./asset/js/gsap@3.13.0/ScrollTrigger.min.js"></script>
+    <script src="./asset/js/gsap@3.13.0/ScrollSmoother.min.js"></script>
+    <script src="./asset/js/gsap@3.13.0/gsap.min.js"></script>
+
+    <!-- 全局配置部分 -->
+    <script type="text/javascript">
+      gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+      const smoother = ScrollSmoother.create({
+        wrapper: '#app-wrapper',
+        content: '#app-content',
+        smooth: 2.5, // 滚动系数，数值越大，滑动惯性越大 1.5~3 之间已经很丝滑
+        // onUpdate: self => console.log('self.progress: ', self.progress.toFixed(3)),
+      });
+
+      window.CpsScroller = {
+        allElement: document.querySelectorAll('.step'),
+        trigger: null, // ScrollTrigger 实例（会在 init 时赋值）
+        smoother, // ScrollSmoother 实例
+        pageCount: 0, // 页面数量（横向页数）
+        horizontalDistance: 0, // 总的横向对应的垂直滚动距离（总长度）
+        currentPage: 0, // 当前页（务必保持为 number）
+        sections: [], // string<HTMLDivElement>[]
+      };
+    </script>
+
+    <!-- 页面滚动功能 -->
+    <script type="text/javascript">
+      function initCpsScroller() {
+        const container = document.querySelector('#horizontal-area');
+        const sections = document.querySelectorAll('.step-horizontal');
+        const horizontalDistance = container.scrollWidth - window.innerWidth;
+
+        // 清理之前的 ScrollTriggers
+        ScrollTrigger.getAll().forEach(st => st.kill());
+
+        // 创建时间轴
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            id: 'horizontalScroll',
+            trigger: container,
+            start: 'top top',
+            end: () => '+=' + horizontalDistance,
+            pin: true,
+            scrub: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        const scrollTrigger = tl.scrollTrigger
+
+        // 添加横向滚动动画到时间轴
+        tl.to(sections, {
+          xPercent: -100 * (sections.length - 1),
+          ease: 'none',
+        });
+
+        window.addEventListener('resize', () => ScrollTrigger.refresh());
+        // ⭐⭐ 把关键对象暴露到全局供分页脚本使用 ⭐⭐
+        window.CpsScroller.trigger = scrollTrigger;
+        window.CpsScroller.pageCount = sections.length;
+        window.CpsScroller.horizontalDistance = horizontalDistance;
+      }
+    </script>
+    <!-- 使用gsap.to()实现 -->
+    <!--     <script>
+      function initCpsScroller() {
+        const container = document.querySelector('#horizontal-area'); // 横向滚动的容器
+        const sections = document.querySelectorAll('.step-horizontal'); // 横向滚动的元素
+
+        // 计算横向需要滚动的距离：总宽 - 可见宽
+        const horizontalDistance = container.scrollWidth - window.innerWidth;
+
+        // 清理之前的 ScrollTriggers（热重载/调试时用）
+        ScrollTrigger.getAll().forEach(st => st.kill()); // 如果你只有这一个 trigger，可以选择性清理
+
+        // 创建横向动画（移动所有 section 的 x）
+        const scrollTrigger = gsap.to(sections, {
+          xPercent: -100 * (sections.length - 1),
+          ease: 'none',
+          scrollTrigger: {
+            id: 'horizontalScroll',
+            trigger: container,
+            start: 'top top',
+            end: () => '+=' + horizontalDistance, // 精确匹配需要的垂直滚动距离
+            pin: true,
+            scrub: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        }).scrollTrigger;
+
+        // ScrollTrigger 会在 resize 时自动 refresh（因为 invalidateOnRefresh: true）
+        window.addEventListener('resize', () => ScrollTrigger.refresh());
+
+        // ⭐⭐ 把关键对象暴露到全局供分页脚本使用 ⭐⭐
+        window.CpsScroller.trigger = scrollTrigger;
+        window.CpsScroller.pageCount = sections.length;
+        window.CpsScroller.horizontalDistance = horizontalDistance;
+      }
+    </script> -->
+
+    <!-- 页面控制部分 -->
+    <script>
+      const initPagingControls = () => {
+        const scroller = window.CpsScroller;
+        const { smoother } = scroller;
+
+        scroller.sections = document.querySelectorAll('.step-horizontal');
+        scroller.pageCount = scroller.sections.length + 1; // 包含 step-0
+        scroller.currentPage = 0;
+
+        function computePagePositions() {
+          const { trigger, sections, horizontalDistance } = window.CpsScroller;
+          const pagePositions = [0]; // step-0 永远是顶部
+
+          const pagesInside = sections.length;
+          const segment = horizontalDistance / (pagesInside - 1);
+
+          for (let i = 0; i < pagesInside; i++) {
+            pagePositions.push(trigger.start + segment * i);
+          }
+
+          CpsScroller.pagePositions = pagePositions;
+        }
+
+        computePagePositions();
+        window.addEventListener('resize', computePagePositions);
+
+        function goToPage(index) {
+          index = Math.max(0, Math.min(index, scroller.pageCount - 1));
+          scroller.currentPage = index;
+          smoother.scrollTo(scroller.pagePositions[index], true);
+          console.log(`📍 前往第 ${index} 页 → scrollTo(${scroller.pagePositions[index]})`);
+        }
+
+        document.getElementById('btn-prev').onclick = () => goToPage(scroller.currentPage - 1);
+        document.getElementById('btn-next').onclick = () => goToPage(scroller.currentPage + 1);
+        document.getElementById('btn-test').onclick = () => {
+          const { trigger, sections, smoother, horizontalDistance } = window.CpsScroller;
+          // console.log(smoother.content());
+          // console.log(smoother.getVelocity()); // 速度
+          console.log(smoother.offset('#step-3', 'top'));
+          console.log(smoother.scrollTrigger.start);
+          console.log(smoother.scrollTrigger.end);
+          // smoother.scrollTo(8057, true)
+
+          // 获取当前的位置，这个位置可以被scrollTo(xxx) 直接到达
+          console.log(parseInt(smoother.scrollTrigger.end * smoother.progress));
+        };
+      };
+    </script>
+
+    <script type="text/javascript">
+      document.addEventListener('DOMContentLoaded', () => {
+        initCpsScroller();
+        initPagingControls();
+      });
+    </script>
+  </body>
+</html>

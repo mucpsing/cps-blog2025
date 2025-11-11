@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>使用 GSAP 和 Clip-Path 的文字过渡特效</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            :root {
+                /* 颜色变量 */
+                --primary-color: hsl(268, 57%, 43%); /* 主色调 - 深紫色 */
+                --background-color: hsl(267, 100%, 94%); /* 背景色 - 浅紫色 */
+
+                /* 尺寸变量 */
+                --container-height: 300px; /* 容器高度 */
+                --container-max-width: 800px; /* 容器最大宽度 */
+                --font-size: 5rem; /* 字体大小 */
+                --bar-height: 600px; /* 滑动条高度 */
+                --slider-height: 150px; /* 滑块高度 */
+                --slider-radius: 100px; /* 滑块圆角 */
+                --slider-offset: 100px; /* 滑块初始偏移量 */
+                --slider-rotation: 15deg; /* 滑块旋转角度 */
+                --slider-x-position: 600px; /* 滑块X轴移动位置 */
+                --slider-initial-scale: 0.1; /* 滑块初始缩放 */
+                --slider-y-positions: 225px, 500px; /* 滑块Y轴位置（开始，结束） */
+                --shadow-height: 100px; /* 文字阴影高度 */
+                --shadow-translate-y: 100px; /* 文字阴影Y轴位移 */
+                --shadow-rotation: -60deg; /* 文字阴影旋转角度 */
+
+                /* 动画时间变量 */
+                --animation-duration-short: 1s; /* 短动画时长 */
+                --animation-duration-medium: 1.5s; /* 中等动画时长 */
+                --animation-delay-short: 0.5s; /* 短延迟时间 */
+
+                /* 其他变量 */
+                --letter-spacing: 2px; /* 字间距 */
+                --perspective: 500px; /* 3D透视距离 */
+                --button-size: 20px; /* 按钮尺寸 */
+                --button-border: 3px; /* 按钮边框宽度 */
+                --button-bottom: 20%; /* 按钮底部位置 */
+                --clip-path-positions: 18% 0, 8% 100%, 91% 0, 81% 100%; /* 裁剪路径关键点 */
+            }
+
+            body {
+                display: grid;
+                place-items: center;
+                height: 100vh;
+                background-color: var(--background-color);
+            }
+
+            .container {
+                width: 100%;
+                max-width: var(--container-max-width);
+                height: var(--container-height);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .slider {
+                width: 10px;
+                height: var(--bar-height);
+                position: absolute;
+                top: 50%;
+                left: var(--slider-offset);
+                z-index: 10;
+                transform: translateY(-50%) rotateZ(var(--slider-rotation));
+            }
+
+            .slider-bar {
+                width: 100%;
+                height: var(--slider-height);
+                border-radius: var(--slider-radius);
+                background-color: var(--primary-color);
+            }
+
+            .text-block {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                display: grid;
+                place-items: center;
+                background-color: var(--background-color);
+            }
+
+            .text-block h1 {
+                font-size: var(--font-size);
+                font-weight: 800;
+                font-style: italic;
+                letter-spacing: var(--letter-spacing);
+                position: relative;
+                perspective: var(--perspective);
+                transform-style: preserve-3d;
+                color: var(--primary-color);
+            }
+
+            .text-block h1::after {
+                position: absolute;
+                content: "";
+                width: 100%;
+                height: var(--shadow-height);
+                left: 0;
+                background: radial-gradient(var(--primary-color), transparent 70%);
+                transform: translateY(var(--shadow-translate-y)) rotateX(var(--shadow-rotation));
+                opacity: 0;
+            }
+
+            .control-button {
+                width: var(--button-size);
+                height: var(--button-size);
+                border-radius: 50%;
+                border: var(--button-border) solid var(--primary-color);
+                background-color: var(--background-color);
+                position: fixed;
+                bottom: var(--button-bottom);
+                left: 50%;
+                transform: translateX(-50%);
+                cursor: pointer;
+                transition: opacity var(--animation-duration-short) ease-in-out;
+                opacity: 0.4;
+            }
+
+            .control-button:hover {
+                opacity: 1;
+            }
+
+            /* 文字块的初始裁剪路径 */
+            #first-text {
+                z-index: 6;
+                clip-path: polygon(0 0, 18% 0, 8% 100%, 0% 100%); /* 第一个文本的初始裁剪区域 */
+            }
+
+            #second-text {
+                z-index: 4;
+                clip-path: polygon(0 0, 91% 0, 81% 100%, 0% 100%); /* 第二个文本的初始裁剪区域 */
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="slider" id="slider">
+                <div class="slider-bar" id="slider-bar"></div>
+            </div>
+
+            <div class="text-block" id="first-text">
+                <h1>GSAP</h1>
+            </div>
+
+            <div class="text-block" id="second-text">
+                <h1>CHALLENGE</h1>
+            </div>
+        </div>
+
+        <button class="control-button" id="controlButton" title="控制动画播放">&nbsp;</button>
+        <script src="./asset/js/gsap@3.13.0/gsap.min.js"></script>
+        <script>
+            // 动画配置
+            const ANIMATION_CONFIG = {
+                duration: {
+                    short: 0.6, // 短动画时长（秒）
+                },
+                delay: {
+                    short: 0.3, // 短延迟时间（秒）
+                },
+                ease: {
+                    slider: "back.out", // 滑块动画缓动函数
+                    movement: "back.inOut(0.8)", // 移动动画缓动函数
+                },
+                positions: {
+                    slider: {
+                        y: [225, 500], // 滑块Y轴位置 [起始位置, 结束位置]
+                        scale: [0.5, 1], // 滑块缩放 [起始缩放, 结束缩放]
+                        x: 600, // 滑块X轴移动距离
+                    },
+                    clipPath: {
+                        first: "polygon(0% 0%, 91% 0%, 81% 100%, 0% 100%)", // 第一个裁剪路径状态
+                        second: "polygon(0% 0%, 18% 0%, 8% 100%, 0% 100%)", // 第二个裁剪路径状态
+                    },
+                },
+            };
+
+            // 这个总长度需要是duration.short+delay.short的总和，否则会出现动画卡顿
+            ANIMATION_CONFIG.duration.medium = ANIMATION_CONFIG.duration.short + ANIMATION_CONFIG.delay.short;
+
+            // 元素选择器
+            const SELECTORS = {
+                slider: "#slider", // 滑动条元素
+                sliderBar: "#slider-bar", // 滑块元素
+                firstText: "#first-text", // 第一个文本块
+                secondText: "#second-text", // 第二个文本块
+                firstTextHeading: "#first-text h1", // 第一个文本标题
+            };
+
+            // 初始化动画时间线
+            const sliderTimeline = gsap.timeline(); // 滑块动画时间线
+            const maskTimeline = gsap.timeline(); // 遮罩动画时间线
+            const mainTimeline = gsap.timeline({
+                repeat: -1, // 无限循环
+                onRepeat: () => {
+                    console.log("动画循环开始");
+                    // 重置动画状态
+                    gsap.set(SELECTORS.secondText, { opacity: 0 }); // 隐藏第二个文本
+                    gsap.set(SELECTORS.sliderBar, { scaleY: ANIMATION_CONFIG.positions.slider.scale[0] }); // 重置滑块缩放
+                    gsap.set(SELECTORS.firstTextHeading, { opacity: 1 }); // 显示第一个文本
+                },
+            });
+
+            // 构建主时间线
+            mainTimeline.add(sliderTimeline).add(maskTimeline, ANIMATION_CONFIG.duration.medium);
+
+            // 滑块动画序列
+            sliderTimeline
+                .to(SELECTORS.sliderBar, {
+                    duration: ANIMATION_CONFIG.duration.short,
+                    y: ANIMATION_CONFIG.positions.slider.y[0],
+                    scaleY: ANIMATION_CONFIG.positions.slider.scale[1],
+                    ease: ANIMATION_CONFIG.ease.slider,
+                })
+                .to(SELECTORS.slider, {
+                    duration: ANIMATION_CONFIG.duration.medium,
+                    delay: ANIMATION_CONFIG.delay.short,
+                    x: ANIMATION_CONFIG.positions.slider.x,
+                    ease: ANIMATION_CONFIG.ease.movement,
+                })
+                .to(SELECTORS.slider, {
+                    duration: ANIMATION_CONFIG.duration.medium,
+                    delay: ANIMATION_CONFIG.delay.short,
+                    x: 0,
+                    ease: ANIMATION_CONFIG.ease.movement,
+                })
+                .to(SELECTORS.slider, {
+                    duration: ANIMATION_CONFIG.duration.medium,
+                    delay: ANIMATION_CONFIG.delay.short,
+                    x: ANIMATION_CONFIG.positions.slider.x,
+                    ease: ANIMATION_CONFIG.ease.movement,
+                })
+                .to(SELECTORS.sliderBar, {
+                    duration: ANIMATION_CONFIG.duration.short,
+                    y: ANIMATION_CONFIG.positions.slider.y[1],
+                    scaleY: ANIMATION_CONFIG.positions.slider.scale[0],
+                    ease: ANIMATION_CONFIG.ease.slider,
+                });
+
+            // 文字遮罩动画序列
+            maskTimeline
+                .to(SELECTORS.firstText, {
+                    duration: ANIMATION_CONFIG.duration.medium,
+                    ease: ANIMATION_CONFIG.ease.movement,
+                    clipPath: ANIMATION_CONFIG.positions.clipPath.first,
+                    onComplete: () => {
+                        gsap.set(SELECTORS.secondText, { opacity: 1 }); // 显示第二个文本
+                    },
+                })
+                .to(SELECTORS.firstText, {
+                    duration: ANIMATION_CONFIG.duration.medium,
+                    delay: ANIMATION_CONFIG.delay.short,
+                    ease: ANIMATION_CONFIG.ease.movement,
+                    clipPath: ANIMATION_CONFIG.positions.clipPath.second,
+                    onComplete: () => {
+                        gsap.to(SELECTORS.firstTextHeading, { opacity: 0 }); // 隐藏第一个文本
+                    },
+                })
+                .to(SELECTORS.firstText, {
+                    duration: ANIMATION_CONFIG.duration.medium,
+                    delay: ANIMATION_CONFIG.delay.short,
+                    ease: ANIMATION_CONFIG.ease.movement,
+                    clipPath: ANIMATION_CONFIG.positions.clipPath.first,
+                });
+
+            // 初始化动画状态
+            gsap.set(SELECTORS.secondText, { opacity: 0 }); // 初始隐藏第二个文本
+            gsap.set(SELECTORS.sliderBar, { scaleY: ANIMATION_CONFIG.positions.slider.scale[0] }); // 初始滑块缩放
+
+            // 添加控制按钮功能
+            document.getElementById("controlButton").addEventListener("click", function () {
+                if (mainTimeline.paused()) {
+                    mainTimeline.play(); // 播放动画
+                    this.style.opacity = "0.4"; // 按钮半透明
+                } else {
+                    mainTimeline.pause(); // 暂停动画
+                    this.style.opacity = "1"; // 按钮不透明
+                }
+            });
+        </script>
+    </body>
+</html>

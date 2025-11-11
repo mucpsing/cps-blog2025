@@ -1,101 +1,101 @@
 <!--
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2025-11-03 10:40:23
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-11-05 09:34:12
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-11-10 22:00:43
  * @FilePath: \cps-blog\demo-html\gspa滚动.html
  * @Description: 这是gsap的上下滚动，加入了平滑插件的基础效果
 -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gsap 滚动示例</title>
-    <script src="./asset/js/gsap@3.13.0/ScrollTrigger.min.js"></script>
-    <script src="./asset/js/gsap@3.13.0/ScrollSmoother.min.js"></script>
-    <script src="./asset/js/gsap@3.13.0/gsap.min.js"></script>
-  </head>
-  <body>
-    <style>
-      .step-base {
-        height: 50rem;
-        border: 2px solid red;
-      }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Gsap 滚动示例</title>
+        <script src="./asset/js/gsap@3.13.0/ScrollTrigger.min.js"></script>
+        <script src="./asset/js/gsap@3.13.0/ScrollSmoother.min.js"></script>
+        <script src="./asset/js/gsap@3.13.0/gsap.min.js"></script>
+    </head>
+    <body>
+        <style>
+            .step-base {
+                height: 50rem;
+                border: 2px solid red;
+            }
 
-      .btn-wrapper {
-        position: fixed;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        width: 100vw;
-        height: 60px;
-        justify-content: center;
-        bottom: 15%;
-        /* transform: translate(-50%, -50%); */
-      }
+            .btn-wrapper {
+                position: fixed;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                width: 100vw;
+                height: 60px;
+                justify-content: center;
+                bottom: 15%;
+                /* transform: translate(-50%, -50%); */
+            }
 
-      .btn {
-        width: 20vw;
-        height: 50px;
-      }
-    </style>
-    <div id="app-wrapper">
-      <div id="app-content">
-        <div class="step-base step-1">step1</div>
-        <div class="step-base step-2">step2</div>
-        <div class="step-base step-3">step3</div>
-        <div class="step-base step-4">step4</div>
-        <div class="step-base step-5">step5</div>
-      </div>
-    </div>
+            .btn {
+                width: 20vw;
+                height: 50px;
+            }
+        </style>
+        <div id="app-wrapper">
+            <div id="app-content">
+                <div class="step-base step-1">step1</div>
+                <div class="step-base step-2">step2</div>
+                <div class="step-base step-3">step3</div>
+                <div class="step-base step-4">step4</div>
+                <div class="step-base step-5">step5</div>
+            </div>
+        </div>
 
-    <div class="btn-wrapper">
-      <button class="btn" onclick="stepNext()">Down</button>
-      <button class="btn" onclick="stepPrev()">Up</button>
-    </div>
-    <script>
-      gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+        <div class="btn-wrapper">
+            <button class="btn" onclick="stepNext()">Down</button>
+            <button class="btn" onclick="stepPrev()">Up</button>
+        </div>
+        <script>
+            gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
-      let appSmoother;
+            let appSmoother;
 
-      const state = {
-        currtStep: 1,
-        elements: document.querySelectorAll(".step-base"),
-      };
+            const state = {
+                currtStep: 1,
+                elements: document.querySelectorAll(".step-base"),
+            };
 
-      const stepNext = () => {
-        if (state.currtStep >= state.elements.length) return;
+            const stepNext = () => {
+                if (state.currtStep >= state.elements.length) return;
 
-        state.currtStep += 1;
+                state.currtStep += 1;
 
-        appSmoother.scrollTo(`.step-${state.currtStep}`, true, "center center");
-      };
+                appSmoother.scrollTo(`.step-${state.currtStep}`, true, "center center");
+            };
 
-      const stepPrev = () => {
-        if (state.currtStep <= 1) return;
+            const stepPrev = () => {
+                if (state.currtStep <= 1) return;
 
-        state.currtStep -= 1;
+                state.currtStep -= 1;
 
-        appSmoother.scrollTo(`.step-${state.currtStep}`, true, "center center");
-      };
+                appSmoother.scrollTo(`.step-${state.currtStep}`, true, "center center");
+            };
 
-      document.addEventListener("DOMContentLoaded", (event) => {
-        // 创建平滑滚动实例
-        // 实例默认绑定id="smooth-wrapper"和id="smooth-content"的两个一组嵌套元素
-        appSmoother = ScrollSmoother.create({
-          wrapper: "#app-wrapper",
-          content: "#app-content",
-          smooth: 2.5, // 滚动系数，数值越大，滑动惯性越大 1.5~3 之间已经很丝滑
-          smoothTouch: 0.2, // 添加触摸设备时，滚动系数
-          ignoreMobileResize: true, // 忽略移动设备，避免滚动时抖动
-          effects: true,
-          normalizeScroll: true,
-          onUpdate: (self) => {
-            self.progress; // 当前滚动条的进度，最小0最大1
-          },
-        });
-      });
-    </script>
-  </body>
+            document.addEventListener("DOMContentLoaded", (event) => {
+                // 创建平滑滚动实例
+                // 实例默认绑定id="smooth-wrapper"和id="smooth-content"的两个一组嵌套元素
+                appSmoother = ScrollSmoother.create({
+                    wrapper: "#app-wrapper",
+                    content: "#app-content",
+                    smooth: 2.5, // 滚动系数，数值越大，滑动惯性越大 1.5~3 之间已经很丝滑
+                    smoothTouch: 0.2, // 添加触摸设备时，滚动系数
+                    ignoreMobileResize: true, // 忽略移动设备，避免滚动时抖动
+                    effects: true,
+                    normalizeScroll: true,
+                    onUpdate: (self) => {
+                        self.progress; // 当前滚动条的进度，最小0最大1
+                    },
+                });
+            });
+        </script>
+    </body>
 </html>

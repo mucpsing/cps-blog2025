@@ -94,7 +94,7 @@
         </div>
         <div id="app-wrapper">
             <div id="app-content">
-                <div id="step-0" class="space step-vertical">上方内容 - step 0</div>
+                <div id="step-0" class="space step-vertical-1">上方内容 - step 0</div>
 
                 <!-- 左右滑动内容 -->
                 <div id="horizontal-area">
@@ -106,7 +106,7 @@
                     <div class="step-horizontal" id="step-6" style="background-color: #38df93">step6</div>
                 </div>
 
-                <div class="space step-vertical">下方内容 - step 2</div>
+                <div class="space step-vertical-3">下方内容 - step 2</div>
             </div>
         </div>
         <script src="./asset/js/gsap@3.13.0/ScrollTrigger.min.js"></script>
@@ -117,14 +117,14 @@
         <script type="text/javascript">
             gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
             const smoother = ScrollSmoother.create({
-                wrapper: '#app-wrapper',
-                content: '#app-content',
+                wrapper: "#app-wrapper",
+                content: "#app-content",
                 smooth: 2.5, // 滚动系数，数值越大，滑动惯性越大 1.5~3 之间已经很丝滑
                 // onUpdate: self => console.log('self.progress: ', self.progress.toFixed(3)),
             });
 
             window.CpsScroller = {
-                allElement: document.querySelectorAll('.step'),
+                allElement: document.querySelectorAll(".step"),
                 trigger: null, // ScrollTrigger 实例（会在 init 时赋值）
                 smoother, // ScrollSmoother 实例
                 pageCount: 0, // 页面数量（横向页数）
@@ -137,24 +137,24 @@
         <!-- 页面滚动功能 -->
         <script>
             function initCpsScroller() {
-                const container = document.querySelector('#horizontal-area'); // 横向滚动的容器
-                const sections = document.querySelectorAll('.step-horizontal'); // 横向滚动的元素
+                const container = document.querySelector("#horizontal-area"); // 横向滚动的容器
+                const sections = document.querySelectorAll(".step-horizontal"); // 横向滚动的元素
 
                 // 计算横向需要滚动的距离：总宽 - 可见宽
                 const horizontalDistance = container.scrollWidth - window.innerWidth;
 
                 // 清理之前的 ScrollTriggers（热重载/调试时用）
-                ScrollTrigger.getAll().forEach(st => st.kill()); // 如果你只有这一个 trigger，可以选择性清理
+                ScrollTrigger.getAll().forEach((st) => st.kill()); // 如果你只有这一个 trigger，可以选择性清理
 
                 // 创建横向动画（移动所有 section 的 x）
                 const scrollTrigger = gsap.to(sections, {
                     xPercent: -100 * (sections.length - 1),
-                    ease: 'none',
+                    ease: "none",
                     scrollTrigger: {
-                        id: 'horizontalScroll',
+                        id: "horizontalScroll",
                         trigger: container,
-                        start: 'top top',
-                        end: () => '+=' + horizontalDistance, // 精确匹配需要的垂直滚动距离
+                        start: "top top",
+                        end: () => "+=" + horizontalDistance, // 精确匹配需要的垂直滚动距离
                         pin: true,
                         scrub: true,
                         anticipatePin: 1,
@@ -165,7 +165,7 @@
                 }).scrollTrigger;
 
                 // ScrollTrigger 会在 resize 时自动 refresh（因为 invalidateOnRefresh: true）
-                window.addEventListener('resize', () => ScrollTrigger.refresh());
+                window.addEventListener("resize", () => ScrollTrigger.refresh());
 
                 // ⭐⭐ 把关键对象暴露到全局供分页脚本使用 ⭐⭐
                 window.CpsScroller.trigger = scrollTrigger;
@@ -177,6 +177,14 @@
         <!-- 页面控制部分 -->
         <script>
             const initPagingControls = () => {
+                // 获取所有纵向页面
+                const pageVerticalHeaderEl =
+
+                const pageHorizontal =
+
+                const pageVerticalFooterEl =
+
+
                 const scroller = window.CpsScroller;
                 const { smoother } = scroller;
 
@@ -226,7 +234,7 @@
         </script>
 
         <script type="text/javascript">
-            window.addEventListener('load', () => {
+            window.addEventListener("load", () => {
                 initCpsScroller();
                 initPagingControls();
             });

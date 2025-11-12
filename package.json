@@ -7,7 +7,9 @@
     "pnpm": ">=10"
   },
   "scripts": {
-    "dev-dv3": "pnpm --filter docusaurus-v3 run start",
+    "dev-demo": "pnpm --filter demo run dev",
+    "dev-demo-html": "pnpm --filter demo-html run dev",
+    "dev-docusaurus-v3": "pnpm --filter docusaurus-v3 run start",
     "dev-fumav1": "pnpm --filter fumadocs-v1 run dev"
   },
   "dependencies": {

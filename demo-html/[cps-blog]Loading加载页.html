@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Loading页</title>
+        <style>
+            /* loading page样式 */
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            .loading-page {
+                --start: 0%;
+                --end: 100%;
+                --color1: "";
+                --color2: "";
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100vh;
+                background: linear-gradient(150deg, var(--color1) var(--start), var(--color2) var(--end));
+                color: white; /* 基础颜色 */
+                mix-blend-mode: difference;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            }
+
+            .loading-main-text {
+                text-align: center;
+                font-size: 3rem;
+            }
+
+            .loading-sub-text {
+                text-align: center;
+                font-size: 1.5rem;
+                margin-top: 0.8rem;
+            }
+        </style>
+    </head>
+    <body>
+        <section class="loading-page" id="loadingPage">
+            <!-- 加载提示 -->
+            <div class="loading-text-warp">
+                <div class="loading-main-text">&lt; Capsion's Hub ... / &gt;</div>
+                <div class="loading-sub-text">Page Loading</div>
+            </div>
+
+            <!-- 加载进度依赖展示 -->
+            <div class="loading-progress-bar">
+                <!-- 预加载js -->
+                <div class="loading-bar">显示文件加载</div>
+            </div>
+        </section>
+        <script src="./asset/js/gsap@3.13.0/gsap.min.js"></script>
+
+        <script type="module">
+            const DEFAULT_MAIN_COLOR = [
+                ["#00C9FF", "#92FE9D"],
+                ["#FC466B", "#3F5EFB"],
+                ["#3F2B96", "#A8C0FF"],
+                ["#FDBB2D", "#22C1C3"],
+                ["#FDBB2D", "#3A1C71"],
+                ["#e3ffe7", "#d9e7ff"],
+                ["#4b6cb7", "#182848"],
+                ["#9ebd13", "#008552"],
+                ["#0700b8", "#00ff88"],
+                ["#d53369", "#daae51"],
+                ["#efd5ff", "#515ada"],
+                ["#00d2ff", "#3a47d5"],
+                ["#f8ff00", "#3ad59f"],
+                ["#fcff9e", "#c67700"],
+            ];
+            document.addEventListener("DOMContentLoaded", function () {
+                const colors = DEFAULT_MAIN_COLOR;
+
+                const loadingPage = document.getElementById("loadingPage");
+
+                // 随机选择两个不同的颜色
+                const getRandomColors = () => {
+                    const shuffled = [...colors].sort(() => 0.5 - Math.random());
+
+                    const color = [shuffled[0][0], shuffled[0][1]];
+
+                    return Math.random() > 0.5 ? color : color.reverse();
+                };
+
+                const [color1, color2] = getRandomColors();
+
+                // 设置CSS变量
+                loadingPage.style.setProperty("--color1", color1);
+                loadingPage.style.setProperty("--color2", color2);
+            });
+            window.addEventListener("load", () => {
+                gsap.to(".loading-page", {
+                    "--start": "40%",
+                    duration: 6,
+                    yoyo: true,
+                    repeat: -1,
+                });
+            });
+            // loading page的所有核心逻辑
+        </script>
+    </body>
+</html>

@@ -7,8 +7,9 @@
         "pnpm": ">=10"
     },
     "scripts": {
+        "nvm=22": "nvm use 22",
         "dev-demo": "pnpm --filter demo run dev",
-        "dev-demo-html": "pnpm --filter demo-html run dev && pnpm --filter demo-html run ts-w",
+        "dev-demo-html": "pnpm --filter demo-html run dev",
         "dev-docusaurus-v3": "pnpm --filter docusaurus-v3 run start",
         "dev-fumav1": "pnpm --filter fumadocs-v1 run dev"
     },

@@ -2,7 +2,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2025-11-05 08:19:29
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-11-12 16:02:07
+ * @LastEditTime: 2025-11-13 08:32:41
  * @FilePath: \cps-blog\demo-html\[codepen]文字向左变色.html
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -56,20 +56,17 @@
                 console.clear();
                 gsap.config({ trialWarn: false });
 
-                gsap.utils.toArray(".container").forEach((container, index) => {
-                    const start = index == 0 ? "top top" : "top center";
-                    gsap.to(".container", {
-                        "--target": "0%",
-                        ease: "none",
-                        scrollTrigger: {
-                            trigger: ".container",
-                            // markers: true,
-                            start,
-                            end: "+=1000",
-                            pin: true,
-                            scrub: 1,
-                        },
-                    });
+                gsap.to(".container", {
+                    "--target": "0%",
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: ".container",
+                        markers: true,
+                        start: "top top",
+                        end: "+=1000",
+                        pin: true,
+                        scrub: 1,
+                    },
                 });
             });
         </script>

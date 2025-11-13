@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>CSS Loading Page with Jumping Dots</title>
+        <style>
+            /* 基础样式 */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                background: #0f0f1e;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                overflow: hidden;
+            }
+
+            /* 加载页面容器 */
+            .loading-page {
+                --color1: #3f2b96;
+                --color2: #a8c0ff;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100vh;
+                background: linear-gradient(150deg, var(--color1) 0%, var(--color2) 100%);
+                background-size: 400% 400%;
+                color: white;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+                animation: gradientShift 8s ease infinite;
+                position: relative;
+                overflow: hidden;
+            }
+
+            /* 渐变背景动画 */
+            @keyframes gradientShift {
+                0% {
+                    background-position: 0% 50%;
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
+                100% {
+                    background-position: 0% 50%;
+                }
+            }
+
+            /* 背景装饰元素 */
+            .loading-page::before {
+                content: "";
+                position: absolute;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+                animation: rotate 30s linear infinite;
+            }
+
+            @keyframes rotate {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            /* 内容容器 */
+            .content {
+                position: relative;
+                z-index: 2;
+                text-align: center;
+                max-width: 90%;
+            }
+
+            /* 主标题 */
+            .loading-main-text {
+                font-size: clamp(1.8rem, 5vw, 3.5rem);
+                font-weight: 700;
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 0.2rem;
+            }
+
+            /* 副标题 */
+            .loading-sub-text {
+                font-size: clamp(1rem, 3vw, 1.5rem);
+                opacity: 0.9;
+                margin-bottom: 2rem;
+                animation: textFade 3s ease-in-out infinite;
+            }
+
+            /* 文字动画 */
+            @keyframes textFade {
+                0%,
+                100% {
+                    opacity: 0.7;
+                }
+                50% {
+                    opacity: 1;
+                }
+            }
+
+            /* 点动画 */
+            .dot {
+                display: inline-block;
+                animation: jump 1.5s infinite;
+            }
+
+            .dot:nth-child(1) {
+                animation-delay: 0.1s;
+            }
+
+            .dot:nth-child(2) {
+                animation-delay: 0.3s;
+            }
+
+            .dot:nth-child(3) {
+                animation-delay: 0.5s;
+            }
+
+            @keyframes jump {
+                0%,
+                100% {
+                    transform: translateY(0%);
+                }
+                50% {
+                    transform: translateY(300%);
+                }
+            }
+
+            /* 进度条容器 */
+            .loading-progress-bar {
+                width: min(300px, 80%);
+                height: 8px;
+                background-color: rgba(255, 255, 255, 0.2);
+                border-radius: 4px;
+                overflow: hidden;
+                margin-top: 1.5rem;
+                position: relative;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            }
+
+            /* 进度条 */
+            .loading-bar {
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.9));
+                border-radius: 4px;
+                transform: translateX(-100%);
+                animation: progressBar 3s ease-in-out infinite;
+            }
+
+            /* 进度条动画 */
+            @keyframes progressBar {
+                0% {
+                    transform: translateX(-100%);
+                }
+                70% {
+                    transform: translateX(0%);
+                }
+                100% {
+                    transform: translateX(100%);
+                }
+            }
+
+            /* 控制面板 */
+            .controls {
+                position: absolute;
+                bottom: 20px;
+                left: 0;
+                right: 0;
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+                z-index: 3;
+            }
+
+            .control-btn {
+                background: rgba(255, 255, 255, 0.2);
+                border: none;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 20px;
+                cursor: pointer;
+                backdrop-filter: blur(5px);
+                transition: all 0.3s;
+            }
+
+            .control-btn:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: translateY(-2px);
+            }
+
+            /* 响应式调整 */
+            @media (max-width: 768px) {
+                .loading-main-text {
+                    flex-direction: column;
+                    gap: 0;
+                }
+
+                .controls {
+                    flex-wrap: wrap;
+                    padding: 0 20px;
+                }
+            }
+
+            /* 颜色预设样式 */
+            .color-option {
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+                cursor: pointer;
+                border: 2px solid rgba(255, 255, 255, 0.5);
+                transition: transform 0.3s;
+            }
+
+            .color-option:hover {
+                transform: scale(1.2);
+            }
+
+            .color-palette {
+                display: flex;
+                gap: 10px;
+                margin-top: 15px;
+                justify-content: center;
+            }
+        </style>
+    </head>
+    <body>
+        <section class="loading-page" id="loadingPage">
+            <div class="content">
+                <!-- 加载提示 -->
+                <div class="loading-text-warp">
+                    <div class="loading-main-text">
+                        &lt; Capsion's Hub
+                        <span class="dot">.</span>
+                        <span class="dot">.</span>
+                        <span class="dot">.</span>
+                        / &gt;
+                    </div>
+                    <div class="loading-sub-text">Page Loading</div>
+                </div>
+
+                <!-- 加载进度条 -->
+                <div class="loading-progress-bar">
+                    <div class="loading-bar"></div>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            // 预定义颜色组合
+            const DEFAULT_MAIN_COLOR = [
+                ["#00C9FF", "#92FE9D"],
+                ["#FC466B", "#3F5EFB"],
+                ["#3F2B96", "#A8C0FF"],
+                ["#FDBB2D", "#22C1C3"],
+                ["#FDBB2D", "#3A1C71"],
+                ["#e3ffe7", "#d9e7ff"],
+                ["#4b6cb7", "#182848"],
+                ["#9ebd13", "#008552"],
+                ["#0700b8", "#00ff88"],
+                ["#d53369", "#daae51"],
+                ["#efd5ff", "#515ada"],
+                ["#00d2ff", "#3a47d5"],
+                ["#f8ff00", "#3ad59f"],
+                ["#fcff9e", "#c67700"],
+            ];
+
+            // 页面加载后随机选择颜色
+            document.addEventListener("DOMContentLoaded", function () {
+                const loadingPage = document.getElementById("loadingPage");
+                const pauseBtn = document.getElementById("pauseBtn");
+                const randomBtn = document.getElementById("randomBtn");
+                const colorOptions = document.querySelectorAll(".color-option");
+
+                let isPaused = false;
+
+                // 设置颜色函数
+                function setColors(color1, color2) {
+                    loadingPage.style.setProperty("--color1", color1);
+                    loadingPage.style.setProperty("--color2", color2);
+                }
+
+                // 随机选择两个不同的颜色
+                const getRandomColors = () => {
+                    const randomIndex = Math.floor(Math.random() * DEFAULT_MAIN_COLOR.length);
+                    const colorPair = DEFAULT_MAIN_COLOR[randomIndex];
+
+                    // 随机决定是否反转颜色顺序
+                    return Math.random() > 0.5 ? colorPair : [colorPair[1], colorPair[0]];
+                };
+
+                // 初始随机颜色
+                const [color1, color2] = getRandomColors();
+                setColors(color1, color2);
+            });
+        </script>
+    </body>
+</html>

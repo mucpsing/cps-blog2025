@@ -2,8 +2,7 @@ import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 import process from "node:process";
-
-// import os from "node:os";
+import fse from "fs-extra";
 
 import * as path from "path";
 import * as scripts from "./src/scripts";
@@ -11,10 +10,24 @@ import * as scripts from "./src/scripts";
 // 失效
 // import disableSvgoCleanupIds from "./src/plugins/disable-svgo-cleanup-ids";
 
-import { extractTagline } from "./src/scripts/taglineList";
 // import pluginCdnReplacer from "./src/plugins/fixImageUrlToCDN";
 
+import { extractTagline } from "./src/scripts/taglineList";
+const DOCS_PATH_LIST = [
+  path.resolve("../cps-blog/docs"), // office
+  "D:/CPS/docs", // home
+];
+
 let DOCS_PATH = path.resolve("./docs");
+DOCS_PATH_LIST.forEach((docsPath) => {
+  if (fse.existsSync(docsPath)) {
+    fse.copySync(path.join(docsPath, "/【05】项目经历"), path.join(path.resolve("./docs"), "/【05】项目经历"));
+    fse.copySync(path.join(docsPath, "/【07】常识科普"), path.join(path.resolve("./docs"), "/【07】常识科普"));
+
+    // 判断是否生产
+    // DOCS_PATH = docsPath;
+  }
+});
 
 console.log("当前DOCS_PATH: ", DOCS_PATH);
 

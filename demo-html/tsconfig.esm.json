@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "types": [],
+        "lib": ["DOM", "ES6"],
+        "composite": true,
+        "outDir": "asset/js/esm",
+        "module": "ESNext",
+        "target": "ES2017",
+        "rootDir": "asset/ts",
+        // "moduleResolution": "Bundler",
+        "esModuleInterop": true
+    },
+    "include": ["asset/ts/**/*.ts"]
+}

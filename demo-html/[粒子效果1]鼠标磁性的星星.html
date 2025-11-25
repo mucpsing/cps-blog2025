@@ -1,0 +1,92 @@
+<!--
+ * @Author: cpasion-office-win10 373704015@qq.com
+ * @Date: 2025-11-24 09:38:45
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-11-25 16:25:28
+ * @FilePath: \cps-blog\demo-html\[粒子效果1]鼠标磁性的星星.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>[粒子效果1]鼠标磁性的星星</title>
+        <style>
+            .particles-container {
+                width: 100%;
+                height: 100vh;
+                background-color: #000;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="particles" class="particles-container"></div>
+        <script type="module">
+            import { ParticlesAnimation } from "/asset/js/esm/[粒子效果1]鼠标磁性的星星.js";
+            // 基础示例
+            const defaultEfectConfig = {
+                quantity: 50,
+                staticity: 30,
+                ease: 80,
+                particleColor: "255, 255, 255", // 蓝色粒子
+                particleSizeRange: { min: 0.5, max: 1.5 },
+            };
+
+            // 星空效果配置
+            const starfieldConfig = {
+                quantity: 100,
+                staticity: 20, // 强磁性，星星明显跟随鼠标
+                ease: 100, // 非常平滑的移动
+                particleColor: "255, 255, 255", // 白色星星
+                particleSizeRange: { min: 0.1, max: 1.5 }, // 小星星
+                particleAlphaRange: { min: 0.3, max: 0.9 }, // 较亮的星星
+                magnetismRange: { min: 1, max: 5 }, // 多样化的磁性
+                movementSpeed: 0.1, // 缓慢移动
+                zIndex: -1, // 作为背景
+            };
+
+            // 魔法粒子效果
+            const magicConfig = {
+                quantity: 80,
+                staticity: 15, // 很强的磁性
+                ease: 60, // 中等平滑度
+                particleColor: "200, 100, 255", // 紫色魔法粒子
+                particleSizeRange: { min: 1, max: 4 }, // 较大的粒子
+                particleAlphaRange: { min: 0.4, max: 0.9 }, // 较明显的粒子
+                magnetismRange: { min: 0.5, max: 2 }, // 较强的磁性范围
+                movementSpeed: 0.4, // 较快的移动
+                zIndex: 10, // 前景层
+            };
+
+            // 水下气泡效果
+            const bubbleConfig = {
+                quantity: 30,
+                staticity: 40, // 较弱的磁性
+                ease: 120, // 非常平滑
+                particleColor: "173, 216, 230", // 浅蓝色气泡
+                particleSizeRange: { min: 2, max: 8 }, // 较大的气泡
+                particleAlphaRange: { min: 0.1, max: 0.4 }, // 半透明气泡
+                magnetismRange: { min: 2, max: 6 }, // 弱磁性
+                movementSpeed: 0.15, // 缓慢上浮
+                zIndex: 5, // 中间层
+            };
+
+            // 火焰火花效果
+            const fireConfig = {
+                quantity: 150,
+                staticity: 10, // 极强的磁性
+                ease: 30, // 快速响应
+                particleColor: "255, 100, 50", // 橙红色火花
+                particleSizeRange: { min: 0.5, max: 2 }, // 小火花
+                particleAlphaRange: { min: 0.2, max: 0.7 }, // 半透明火花
+                magnetismRange: { min: 0.5, max: 1.5 }, // 强磁性范围
+                movementSpeed: 0.5, // 快速移动
+                zIndex: 20, // 最上层
+            };
+
+            const container = document.getElementById("particles");
+            const particles = new ParticlesAnimation(container, fireConfig);
+        </script>
+    </body>
+</html>

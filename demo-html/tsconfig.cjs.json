@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "asset/js",
+        "types": [],
+        "module": "CommonJS",
+        "target": "ES2017",
+        "rootDir": "asset/ts",
+        "sourceMap": false
+    },
+    "include": ["asset/ts/**/*.ts"]
+}

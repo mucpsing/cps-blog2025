@@ -1,661 +1,801 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小学口算练习助手 🧮</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Microsoft YaHei", sans-serif;
-        }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>小学口算练习助手 🧮</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Microsoft YaHei", sans-serif;
+            }
 
-        body {
-            background-color: #f5f7fa;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        .container {
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            width: 100%;
-            max-width: 700px;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .settings {
-            margin-bottom: 30px;
-        }
-
-        .setting-item {
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            color: #555;
-            font-size: 16px;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        input[type="number"], select {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        input[type="number"]:focus, select:focus {
-            border-color: #409eff;
-        }
-
-        .operations {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 8px;
-        }
-
-        .operation-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .zero-option {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 10px;
-            font-size: 16px;
-            color: #555;
-        }
-
-        button {
-            background-color: #409eff;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            padding: 12px 24px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background-color: #337ecc;
-        }
-
-        button:disabled {
-            background-color: #b3d4fc;
-            cursor: not-allowed;
-        }
-
-        .countdown {
-            font-size: 20px;
-            color: #e6a23c;
-            text-align: center;
-            margin-bottom: 20px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .exercise {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .question {
-            font-size: 32px;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .answer-input {
-            padding: 10px;
-            font-size: 24px;
-            width: 150px;
-            text-align: center;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-
-        .submit-btn {
-            background-color: #67c23a;
-        }
-
-        .submit-btn:hover {
-            background-color: #52c41a;
-        }
-
-        .result {
-            display: none;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .result h2 {
-            color: #e6a23c;
-            margin-bottom: 15px;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .result-stats {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .stat-item {
-            font-size: 18px;
-            padding: 10px 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            min-width: 120px;
-        }
-
-        .result p {
-            font-size: 18px;
-            color: #555;
-            margin-bottom: 10px;
-        }
-
-        .correct {
-            color: #67c23a;
-            font-weight: bold;
-        }
-
-        .wrong {
-            color: #f56c6c;
-            font-weight: bold;
-        }
-
-        /* 错题本样式 */
-        .wrong-list {
-            margin-top: 30px;
-            text-align: left;
-            background-color: #fef2f2;
-            border-radius: 8px;
-            padding: 20px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .wrong-list h3 {
-            color: #f56c6c;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 20px;
-        }
-
-        .wrong-item {
-            font-size: 16px;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed #fcc4c4;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .wrong-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .wrong-question {
-            color: #333;
-        }
-
-        .wrong-answer {
-            color: #f56c6c;
-        }
-
-        .right-answer {
-            color: #67c23a;
-        }
-
-        @media (max-width: 480px) {
-            .container {
+            body {
+                background-color: #f5f7fa;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
                 padding: 20px;
+                min-height: 100vh;
+            }
+
+            .container {
+                background-color: #fff;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                padding: 30px;
+                width: 100%;
+                max-width: 700px;
+                margin-bottom: 20px;
             }
 
             h1 {
-                font-size: 24px;
-            }
-
-            .question {
+                color: #333;
+                text-align: center;
+                margin-bottom: 25px;
                 font-size: 28px;
-            }
-
-            .answer-input {
-                width: 120px;
-                font-size: 20px;
-            }
-
-            .result-stats {
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 gap: 10px;
             }
 
-            .stat-item {
-                min-width: 100px;
-                padding: 8px 15px;
+            .settings {
+                margin-bottom: 30px;
+            }
+
+            .setting-item {
+                margin-bottom: 15px;
+                display: flex;
+                flex-direction: column;
+            }
+
+            label {
+                color: #555;
                 font-size: 16px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🧮 小学口算练习助手</h1>
-
-        <!-- 设置区域 -->
-        <div class="settings" id="settings">
-            <div class="setting-item">
-                <label for="countdown-time">⏱️ 倒计时时长：</label>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <input type="number" id="countdown-time" min="1" max="5" value="1" required>
-                    <select id="countdown-unit">
-                        <option value="minute" selected>分钟</option>
-                        <option value="second">秒</option>
-                    </select>
-                </div>
-            </div>
-            <div class="setting-item">
-                <label for="max-number">🔢 计算数值上限（小于该数）：</label>
-                <input type="number" id="max-number" min="2" max="100" value="20" required>
-                <div class="zero-option">
-                    <input type="checkbox" id="forbid-zero" checked>
-                    <label for="forbid-zero">🚫 禁止题目中出现数字0</label>
-                </div>
-            </div>
-            <div class="setting-item">
-                <label>➗ 选择运算类型：</label>
-                <div class="operations">
-                    <div class="operation-item">
-                        <input type="checkbox" id="add" name="operation" value="+" checked>
-                        <label for="add">➕ 加法</label>
-                    </div>
-                    <div class="operation-item">
-                        <input type="checkbox" id="sub" name="operation" value="-">
-                        <label for="sub">➖ 减法</label>
-                    </div>
-                    <div class="operation-item">
-                        <input type="checkbox" id="mul" name="operation" value="×">
-                        <label for="mul">✖️ 乘法</label>
-                    </div>
-                    <div class="operation-item">
-                        <input type="checkbox" id="div" name="operation" value="÷">
-                        <label for="div">➗ 除法</label>
-                    </div>
-                </div>
-            </div>
-            <button id="start-btn">🚀 开始练习</button>
-        </div>
-
-        <!-- 倒计时区域 -->
-        <div class="countdown" id="countdown"></div>
-
-        <!-- 练习区域 -->
-        <div class="exercise" id="exercise">
-            <div class="question" id="question"></div>
-            <input type="number" class="answer-input" id="answer" placeholder="输入答案">
-            <button class="submit-btn" id="submit-btn">✅ 提交答案</button>
-        </div>
-
-        <!-- 结果展示区域 -->
-        <div class="result" id="result">
-            <h2>⏰ 练习结束啦！</h2>
-            <div class="result-stats">
-                <div class="stat-item">📝 总答题数：<span id="total-count">0</span></div>
-                <div class="stat-item">✔️ 正确数：<span id="correct-count" class="correct">0</span></div>
-                <div class="stat-item">❌ 错误数：<span id="wrong-count" class="wrong">0</span></div>
-                <div class="stat-item">📊 正确率：<span id="accuracy" class="correct">0%</span></div>
-            </div>
-
-            <!-- 错题记录区域 -->
-            <div class="wrong-list" id="wrong-list" style="display: none;">
-                <h3>📖 错题本</h3>
-                <div id="wrong-items"></div>
-            </div>
-
-            <button id="restart-btn">🔄 重新开始</button>
-        </div>
-    </div>
-
-    <script>
-        // 全局变量
-        let countdownTimer = null; // 倒计时定时器
-        let remainingTime = 0;     // 剩余时间（秒）
-        let maxNumber = 20;        // 数值上限
-        let selectedOps = ['+'];   // 选中的运算类型
-        let currentQuestion = null;// 当前题目信息
-        let totalCount = 0;        // 总答题数
-        let correctCount = 0;      // 正确数
-        let wrongCount = 0;        // 错误数
-        let wrongQuestions = [];   // 错题记录数组
-        let forbidZero = true;     // 是否禁止出现0
-
-        // DOM 元素
-        const settingsEl = document.getElementById('settings');
-        const countdownEl = document.getElementById('countdown');
-        const exerciseEl = document.getElementById('exercise');
-        const resultEl = document.getElementById('result');
-        const startBtn = document.getElementById('start-btn');
-        const submitBtn = document.getElementById('submit-btn');
-        const restartBtn = document.getElementById('restart-btn');
-        const answerInput = document.getElementById('answer');
-        const questionEl = document.getElementById('question');
-        const totalCountEl = document.getElementById('total-count');
-        const correctCountEl = document.getElementById('correct-count');
-        const wrongCountEl = document.getElementById('wrong-count');
-        const accuracyEl = document.getElementById('accuracy');
-        const wrongListEl = document.getElementById('wrong-list');
-        const wrongItemsEl = document.getElementById('wrong-items');
-        const countdownTimeInput = document.getElementById('countdown-time');
-        const countdownUnitSelect = document.getElementById('countdown-unit');
-        const forbidZeroCheckbox = document.getElementById('forbid-zero');
-
-        // 初始化
-        init();
-
-        // 初始化函数
-        function init() {
-            // 绑定事件
-            startBtn.addEventListener('click', startPractice);
-            submitBtn.addEventListener('click', checkAnswer);
-            restartBtn.addEventListener('click', restartPractice);
-            answerInput.addEventListener('keydown', (e) => e.key === 'Enter' && checkAnswer());
-            forbidZeroCheckbox.addEventListener('change', (e) => forbidZero = e.target.checked);
-
-            // 监听运算类型选择
-            document.querySelectorAll('input[name="operation"]').forEach(checkbox => {
-                checkbox.addEventListener('change', updateSelectedOps);
-            });
-        }
-
-        // 更新选中的运算类型
-        function updateSelectedOps() {
-            selectedOps = Array.from(document.querySelectorAll('input[name="operation"]:checked'))
-                .map(checkbox => checkbox.value);
-            // 确保至少选中一个运算类型
-            if (selectedOps.length === 0) {
-                document.getElementById('add').checked = true;
-                selectedOps = ['+'];
-            }
-        }
-
-        // 格式化倒计时显示（分:秒）
-        function formatCountdown(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}（分:秒）`;
-        }
-
-        // 开始练习
-        function startPractice() {
-            // 重置错题记录
-            wrongQuestions = [];
-            // 获取并验证设置值
-            const countdownValue = parseInt(countdownTimeInput.value);
-            const countdownUnit = countdownUnitSelect.value;
-            maxNumber = parseInt(document.getElementById('max-number').value);
-            forbidZero = forbidZeroCheckbox.checked;
-
-            // 验证倒计时数值
-            if (isNaN(countdownValue) || countdownValue < 1) {
-                alert('⏰ 请输入大于0的倒计时时长！');
-                return;
-            }
-            // 转换为秒数
-            remainingTime = countdownUnit === 'minute' ? countdownValue * 60 : countdownValue;
-            // 限制最大倒计时为300秒（5分钟）
-            if (remainingTime > 300) {
-                alert('⏰ 倒计时最长不超过5分钟（300秒）！');
-                remainingTime = 300;
-                countdownTimeInput.value = 5;
-                countdownUnitSelect.value = 'minute';
+                margin-bottom: 8px;
+                font-weight: 500;
             }
 
-            if (isNaN(maxNumber) || maxNumber < 2 || maxNumber > 100) {
-                alert('🔢 请输入2-100之间的数值上限！');
-                return;
+            input[type="number"],
+            select {
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                font-size: 16px;
+                outline: none;
+                transition: border-color 0.3s;
             }
-            if (selectedOps.length === 0) {
-                alert('➗ 请至少选择一种运算类型！');
-                return;
+
+            input[type="number"]:focus,
+            select:focus {
+                border-color: #409eff;
             }
 
-            // 初始化统计数据
-            totalCount = 0;
-            correctCount = 0;
-            wrongCount = 0;
+            .operations {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-top: 8px;
+            }
 
-            // 设置倒计时显示
-            countdownEl.textContent = `⏳ 剩余时间：${formatCountdown(remainingTime)}`;
+            .operation-item {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
 
-            // 隐藏设置，显示倒计时和练习区域
-            settingsEl.style.display = 'none';
-            countdownEl.style.display = 'flex';
-            exerciseEl.style.display = 'flex';
-            resultEl.style.display = 'none';
+            .zero-option {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-top: 10px;
+                font-size: 16px;
+                color: #555;
+            }
 
-            // 启动倒计时
-            startCountdown();
+            button {
+                background-color: #409eff;
+                color: #fff;
+                border: none;
+                border-radius: 6px;
+                padding: 12px 24px;
+                font-size: 16px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                margin-top: 10px;
+                display: inline-block;
+                cursor: pointer;
+            }
 
-            // 生成第一题
-            generateQuestion();
+            button:hover {
+                background-color: #337ecc;
+            }
 
-            // 聚焦答案输入框
-            answerInput.focus();
-        }
+            button:disabled {
+                background-color: #b3d4fc;
+                cursor: not-allowed;
+            }
 
-        // 启动倒计时
-        function startCountdown() {
-            // 清除之前的定时器
-            if (countdownTimer) clearInterval(countdownTimer);
+            .stop-btn {
+                background-color: #f56c6c;
+                margin-left: 10px;
+                z-index: 10;
+            }
 
-            countdownTimer = setInterval(() => {
-                remainingTime--;
-                countdownEl.textContent = `⏳ 剩余时间：${formatCountdown(remainingTime)}`;
+            .stop-btn:hover {
+                background-color: #e64949;
+            }
 
-                // 倒计时结束
-                if (remainingTime <= 0) {
-                    clearInterval(countdownTimer);
-                    showResult();
+            .countdown {
+                font-size: 20px;
+                color: #e6a23c;
+                text-align: center;
+                margin-bottom: 10px;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .question-count {
+                font-size: 18px;
+                color: #409eff;
+                text-align: center;
+                margin-bottom: 20px;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 5px;
+            }
+
+            .exercise {
+                display: none;
+                flex-direction: column;
+                align-items: center;
+                z-index: 1;
+            }
+
+            .question {
+                font-size: 32px;
+                margin-bottom: 20px;
+                color: #333;
+            }
+
+            .answer-input {
+                padding: 10px;
+                font-size: 24px;
+                width: 150px;
+                text-align: center;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                margin-bottom: 20px;
+            }
+
+            .submit-btn {
+                background-color: #67c23a;
+            }
+
+            .submit-btn:hover {
+                background-color: #52c41a;
+            }
+
+            .result {
+                display: none;
+                text-align: center;
+                margin-top: 20px;
+            }
+
+            .result h2 {
+                color: #e6a23c;
+                margin-bottom: 15px;
+                font-size: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .result-stats {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 20px;
+                margin-bottom: 20px;
+            }
+
+            .stat-item {
+                font-size: 18px;
+                padding: 10px 20px;
+                background-color: #f8f9fa;
+                border-radius: 8px;
+                min-width: 120px;
+            }
+
+            .correct {
+                color: #67c23a;
+                font-weight: bold;
+            }
+
+            .wrong {
+                color: #f56c6c;
+                font-weight: bold;
+            }
+
+            /* 错题本样式 */
+            .wrong-list {
+                margin-top: 30px;
+                text-align: left;
+                background-color: #fef2f2;
+                border-radius: 8px;
+                padding: 20px;
+                max-height: 300px;
+                overflow-y: auto;
+            }
+
+            .wrong-list h3 {
+                color: #f56c6c;
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 20px;
+            }
+
+            .wrong-item {
+                font-size: 16px;
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+                border-bottom: 1px dashed #fcc4c4;
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .wrong-item:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+                padding-bottom: 0;
+            }
+
+            .wrong-question {
+                color: #333;
+            }
+
+            .wrong-answer {
+                color: #f56c6c;
+            }
+
+            .right-answer {
+                color: #67c23a;
+            }
+
+            .btn-group {
+                display: flex;
+                gap: 10px;
+                margin-top: 20px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* 日志提示区域样式 */
+            .log-area {
+                width: 100%;
+                min-height: 40px;
+                margin-top: 20px;
+                padding: 10px;
+                border-radius: 6px;
+                background-color: #f8f9fa;
+                text-align: center;
+                font-size: 16px;
+                color: #333;
+                border: 1px solid #e6e6e6;
+            }
+
+            .log-correct {
+                color: #67c23a;
+                font-weight: 500;
+            }
+
+            .log-wrong {
+                color: #f56c6c;
+                font-weight: 500;
+            }
+
+            .log-info {
+                color: #409eff;
+                font-weight: 500;
+            }
+
+            @media (max-width: 480px) {
+                .container {
+                    padding: 20px;
                 }
-            }, 1000);
-        }
 
-        // 生成随机数（支持禁止0）
-        function getRandomNum(min, max) {
-            let num = Math.floor(Math.random() * (max - min + 1)) + min;
-            // 如果禁止0且生成的是0，重新生成
-            if (forbidZero && num === 0) {
-                return getRandomNum(min, max);
+                h1 {
+                    font-size: 24px;
+                }
+
+                .question {
+                    font-size: 28px;
+                }
+
+                .answer-input {
+                    width: 120px;
+                    font-size: 20px;
+                }
+
+                .result-stats {
+                    gap: 10px;
+                }
+
+                .stat-item {
+                    min-width: 100px;
+                    padding: 8px 15px;
+                    font-size: 16px;
+                }
+
+                .btn-group {
+                    flex-direction: column;
+                    width: 100%;
+                    gap: 10px;
+                }
+
+                .stop-btn {
+                    margin-left: 0;
+                    margin-top: 0;
+                }
             }
-            return num;
-        }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🧮 小学口算练习助手</h1>
 
-        // 生成随机题目（优化0出现概率）
-        function generateQuestion() {
-            // 随机选择运算类型
-            const op = selectedOps[Math.floor(Math.random() * selectedOps.length)];
-            let a, b, answer;
+            <!-- 设置区域 -->
+            <div class="settings" id="settings">
+                <div class="setting-item">
+                    <label for="countdown-time">⏱️ 倒计时时长：</label>
+                    <div style="display: flex; gap: 10px; align-items: center">
+                        <input type="number" id="countdown-time" min="1" max="5" value="3" required />
+                        <select id="countdown-unit">
+                            <option value="minute" selected>分钟</option>
+                            <option value="second">秒</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label for="max-number">🔢 计算数值上限（小于该数）：</label>
+                    <input type="number" id="max-number" min="2" max="100" value="10" required />
+                    <div class="zero-option">
+                        <input type="checkbox" id="forbid-zero" checked />
+                        <label for="forbid-zero">🚫 禁止题目中出现数字0</label>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label>➗ 选择运算类型：</label>
+                    <div class="operations">
+                        <div class="operation-item">
+                            <input type="checkbox" id="add" name="operation" value="+" checked />
+                            <label for="add">➕ 加法</label>
+                        </div>
+                        <div class="operation-item">
+                            <input type="checkbox" id="sub" name="operation" value="-" checked />
+                            <label for="sub">➖ 减法</label>
+                        </div>
+                        <div class="operation-item">
+                            <input type="checkbox" id="mul" name="operation" value="×" />
+                            <label for="mul">✖️ 乘法</label>
+                        </div>
+                        <div class="operation-item">
+                            <input type="checkbox" id="div" name="operation" value="÷" />
+                            <label for="div">➗ 除法</label>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: center">
+                    <button id="start-btn" style="width: 100%;">🚀 开始练习</button>
+                </div>
+            </div>
 
-            switch (op) {
-                case '+':
-                    // 加法：a + b < maxNumber，a/b至少为1（禁止0时）
-                    a = getRandomNum(forbidZero ? 1 : 0, maxNumber - 2);
-                    b = getRandomNum(forbidZero ? 1 : 0, maxNumber - 1 - a);
-                    answer = a + b;
-                    break;
-                case '-':
-                    // 减法：a - b ≥ 0，a至少为1（禁止0时），减少b=0的概率
-                    a = getRandomNum(forbidZero ? 1 : 0, maxNumber - 1);
-                    // 禁止0时，b的范围是1到a；允许0时，b的范围是0到a，但降低0的概率
-                    const bMin = forbidZero ? 1 : (Math.random() > 0.1 ? 1 : 0); // 允许0时，10%概率出现0
-                    b = getRandomNum(bMin, a);
-                    answer = a - b;
-                    break;
-                case '×':
-                    // 乘法：a × b < maxNumber，a/b至少为1（禁止0时）
-                    a = getRandomNum(forbidZero ? 1 : 0, Math.floor((maxNumber - 1) / (forbidZero ? 1 : 2)));
-                    if (a === 0) {
-                        b = getRandomNum(0, maxNumber - 1);
-                    } else {
-                        b = getRandomNum(forbidZero ? 1 : 0, Math.floor((maxNumber - 1) / a));
-                    }
-                    answer = a * b;
-                    break;
-                case '÷':
-                    // 除法：整除，b ≠ 0，a = b × answer，禁止0时answer和b至少为1
-                    b = getRandomNum(1, maxNumber - 1); // 除数不能为0
-                    const maxAnswer = Math.floor((maxNumber - 1) / b);
-                    answer = getRandomNum(forbidZero ? 1 : 0, maxAnswer);
-                    a = b * answer;
-                    break;
-            }
+            <!-- 倒计时区域 -->
+            <div class="countdown" id="countdown"></div>
 
-            // 保存当前题目信息
-            currentQuestion = {
-                a,
-                b,
-                op,
-                answer
-            };
+            <!-- 实时题目统计区域 -->
+            <div class="question-count" id="question-count" style="display: none">📝 已答题目总数：<span id="total-answered">0</span></div>
 
-            // 显示题目
-            questionEl.textContent = `${a} ${op} ${b} = ?`;
+            <!-- 练习区域 -->
+            <div class="exercise" id="exercise">
+                <div class="question" id="question"></div>
+                <input type="number" class="answer-input" id="answer" placeholder="输入答案" />
+                <div class="btn-group">
+                    <button class="submit-btn" id="submit-btn">✅ 提交答案</button>
+                    <button class="stop-btn" id="stop-btn">🛑 终止练习</button>
+                </div>
+                <!-- 日志提示区域 -->
+                <div class="log-area" id="log-area"></div>
+            </div>
 
-            // 清空答案输入框
-            answerInput.value = '';
-        }
+            <!-- 结果展示区域 -->
+            <div class="result" id="result">
+                <h2>⏰ 练习结束啦！</h2>
+                <div class="result-stats">
+                    <div class="stat-item">📝 总答题数：<span id="total-count">0</span></div>
+                    <div class="stat-item">✔️ 正确数：<span id="correct-count" class="correct">0</span></div>
+                    <div class="stat-item">❌ 错误数：<span id="wrong-count" class="wrong">0</span></div>
+                    <div class="stat-item">📊 正确率：<span id="accuracy" class="correct">0%</span></div>
+                </div>
 
-        // 检查答案
-        function checkAnswer() {
-            const userAnswer = parseInt(answerInput.value);
-            if (isNaN(userAnswer)) {
-                alert('🔢 请输入有效的数字答案！');
-                answerInput.focus();
-                return;
-            }
+                <!-- 错题记录区域 -->
+                <div class="wrong-list" id="wrong-list" style="display: none">
+                    <h3>📖 错题本</h3>
+                    <div id="wrong-items"></div>
+                </div>
 
-            // 统计答题数
-            totalCount++;
+                <button id="restart-btn">🔄 重新开始</button>
+            </div>
+        </div>
 
-            // 校验答案
-            if (userAnswer === currentQuestion.answer) {
-                correctCount++;
-                alert('✔️ 回答正确！真棒～');
-            } else {
-                wrongCount++;
-                // 记录错题信息
-                wrongQuestions.push({
-                    question: `${currentQuestion.a} ${currentQuestion.op} ${currentQuestion.b} = ?`,
-                    userAnswer: userAnswer,
-                    correctAnswer: currentQuestion.answer
+        <script>
+            // 全局变量
+            let countdownTimer = null; // 倒计时定时器
+            let remainingTime = 0; // 剩余时间（秒）
+            let maxNumber = 10; // 数值上限
+            let selectedOps = ["+"]; // 选中的运算类型
+            let currentQuestion = null; // 当前题目信息
+            let totalCount = 0; // 总答题数
+            let correctCount = 0; // 正确数
+            let wrongCount = 0; // 错误数
+            let wrongQuestions = []; // 错题记录数组
+            let forbidZero = true; // 是否禁止出现0
+            let logArea = null; // 日志提示区域DOM
+
+            // 页面加载完成后初始化
+            document.addEventListener("DOMContentLoaded", function () {
+                // 初始化所有DOM元素
+                const settingsEl = document.getElementById("settings");
+                const countdownEl = document.getElementById("countdown");
+                const questionCountEl = document.getElementById("question-count");
+                const totalAnsweredEl = document.getElementById("total-answered");
+                const exerciseEl = document.getElementById("exercise");
+                const resultEl = document.getElementById("result");
+                const startBtn = document.getElementById("start-btn");
+                const submitBtn = document.getElementById("submit-btn");
+                const stopBtn = document.getElementById("stop-btn");
+                const restartBtn = document.getElementById("restart-btn");
+                const answerInput = document.getElementById("answer");
+                const questionEl = document.getElementById("question");
+                const totalCountEl = document.getElementById("total-count");
+                const correctCountEl = document.getElementById("correct-count");
+                const wrongCountEl = document.getElementById("wrong-count");
+                const accuracyEl = document.getElementById("accuracy");
+                const wrongListEl = document.getElementById("wrong-list");
+                const wrongItemsEl = document.getElementById("wrong-items");
+                const countdownTimeInput = document.getElementById("countdown-time");
+                const countdownUnitSelect = document.getElementById("countdown-unit");
+                const forbidZeroCheckbox = document.getElementById("forbid-zero");
+                logArea = document.getElementById("log-area"); // 初始化日志区域
+
+                // 绑定事件
+                startBtn.addEventListener("click", () =>
+                    startPractice(
+                        countdownTimeInput,
+                        countdownUnitSelect,
+                        maxNumber,
+                        forbidZeroCheckbox,
+                        settingsEl,
+                        countdownEl,
+                        questionCountEl,
+                        totalAnsweredEl,
+                        exerciseEl,
+                        resultEl,
+                        answerInput,
+                        questionEl
+                    )
+                );
+                submitBtn.addEventListener("click", () => checkAnswer(answerInput, totalAnsweredEl, questionEl, logArea));
+                stopBtn.addEventListener("click", () => stopPractice(countdownTimer, exerciseEl, questionCountEl, resultEl));
+                restartBtn.addEventListener("click", () => restartPractice(countdownTimer, settingsEl, countdownEl, questionCountEl, resultEl, countdownTimeInput));
+                answerInput.addEventListener("keydown", (e) => {
+                    if (e.key === "Enter") checkAnswer(answerInput, totalAnsweredEl, questionEl, logArea);
                 });
-                alert(`❌ 回答错误！正确答案是：${currentQuestion.answer}，继续加油～`);
+                forbidZeroCheckbox.addEventListener("change", (e) => {
+                    forbidZero = e.target.checked;
+                });
+                // 监听运算类型选择
+                document.querySelectorAll('input[name="operation"]').forEach((checkbox) => {
+                    checkbox.addEventListener("change", updateSelectedOps);
+                });
+
+                // 初始化运算类型
+                updateSelectedOps();
+            });
+
+            // 更新选中的运算类型
+            function updateSelectedOps() {
+                selectedOps = Array.from(document.querySelectorAll('input[name="operation"]:checked')).map((checkbox) => checkbox.value);
+                // 确保至少选中一个运算类型
+                if (selectedOps.length === 0) {
+                    document.getElementById("add").checked = true;
+                    selectedOps = ["+"];
+                }
             }
 
-            // 生成下一题
-            generateQuestion();
-            answerInput.focus();
-        }
+            // 格式化倒计时显示（分:秒）
+            function formatCountdown(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}（分:秒）`;
+            }
 
-        // 显示练习结果
-        function showResult() {
-            // 隐藏练习区域，显示结果区域
-            exerciseEl.style.display = 'none';
-            resultEl.style.display = 'block';
+            // 生成随机数（支持禁止0）
+            // 生成更均匀的随机数（支持禁止0）
+            function getRandomNum(min, max) {
+                // 使用更高质量的随机数生成方法
+                const array = new Uint32Array(1);
+                window.crypto.getRandomValues(array);
+                const randomValue = array[0] / (0xffffffff + 1);
 
-            // 计算正确率
-            const accuracy = totalCount === 0 ? 0 : Math.round((correctCount / totalCount) * 100);
+                let num = Math.floor(randomValue * (max - min + 1)) + min;
 
-            // 更新结果显示
-            totalCountEl.textContent = totalCount;
-            correctCountEl.textContent = correctCount;
-            wrongCountEl.textContent = wrongCount;
-            accuracyEl.textContent = `${accuracy}%`;
+                if (forbidZero && num === 0) {
+                    return getRandomNum(min, max);
+                }
+                return num;
+            }
+
+            // 生成随机题目（优化版）
+            function generateQuestion(questionEl) {
+                const op = selectedOps[Math.floor(Math.random() * selectedOps.length)];
+                let a, b, answer;
+
+                switch (op) {
+                    case "+":
+                        // 优化：让加法的两个数字更随机，避免总是小数字
+                        const sumMax = maxNumber - 1;
+                        a = getRandomNum(forbidZero ? 1 : 0, sumMax);
+                        // 确保b有足够的随机空间，避免b总是很小
+                        const bMax = Math.min(sumMax - a, Math.floor(sumMax * 0.7)); // b最多不超过总和70%
+                        b = getRandomNum(forbidZero ? 1 : 0, bMax);
+                        // 如果b太小，有50%概率重新分配数字
+                        if (b < 2 && Math.random() > 0.5) {
+                            a = getRandomNum(Math.floor(sumMax * 0.3), sumMax - 2);
+                            b = getRandomNum(forbidZero ? 1 : 2, sumMax - a);
+                        }
+                        answer = a + b;
+                        break;
+
+                    case "-":
+                        // 优化：让减法的大数字更可能出现
+                        a = getRandomNum(Math.floor(maxNumber * 0.4), maxNumber - 1);
+                        const bMin = forbidZero ? 1 : 0;
+                        // 让b有更大范围，避免总是很小
+                        b = getRandomNum(bMin, Math.min(a, Math.floor(a * 0.8)));
+                        // 30%概率让b相对较大
+                        if (Math.random() < 0.3) {
+                            b = getRandomNum(Math.max(bMin, Math.floor(a * 0.4)), a);
+                        }
+                        answer = a - b;
+                        break;
+
+                    case "×":
+                        // 优化：乘法避免总是出现小数字相乘
+                        const productMax = maxNumber - 1;
+                        // 让a有更大可能取中等或大数字
+                        a = getRandomNum(forbidZero ? 1 : 0, Math.floor(Math.sqrt(productMax)) * 2);
+
+                        if (a === 0) {
+                            b = getRandomNum(0, productMax);
+                        } else {
+                            const maxB = Math.floor(productMax / a);
+                            // 避免b总是很小
+                            b = getRandomNum(forbidZero ? 1 : 0, maxB);
+                            // 如果乘积可能很小，有50%概率调整
+                            if (a * b < 4 && Math.random() > 0.5) {
+                                a = getRandomNum(Math.floor(Math.sqrt(productMax)), Math.floor(productMax / 2));
+                                b = getRandomNum(forbidZero ? 1 : 1, Math.floor(productMax / a));
+                            }
+                        }
+                        answer = a * b;
+                        break;
+
+                    case "÷":
+                        // 优化：除法让被除数更大，避免商总是很小
+                        b = getRandomNum(1, Math.floor(maxNumber / 2)); // 除数不要太大
+                        const maxAnswer = Math.floor((maxNumber - 1) / b);
+                        // 让商有更大可能取中等数值
+                        answer = getRandomNum(forbidZero ? 1 : 0, Math.max(forbidZero ? 1 : 0, Math.floor(maxAnswer * 0.7)));
+                        // 40%概率让商更大
+                        if (Math.random() < 0.4) {
+                            answer = getRandomNum(Math.floor(maxAnswer * 0.3), maxAnswer);
+                        }
+                        a = b * answer;
+                        break;
+                }
+
+                currentQuestion = { a, b, op, answer };
+                questionEl.textContent = `${a} ${op} ${b} = ?`;
+                document.getElementById("answer").value = "";
+            }
+
+            // 开始练习
+            function startPractice(
+                countdownTimeInput,
+                countdownUnitSelect,
+                _maxNumber,
+                forbidZeroCheckbox,
+                settingsEl,
+                countdownEl,
+                questionCountEl,
+                totalAnsweredEl,
+                exerciseEl,
+                resultEl,
+                answerInput,
+                questionEl
+            ) {
+                // 重置数据
+                wrongQuestions = [];
+                totalCount = 0;
+                correctCount = 0;
+                wrongCount = 0;
+                forbidZero = forbidZeroCheckbox.checked;
+                totalAnsweredEl.textContent = totalCount;
+                questionCountEl.style.display = "flex";
+                logArea.innerHTML = ""; // 清空日志
+
+                // 获取并验证设置值
+                const countdownValue = parseInt(countdownTimeInput.value);
+                const countdownUnit = countdownUnitSelect.value;
+                maxNumber = parseInt(document.getElementById("max-number").value);
+
+                if (isNaN(countdownValue) || countdownValue < 1) {
+                    logArea.innerHTML = '<span class="log-info">⏰ 请输入大于0的倒计时时长！</span>';
+                    return;
+                }
+                remainingTime = countdownUnit === "minute" ? countdownValue * 60 : countdownValue;
+                if (remainingTime > 300) {
+                    logArea.innerHTML = '<span class="log-info">⏰ 倒计时最长不超过5分钟（300秒）！</span>';
+                    remainingTime = 300;
+                    countdownTimeInput.value = 5;
+                    countdownUnitSelect.value = "minute";
+                }
+
+                if (isNaN(maxNumber) || maxNumber < 2 || maxNumber > 100) {
+                    logArea.innerHTML = '<span class="log-info">🔢 请输入2-100之间的数值上限！</span>';
+                    return;
+                }
+                if (selectedOps.length === 0) {
+                    logArea.innerHTML = '<span class="log-info">➗ 请至少选择一种运算类型！</span>';
+                    return;
+                }
+
+                // 更新界面
+                countdownEl.textContent = `⏳ 剩余时间：${formatCountdown(remainingTime)}`;
+                settingsEl.style.display = "none";
+                countdownEl.style.display = "flex";
+                exerciseEl.style.display = "flex";
+                resultEl.style.display = "none";
+
+                // 启动倒计时
+                if (countdownTimer) clearInterval(countdownTimer);
+                countdownTimer = setInterval(() => {
+                    remainingTime--;
+                    countdownEl.textContent = `⏳ 剩余时间：${formatCountdown(remainingTime)}`;
+                    if (remainingTime <= 0) {
+                        clearInterval(countdownTimer);
+                        showResult(exerciseEl, questionCountEl, resultEl);
+                    }
+                }, 1000);
+
+                // 生成第一题
+                generateQuestion(questionEl);
+                answerInput.focus();
+            }
+
+            // 检查答案
+            function checkAnswer(answerInput, totalAnsweredEl, questionEl, logArea) {
+                const userAnswer = parseInt(answerInput.value);
+                if (isNaN(userAnswer)) {
+                    logArea.innerHTML = '<span class="log-info">🔢 请输入有效的数字答案！</span>';
+                    answerInput.focus();
+                    return;
+                }
+
+                // 统计答题数
+                totalCount++;
+                totalAnsweredEl.textContent = totalCount;
+
+                // 校验答案
+                if (userAnswer === currentQuestion.answer) {
+                    correctCount++;
+                    logArea.innerHTML = '<span class="log-correct">✔️ 回答正确！真棒～</span>';
+                } else {
+                    wrongCount++;
+                    wrongQuestions.push({
+                        question: `${currentQuestion.a} ${currentQuestion.op} ${currentQuestion.b} = ?`,
+                        userAnswer: userAnswer,
+                        correctAnswer: currentQuestion.answer,
+                    });
+                    logArea.innerHTML = `<span class="log-wrong">❌ 回答错误！正确答案是：${currentQuestion.answer}，继续加油～</span>`;
+                }
+
+                // 生成下一题
+                setTimeout(() => {
+                    generateQuestion(questionEl);
+                    logArea.innerHTML = ""; // 3秒后清空提示
+                }, 300);
+                answerInput.focus();
+            }
+
+            // 终止练习
+            function stopPractice(timer, exerciseEl, questionCountEl, resultEl) {
+                // 直接终止，移除确认弹窗（也可保留，用日志提示）
+                clearInterval(timer);
+                countdownTimer = null;
+                logArea.innerHTML = '<span class="log-info">🛑 练习已手动终止！</span>';
+                setTimeout(() => {
+                    showResult(exerciseEl, questionCountEl, resultEl);
+                    logArea.innerHTML = "";
+                }, 1000);
+            }
+
+            // 显示练习结果
+            function showResult(exerciseEl, questionCountEl, resultEl) {
+                exerciseEl.style.display = "none";
+                questionCountEl.style.display = "none";
+                resultEl.style.display = "block";
+
+                // 计算正确率
+                const accuracy = totalCount === 0 ? 0 : Math.round((correctCount / totalCount) * 100);
+
+                // 更新结果显示
+                document.getElementById("total-count").textContent = totalCount;
+                document.getElementById("correct-count").textContent = correctCount;
+                document.getElementById("wrong-count").textContent = wrongCount;
+                document.getElementById("accuracy").textContent = `${accuracy}%`;
+
+                // 渲染错题记录
+                renderWrongQuestions();
+            }
 
             // 渲染错题记录
-            renderWrongQuestions();
-        }
+            function renderWrongQuestions() {
+                const wrongListEl = document.getElementById("wrong-list");
+                const wrongItemsEl = document.getElementById("wrong-items");
+                if (wrongQuestions.length === 0) {
+                    wrongListEl.style.display = "none";
+                    return;
+                }
 
-        // 渲染错题记录
-        function renderWrongQuestions() {
-            if (wrongQuestions.length === 0) {
-                wrongListEl.style.display = 'none';
-                return;
-            }
-
-            wrongListEl.style.display = 'block';
-            wrongItemsEl.innerHTML = ''; // 清空原有内容
-
-            wrongQuestions.forEach((item, index) => {
-                const wrongItem = document.createElement('div');
-                wrongItem.className = 'wrong-item';
-                wrongItem.innerHTML = `
+                wrongListEl.style.display = "block";
+                wrongItemsEl.innerHTML = "";
+                wrongQuestions.forEach((item, index) => {
+                    const wrongItem = document.createElement("div");
+                    wrongItem.className = "wrong-item";
+                    wrongItem.innerHTML = `
                     <div class="wrong-question">${index + 1}. ${item.question}</div>
                     <div class="wrong-answer">❌ 你的答案：${item.userAnswer}</div>
                     <div class="right-answer">✔️ 正确答案：${item.correctAnswer}</div>
                 `;
-                wrongItemsEl.appendChild(wrongItem);
-            });
-        }
+                    wrongItemsEl.appendChild(wrongItem);
+                });
+            }
 
-        // 重新开始练习
-        function restartPractice() {
-            // 清除定时器
-            if (countdownTimer) clearInterval(countdownTimer);
-
-            // 重置界面
-            settingsEl.style.display = 'block';
-            countdownEl.style.display = 'none';
-            resultEl.style.display = 'none';
-
-            // 重置输入框焦点
-            countdownTimeInput.focus();
-        }
-    </script>
-</body>
+            // 重新开始练习
+            function restartPractice(timer, settingsEl, countdownEl, questionCountEl, resultEl, countdownTimeInput) {
+                clearInterval(timer);
+                countdownTimer = null;
+                settingsEl.style.display = "block";
+                countdownEl.style.display = "none";
+                questionCountEl.style.display = "none";
+                resultEl.style.display = "none";
+                countdownTimeInput.focus();
+            }
+        </script>
+    </body>
 </html>

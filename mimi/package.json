@@ -6,7 +6,7 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "live-server --port=3080 --ignore=node_modules,*.log"
+        "dev": "live-server --port=3081 --ignore=node_modules,*.log"
     },
     "keywords": [],
     "devDependencies": {

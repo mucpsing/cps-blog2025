@@ -1,8 +1,8 @@
 /*
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-05-09 12:10:40
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-11-12 09:23:55
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-11-27 22:14:15
  * @FilePath: \gsap-lenis-learn\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -168,7 +168,7 @@ function Step_1() {
 
                         <HomeButtonBar></HomeButtonBar>
 
-                        <div className={["w-[700px] h-[320px] border-2 border-red-200 border-solid"].join(" ")}>
+                        <div className={["w-[700px] h-[320px] border-4 border-red-200 border-solid"].join(" ")}>
                             <MouseTracker DEBUG={false} iconsList={skillIcons} size={25} count={skillIcons.length} threshold={100}></MouseTracker>
                         </div>
                     </section>

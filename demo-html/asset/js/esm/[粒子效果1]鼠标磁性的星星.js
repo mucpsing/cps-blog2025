@@ -13,6 +13,47 @@
  * ```
  */
 export class ParticlesAnimation {
+    /** 默认配置 */
+    defaultConfig = {
+        quantity: 30,
+        staticity: 50,
+        ease: 50,
+        particleColor: "255, 255, 255",
+        particleSizeRange: { min: 0.1, max: 2 },
+        particleAlphaRange: { min: 0.1, max: 0.7 },
+        magnetismRange: { min: 0.1, max: 4 },
+        movementSpeed: 0.2,
+        zIndex: 0,
+    };
+    /** 当前配置 */
+    config;
+    /** 容器元素 */
+    container;
+    /** Canvas元素 */
+    canvas = null;
+    /** Canvas绘图上下文 */
+    ctx = null;
+    /** 粒子数组 */
+    particles = [];
+    /** 鼠标位置 */
+    mouse = { x: 0, y: 0 };
+    /** 画布尺寸 */
+    canvasSize = { w: 0, h: 0 };
+    /** 设备像素比 */
+    dpr;
+    /** 动画帧ID */
+    animationId = null;
+    /** 是否已初始化 */
+    isInitialized = false;
+    /** 是否暂停动画 */
+    isPaused = false;
+    /** 事件监听器引用（用于正确移除） */
+    resizeHandler;
+    mouseMoveHandler;
+    mouseLeaveHandler;
+    visibilityChangeHandler;
+    /** 防抖定时器ID */
+    resizeTimer = null;
     /**
      * 创建粒子动画实例
      * @param container - 容器DOM元素
@@ -20,36 +61,6 @@ export class ParticlesAnimation {
      * @throws 当容器元素不存在时抛出错误
      */
     constructor(container, config = {}) {
-        /** 默认配置 */
-        this.defaultConfig = {
-            quantity: 30,
-            staticity: 50,
-            ease: 50,
-            particleColor: "255, 255, 255",
-            particleSizeRange: { min: 0.1, max: 2 },
-            particleAlphaRange: { min: 0.1, max: 0.7 },
-            magnetismRange: { min: 0.1, max: 4 },
-            movementSpeed: 0.2,
-            zIndex: 0,
-        };
-        /** Canvas元素 */
-        this.canvas = null;
-        /** Canvas绘图上下文 */
-        this.ctx = null;
-        /** 粒子数组 */
-        this.particles = [];
-        /** 鼠标位置 */
-        this.mouse = { x: 0, y: 0 };
-        /** 画布尺寸 */
-        this.canvasSize = { w: 0, h: 0 };
-        /** 动画帧ID */
-        this.animationId = null;
-        /** 是否已初始化 */
-        this.isInitialized = false;
-        /** 是否暂停动画 */
-        this.isPaused = false;
-        /** 防抖定时器ID */
-        this.resizeTimer = null;
         // 参数验证
         if (!container) {
             throw new Error("容器元素不能为空");
@@ -58,7 +69,7 @@ export class ParticlesAnimation {
             throw new Error("容器必须是有效的HTMLElement");
         }
         this.container = container;
-        this.config = Object.assign(Object.assign({}, this.defaultConfig), config);
+        this.config = { ...this.defaultConfig, ...config };
         this.dpr = window.devicePixelRatio || 1;
         // 绑定事件处理函数（使用箭头函数保持this上下文）
         this.resizeHandler = () => this.handleResize();
@@ -358,7 +369,14 @@ export class ParticlesAnimation {
             }
             else {
                 // 更新现有粒子
-                this.drawParticle(Object.assign(Object.assign({}, particle), { x: particle.x, y: particle.y, translateX: particle.translateX, translateY: particle.translateY, alpha: particle.alpha }), true);
+                this.drawParticle({
+                    ...particle,
+                    x: particle.x,
+                    y: particle.y,
+                    translateX: particle.translateX,
+                    translateY: particle.translateY,
+                    alpha: particle.alpha,
+                }, true);
             }
         });
         // 继续动画循环
@@ -400,7 +418,7 @@ export class ParticlesAnimation {
             console.warn("粒子动画未初始化，无法更新配置");
             return;
         }
-        this.config = Object.assign(Object.assign({}, this.config), newConfig);
+        this.config = { ...this.config, ...newConfig };
         this.validateConfig();
         this.initCanvas();
     }
@@ -408,7 +426,7 @@ export class ParticlesAnimation {
      * 获取当前配置
      */
     getConfig() {
-        return Object.assign({}, this.config);
+        return { ...this.config };
     }
     /**
      * 获取粒子数量

@@ -2,7 +2,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2025-03-05 09:29:31
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-11-12 22:43:44
+ * @LastEditTime: 2025-11-27 22:12:58
  * @FilePath: \gsap-lenis-learn\src\main.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -19,8 +19,8 @@ console.log("StrictMode app");
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
         {/* <HomeAllStepTest></HomeAllStepTest> */}
-        {/* <Home /> */}
-        <Loading />
+        <Home />
+        {/* <Loading /> */}
         {/* <Test /> */}
     </StrictMode>
 );

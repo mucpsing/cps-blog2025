@@ -2,7 +2,7 @@
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-02-13 22:20:06
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-11-16 18:45:10
+ * @LastEditTime: 2025-11-27 22:10:26
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\index.tsx
  * @Description:  入口文件，首页
  */
@@ -23,13 +23,13 @@ export default function HomePage() {
     <BrowserOnly fallback={<div>this page client only Loading...</div>}>
       {/* <BrowserOnly fallback={<div>Loading 123333333 </div>}> */}
       {() => {
-        return <Start />;
+        // return <Start />;
 
-        // if (process.env.NODE_ENV === "development") {
-        //   return <Test />;
-        // } else {
-        //   return <Home />;
-        // }
+        if (process.env.NODE_ENV === "development") {
+          return <Test />;
+        } else {
+          return <Home />;
+        }
       }}
     </BrowserOnly>
   );

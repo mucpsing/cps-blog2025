@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>水文监测培训宣传页 | 珠江水利</title>
+        <!-- 引入Tailwind CSS -->
+        <!-- <script src="asset/js/tailwindcss/3.4.17.js"></script> -->
+
+        <script src="https://cdn.tailwindcss.com"></script>
+        <!-- 引入Font Awesome图标 -->
+        <link rel="stylesheet" href="asset/css/ajax/font-awesome/all.min.css" />
+        <!-- 引入波浪分割线插件 -->
+        <link rel="stylesheet" href="asset/css/flowbite/flowbite.min.css" />
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            water: {
+                                50: "#f0f8ff",
+                                100: "#e6f7ff",
+                                300: "#91d5ff",
+                                500: "#1890ff",
+                                700: "#00509d",
+                                900: "#003a6c",
+                            },
+                        },
+                        fontFamily: {
+                            sans: ["Microsoft YaHei", "Inter", "system-ui", "sans-serif"],
+                        },
+                        boxShadow: {
+                            card: "0 4px 20px 0 rgba(0, 80, 157, 0.08)",
+                            "card-hover": "0 8px 30px 0 rgba(0, 80, 157, 0.15)",
+                        },
+                    },
+                },
+            };
+        </script>
+        <style type="text/tailwindcss">
+            @layer utilities {
+                .bg-water-gradient {
+                    background: linear-gradient(135deg, #00509d 0%, #1890ff 100%);
+                }
+                .bg-water-pattern {
+                    background-image: url("asset/jpg/1019-1920x1080.jpg");
+                    background-size: cover;
+                    background-position: center;
+                    background-blend-mode: soft-light;
+                }
+                .text-shadow-blue {
+                    text-shadow: 0 2px 8px rgba(0, 30, 60, 0.2);
+                }
+                .card-transition {
+                    @apply transition-all duration-300 hover:shadow-card-hover hover:-translate-y-2;
+                }
+            }
+        </style>
+    </head>
+    <body class="font-sans bg-water-50">
+        <!-- 头部横幅 - 优化渐变+背景融合 -->
+        <header class="relative px-4 py-20 overflow-hidden bg-water-700 bg-water-pattern">
+            <!-- 装饰波纹 -->
+             <!-- 采用负的buttom遮挡背景一点突出色块 -->
+            <div class="absolute left-0 w-full -bottom-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" class="fill-water-50">
+                    <path
+                        d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z"
+                    ></path>
+                </svg>
+
+
+                </svg>
+            </div>
+
+            <div class="relative z-10 max-w-4xl mx-auto text-center text-white">
+                <!-- <i class="mb-6 text-6xl fa-solid fa-water md:text-7xl text-water-100 animate-pulse"></i> -->
+                <h1 class="text-[clamp(1.7rem,6vw,3.2rem)] font-bold mb-5 leading-tight text-shadow-blue">
+                    建设工程对水文监测影响分析<br class="hidden md:block" />评价报告编制培训
+                </h1>
+                <p class="max-w-2xl mx-auto text-lg leading-relaxed text-water-100 md:text-xl">
+                    精准把控审批要求，提升报告编制技术水平，助力水利工程水文监测规范化发展
+                </p>
+            </div>
+        </header>
+
+        <!-- 培训核心信息 - 优化卡片布局+间距 -->
+        <section class="relative z-20 px-4 py-8">
+            <div class="max-w-6xl mx-auto">
+                <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                    <!-- 时间卡片 -->
+                    <div class="p-8 bg-white border-l-4 rounded-2xl shadow-card card-transition border-water-500">
+                        <div class="flex items-center justify-center mb-6 w-14 h-14 rounded-xl bg-water-100">
+                            <i class="text-3xl fa-solid fa-clock text-water-500"></i>
+                        </div>
+                        <h3 class="mb-3 text-3xl font-bold text-water-900">培训时间</h3>
+                        <p class="text-xl font-medium text-gray-700">2025年11月28日</p>
+                        <p class="mt-1 text-gray-500">(周五) 14:30-17:30</p>
+                    </div>
+
+                    <!-- 地点卡片 -->
+                    <div class="p-8 bg-white border-l-4 rounded-2xl shadow-card card-transition border-water-500">
+                        <div class="flex items-center justify-center mb-6 w-14 h-14 rounded-xl bg-water-100">
+                            <i class="text-3xl fa-solid fa-location-dot text-water-500"></i>
+                        </div>
+                        <h3 class="mb-3 text-3xl font-bold text-water-900">培训地点</h3>
+                        <p class="text-xl font-medium text-gray-700">珠江水利大厦</p>
+                        <p class="mt-1 text-gray-500">602会议室</p>
+                    </div>
+
+                    <!-- 主讲人卡片 -->
+                    <div
+                        class="p-8 bg-white border-l-4 rounded-2xl shadow-card card-transition border-water-500 lg:col-span-1 sm:col-span-2 md:col-span-1"
+                    >
+                        <div class="flex items-center justify-center mb-6 w-14 h-14 rounded-xl bg-water-100">
+                            <i class="text-3xl fa-solid fa-chalkboard-user text-water-500"></i>
+                        </div>
+                        <h3 class="mb-3 text-3xl font-bold text-water-900">主讲人</h3>
+                        <p class="text-xl font-medium text-gray-700">韦露斯</p>
+                        <p class="mt-1 text-gray-500">勘测中心水文分析室</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 培训内容详情 - 优化排版+视觉引导 -->
+        <section class="px-4 py-16 mt-8 bg-water-100/50">
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-12 text-center">
+                    <h2 class="text-[clamp(1.8rem,4vw,2.8rem)] font-bold text-water-900">培训核心内容</h2>
+                    <div class="w-24 h-1 mx-auto mt-4 rounded-full bg-water-500"></div>
+                </div>
+
+                <div class="p-10 space-y-10 bg-white rounded-2xl shadow-card">
+                    <!-- 内容1 -->
+                    <div class="flex flex-col items-start gap-6 md:flex-row">
+                        <div class="flex items-center justify-center flex-shrink-0 w-16 h-16 rounded-full bg-water-gradient">
+                            <span class="text-2xl font-bold text-white">1</span>
+                        </div>
+                        <div class="md:pt-2">
+                            <h4 class="mb-4 text-xl font-bold text-gray-800 md:text-2xl">国家基本水文测站上下游建设影响水文监测工程审批要求</h4>
+                            <p class="text-lg leading-relaxed text-gray-600">
+                                详解水文测站周边工程建设的审批流程、合规标准及水利部门的监管要求，梳理审批环节中的关键要点与注意事项，帮助参训人员快速掌握审批核心逻辑。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 内容2 -->
+                    <div class="flex flex-col items-start gap-6 md:flex-row">
+                        <div class="flex items-center justify-center flex-shrink-0 w-16 h-16 rounded-full bg-water-gradient">
+                            <span class="text-2xl font-bold text-white">2</span>
+                        </div>
+                        <div class="md:pt-2">
+                            <h4 class="mb-4 text-xl font-bold text-gray-800 md:text-2xl">报告主要内容及技术要求</h4>
+                            <p class="text-lg leading-relaxed text-gray-600">
+                                讲解分析评价报告的编制框架、核心技术指标、数据采集与分析方法，结合实际案例指导参训人员掌握报告编制的规范与技巧，提升报告编制的专业性与合规性。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer class="px-4 py-8 text-white bg-water-900">
+            <div class="max-w-6xl mx-auto text-center">
+                <p class="mb-2 text-lg text-water-100">珠江水利勘测中心 © 水文分析计算室</p>
+                <!-- <p class="text-sm text-water-300/80">地址：珠江水利大厦 | 联系电话：020-XXXXXXX</p> -->
+            </div>
+        </footer>
+
+        <!-- 回到顶部按钮 - 优化样式 -->
+        <button
+            id="backToTop"
+            class="fixed z-50 flex items-center justify-center text-white transition-all duration-300 rounded-full shadow-lg opacity-0 bottom-8 right-8 w-14 h-14 bg-water-500 hover:bg-water-700"
+        >
+            <i class="text-xl fa-solid fa-arrow-up"></i>
+        </button>
+
+        <script>
+            // 回到顶部功能
+            const backToTopBtn = document.getElementById("backToTop");
+            window.addEventListener("scroll", () => {
+                if (window.scrollY > 300) {
+                    backToTopBtn.classList.remove("opacity-0");
+                    backToTopBtn.classList.add("opacity-100", "translate-y-0");
+                } else {
+                    backToTopBtn.classList.remove("opacity-100", "translate-y-0");
+                    backToTopBtn.classList.add("opacity-0", "translate-y-4");
+                }
+            });
+            backToTopBtn.addEventListener("click", () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth",
+                });
+            });
+        </script>
+        <script src="asset/js/flowbite/flowbite.min.js"></script>
+    </body>
+</html>

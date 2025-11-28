@@ -1,284 +1,356 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <meta charset="utf-8" />
-        <title>GSAP ScrollTrigger 横向联动示例</title>
-        <style>
-            ::-webkit-scrollbar {
-                width: 0;
-                height: 0;
-            }
-            html,
-            body {
-                height: 100%;
-                margin: 0;
-            }
-            .btn-wrapper {
-                position: fixed;
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                width: 100vw;
-                height: 60px;
-                justify-content: center;
-                bottom: 15%;
-            }
-            .btn {
-                width: 20vw;
-                height: 50px;
-            }
-
-            #app-wrapper {
-                width: 100vw;
-                overflow-x: hidden;
-            } /* 防止横向滚动条出现 */
-
-            .space {
-                width: 100%;
-                height: 100vh;
-                background-color: yellowgreen;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 2rem;
-            }
-
-            /* 横向组件容器：高度撑满视口（或你想要的高度） */
-            #horizontal-area {
-                height: 100vh; /* 让 pin 时占据整屏高度，避免上下内容出现缝隙 */
-                display: flex;
-                /* 不设置固定宽度，让内部按 100vw 布局 */
-                overflow: hidden; /* 隐藏溢出的横向内容（被动画移动） */
-                box-sizing: border-box;
-                align-items: center;
-            }
-
-            /* 每个“页面”占满视口宽度，且不收缩 */
-            .step-horizontal {
-                height: 100vh; /* 内部内容高度（可调整） */
-                width: 100vw; /* 关键：占满视口宽度 */
-                flex: 0 0 100vw; /* 阻止缩放或收缩，保证横向铺满 */
-                font-size: larger;
-                text-align: center;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-sizing: border-box;
-                margin: 0;
-            }
-
-            .controller {
-                position: fixed;
-                bottom: 0;
-                width: 100vw;
-                z-index: 50;
-                height: 300px;
-                display: flex;
-                gap: 10px;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .controller > button {
-                width: 200px;
-                height: 70px;
-                font-size: 20px;
-            }
-        </style>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
     </head>
     <body>
-        <div class="controller">
-            <button id="btn-prev">prev</button>
-            <button id="btn-test">test</button>
-            <button id="btn-next">next</button>
-        </div>
-        <div id="app-wrapper">
-            <div id="app-content">
-                <div id="step-0" class="space step-vertical">上方内容 - step 0</div>
+        <div id="flower" style="width: 100vw; height: 100vh"></div>
 
-                <!-- 左右滑动内容 -->
-                <div id="horizontal-area">
-                    <div class="step-horizontal" id="step-1" style="background-color: #78c3f4">step1</div>
-                    <div class="step-horizontal" id="step-2" style="background-color: #f1fa93">step2</div>
-                    <div class="step-horizontal" id="step-3" style="background-color: #fc67a0">step3</div>
-                    <div class="step-horizontal" id="step-4" style="background-color: #85fcf6">step4</div>
-                    <div class="step-horizontal" id="step-5" style="background-color: #c48afc">step5</div>
-                    <div class="step-horizontal" id="step-6" style="background-color: #38df93">step6</div>
-                </div>
-
-                <div class="space step-vertical">下方内容 - step 7</div>
-            </div>
-        </div>
-        <script src="./asset/js/gsap@3.13.0/ScrollTrigger.min.js"></script>
-        <script src="./asset/js/gsap@3.13.0/ScrollSmoother.min.js"></script>
-        <script src="./asset/js/gsap@3.13.0/gsap.min.js"></script>
-
-        <!-- 全局配置部分 -->
-        <script type="text/javascript">
-            gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
-            const smoother = ScrollSmoother.create({
-                wrapper: '#app-wrapper',
-                content: '#app-content',
-                smooth: 2.5, // 滚动系数，数值越大，滑动惯性越大 1.5~3 之间已经很丝滑
-                // onUpdate: self => console.log('self.progress: ', self.progress.toFixed(3)),
-            });
-
-            window.CpsScroller = {
-                allElement: document.querySelectorAll('.step'),
-                trigger: null, // ScrollTrigger 实例（会在 init 时赋值）
-                smoother, // ScrollSmoother 实例
-                pageCount: 0, // 页面数量（横向页数）
-                horizontalDistance: 0, // 总的横向对应的垂直滚动距离（总长度）
-                currentPage: 0, // 当前页（务必保持为 number）
-                sections: [], // string<HTMLDivElement>[]
-            };
-        </script>
-
-        <!-- 页面滚动功能 -->
-        <script type="text/javascript">
-            function initCpsScroller() {
-                const container = document.querySelector('#horizontal-area');
-                const sections = document.querySelectorAll('.step-horizontal');
-                const horizontalDistance = container.scrollWidth - window.innerWidth;
-                console.log('horizontalDistance: ', horizontalDistance);
-                const each = horizontalDistance / sections.length
-                console.log('each: ', each)
-                console.log('window.innerWidth: ', window.innerWidth)
-
-                // 清理之前的 ScrollTriggers
-                ScrollTrigger.getAll().forEach(st => st.kill());
-
-                // 创建时间轴
-                const tl = gsap.timeline({
-                    scrollTrigger: {
-                        id: 'horizontalScroll',
-                        trigger: container,
-                        start: 'top top',
-                        end: () => '+=' + horizontalDistance,
-                        pin: true,
-                        scrub: true,
-                        anticipatePin: 1,
-                        invalidateOnRefresh: true,
-                    },
-                });
-
-                const scrollTrigger = tl.scrollTrigger;
-
-                // 添加横向滚动动画到时间轴
-                tl.to(sections, {
-                    xPercent: -100 * (sections.length - 1),
-                    ease: 'none',
-                });
-
-                // ⭐⭐ 把关键对象暴露到全局供分页脚本使用 ⭐⭐
-                window.CpsScroller.trigger = scrollTrigger;
-                window.CpsScroller.pageCount = sections.length;
-                window.CpsScroller.horizontalDistance = horizontalDistance;
-            }
-        </script>
-        <!-- 使用gsap.to()实现 -->
-        <!--     <script>
-      function initCpsScroller() {
-        const container = document.querySelector('#horizontal-area'); // 横向滚动的容器
-        const sections = document.querySelectorAll('.step-horizontal'); // 横向滚动的元素
-
-        // 计算横向需要滚动的距离：总宽 - 可见宽
-        const horizontalDistance = container.scrollWidth - window.innerWidth;
-
-        // 清理之前的 ScrollTriggers（热重载/调试时用）
-        ScrollTrigger.getAll().forEach(st => st.kill()); // 如果你只有这一个 trigger，可以选择性清理
-
-        // 创建横向动画（移动所有 section 的 x）
-        const scrollTrigger = gsap.to(sections, {
-          xPercent: -100 * (sections.length - 1),
-          ease: 'none',
-          scrollTrigger: {
-            id: 'horizontalScroll',
-            trigger: container,
-            start: 'top top',
-            end: () => '+=' + horizontalDistance, // 精确匹配需要的垂直滚动距离
-            pin: true,
-            scrub: true,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-          },
-        }).scrollTrigger;
-
-        // ScrollTrigger 会在 resize 时自动 refresh（因为 invalidateOnRefresh: true）
-        window.addEventListener('resize', () => ScrollTrigger.refresh());
-
-        // ⭐⭐ 把关键对象暴露到全局供分页脚本使用 ⭐⭐
-        window.CpsScroller.trigger = scrollTrigger;
-        window.CpsScroller.pageCount = sections.length;
-        window.CpsScroller.horizontalDistance = horizontalDistance;
-      }
-    </script> -->
-
-        <!-- 页面控制部分 -->
-        <script>
-            const computePagePositions = () => {
-                const { trigger, sections, horizontalDistance } = window.CpsScroller;
-                const pagePositions = [0, window.innerHeight]; // step-0 永远是顶部
-
-                const pagesInside = sections.length;
-                const segment = horizontalDistance / (pagesInside - 1);
-                console.log('trigger.start: ', trigger.start);
-
-                for (let i = 0; i < pagesInside; i++) {
-                    pagePositions.push(trigger.start + segment * i);
-                }
-
-                CpsScroller.pagePositions = pagePositions;
-                console.log('CpsScroller.pagePositions: ', CpsScroller.pagePositions);
-            };
-
-            const initPagingControls = () => {
-                const scroller = window.CpsScroller;
-                const { smoother } = scroller;
-
-                scroller.sections = document.querySelectorAll('.step-horizontal');
-                scroller.pageCount = scroller.sections.length + 1; // 包含 step-0
-                scroller.currentPage = 0;
-
-                computePagePositions();
-
-                window.addEventListener('resize', computePagePositions);
-
-                function goToPage(index) {
-                    index = Math.max(0, Math.min(index, scroller.pageCount - 1));
-                    scroller.currentPage = index;
-                    smoother.scrollTo(scroller.pagePositions[index], true);
-                    console.log(`📍 前往第 ${index} 页 → scrollTo(${scroller.pagePositions[index]})`);
-                }
-
-                document.getElementById('btn-prev').onclick = () => goToPage(scroller.currentPage - 1);
-                document.getElementById('btn-next').onclick = () => goToPage(scroller.currentPage + 1);
-                document.getElementById('btn-test').onclick = () => {
-                    const container = document.querySelector('#horizontal-area');
-                    const { trigger, sections, smoother } = window.CpsScroller;
-                    const horizontalDistance = container.scrollWidth - window.innerWidth;
-
-                    console.log('window.CpsScroller.horizontalDistance: ', window.CpsScroller.horizontalDistance);
-                    console.log('horizontalDistance: ', horizontalDistance);
-
-                    console.log('trigger.start:', trigger.start);
-                    console.log('trigger.end:', trigger.end);
-
-                    console.log(smoother.offset('#step-3', 'top'));
-                    console.log('smoother.scrollTrigger.start: ', smoother.scrollTrigger.start);
-                    console.log('smoother.scrollTrigger.end: ', smoother.scrollTrigger.end);
-
-                    // 获取当前的位置，这个位置可以被scrollTo(xxx) 直接到达
-                    console.log(window.CpsScroller);
-                };
-            };
-        </script>
-
-        <script type="text/javascript">
-            window.addEventListener('load', () => {
-                initCpsScroller();
-                initPagingControls();
-            });
-        </script>
+        <div id="loading"></div>
     </body>
+
+    <script type="module">
+        import * as THREE from "/asset/js/threejs/0.160.0/three.js";
+        import EventEmitter from "/asset/js/events@3.3.0/events.esm.js";
+        import gsap from "/asset/js/gsap@3.12.7/esm/gsap.js";
+        import { CustomEase } from "/asset/js/gsap@3.12.7/esm/CustomEase.min.js";
+        import { DRACOLoader } from "/asset/js/threejs/0.160.0/DRACOLoader.js";
+        import { KTX2Loader } from "/asset/js/threejs/0.160.0/KTX2Loader.js";
+        import { EffectComposer } from "/asset/js/threejs/0.160.0/EffectComposer.js";
+        import { RenderPass } from "/asset/js/threejs/0.160.0/RenderPass.js";
+        import { OutputPass } from "/asset/js/threejs/0.160.0/OutputPass.js";
+        import { SMAAPass } from "/asset/js/threejs/0.160.0/SMAAPass.js";
+        import { ShaderPass } from "/asset/js/threejs/0.160.0/ShaderPass.js";
+        import { GammaCorrectionShader } from "/asset/js/threejs/0.160.0/GammaCorrectionShader.js";
+        import {
+            AdaptiveDPRController,
+            TimeStats,
+            Utils,
+            InputManager,
+            RenderCreate,
+            customScene,
+            customCamera,
+            MultipleRenderPass,
+            FinalPass,
+        } from "/asset/js/test/7493729054869651492.js";
+
+        import {
+            FluidSimCreate,
+            FlowerCreate,
+            LeavesCreate,
+            NeedlesCreate,
+            ForegroundLeavesCreate,
+            BackgroundCreate,
+            BorderCreate,
+            NotchCreate,
+            LineCreate,
+        } from "/asset/js/test/7494111749197561883.js";
+
+        window.onload = () => {
+            const main = new MainCreate();
+        };
+
+        class MainCreate {
+            fingers = 1;
+            active = !1;
+            audio = null;
+            initialDPR = 1;
+            currentDPR = 1;
+            adaptiveDPR = null;
+            uniforms = {
+                resolution: { value: new THREE.Vector2(2, 2), global: !0 },
+                time: { value: 0, global: !0 },
+                dtRatio: { value: 1, global: !0 },
+            };
+            composer = null;
+            renderPass = null;
+            DPR = window.devicePixelRatio <= 2 ? Math.min(window.devicePixelRatio, 1.25) : Math.min(window.devicePixelRatio, 1.5) || 1;
+            screen = { dpr: window.devicePixelRatio || 1, aspectRatio: 1, width: 0, height: 0, w: 0, h: 0 };
+            start = false;
+
+            constructor() {
+                this.target = document.getElementById("flower");
+                this.loadTarget = document.getElementById("loading");
+                this.screen.width = this.target.offsetWidth;
+                this.screen.height = this.target.offsetHeight;
+                this.screen.w = this.screen.width;
+                this.screen.h = this.screen.height;
+                this.screen.aspectRatio = this.screen.w / this.screen.h;
+                this.initUBO();
+                this.initDPR();
+                this.initUtils();
+                this.initRenderer();
+                this.initCamera();
+                this.initScene();
+                this.initScene();
+                this.initDPRMultiplier();
+                this.initLoader();
+            }
+
+            initUBO() {
+                this.UBO = new THREE.UniformsGroup();
+                this.UBO.setName("Global");
+                this.UBO.add(this.uniforms.resolution);
+                this.UBO.add(this.uniforms.time);
+                this.UBO.add(this.uniforms.dtRatio);
+            }
+
+            initDPR() {
+                this.initialDPR = this.DPR;
+                this.adaptiveDPR = new AdaptiveDPRController(this);
+            }
+
+            initUtils() {
+                this.gsap = gsap;
+                this.gsap.registerPlugin(CustomEase);
+                this.gsap.config({ force3D: !0 });
+                this.gsap.defaults({ ease: "power2.inOut", duration: 0.6, overwrite: "auto" });
+                CustomEase.create("inOut1", "M0,0 C0.5,0 0.1,1 1,1");
+                CustomEase.create("inOut2", "M0,0 C0.56,0 0,1 1,1");
+                CustomEase.create("inOut3", "M0,0 C0.6,0 0,1 1,1");
+                CustomEase.create("inOut4", "M0,0 C0.4,0 -0.06,1 1,1");
+                this.eventManage = new EventEmitter();
+                this.timeStats = new TimeStats();
+                this.utils = new Utils(this);
+                this.inputManager = new InputManager(this);
+            }
+
+            initRenderer() {
+                this.renderer = new RenderCreate();
+                this.renderer.info.autoReset = false;
+                this.renderer.webgl.setSize(this.screen.width, this.screen.height);
+                this.renderer.webgl.toneMapping = THREE.LinearToneMapping;
+                this.target.appendChild(this.renderer.webgl.domElement);
+            }
+
+            initCamera() {
+                this.camera = new customCamera(this);
+                this.camera.basePosition.set(0, 0, 4);
+                this.camera.baseTarget.set(0, 0, 0);
+                this.camera.displacement.position.set(0.03, 0.015);
+                this.camera.lerpPosition = 0.035;
+            }
+
+            initScene() {
+                this.scene = new customScene(this);
+                this.fluidSim = new FluidSimCreate(this);
+            }
+
+            initComposer() {
+                this.composer = new EffectComposer(this.renderer.webgl);
+                this.renderPass = new RenderPass(this.scene, this.camera);
+                this.SMAAPass = new SMAAPass(this.screen.width, this.screen.height);
+                this.multipleRenderPass = new MultipleRenderPass(this);
+                this.finalPass = new FinalPass(this).pass;
+
+                // 获取多个渲染目标的贴图
+                const n = this.multipleRenderPass.multipleRenderTarget.texture;
+                // 命名多个输出贴图，便于调试
+                n[0].name = "color";
+                n[1].name = "info";
+                // 将第二个贴图 (info) 传入 shader 的 tInfo
+                this.finalPass.uniforms.tInfo.value = n[1];
+                this.finalPass.uniforms.uCameraNear.value = this.camera.near;
+                this.finalPass.uniforms.uCameraFar.value = this.camera.far;
+
+                this.gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
+                this.outPass = new OutputPass();
+
+                this.composer.addPass(this.renderPass);
+                this.composer.addPass(this.SMAAPass);
+                this.composer.addPass(this.multipleRenderPass);
+                this.composer.addPass(this.finalPass);
+                this.composer.addPass(this.gammaCorrectionPass);
+            }
+
+            async initLoader() {
+                this.manager = new THREE.LoadingManager();
+                this.fileLoader = new THREE.FileLoader(this.manager).setResponseType("arraybuffer");
+                this.dracoLoader = new DRACOLoader(this.manager).setDecoderPath("/asset/js/threejs/0.160.0/gltf/").setWorkerLimit(1).preload();
+                this.ktx2Loader = new KTX2Loader(this.manager)
+                    .setTranscoderPath("/asset/js/threejs/0.160.0/basis/")
+                    .detectSupport(this.renderer.webgl);
+
+                this.emailTexture = await this.ktx2Loader.loadAsync("/asset/ktx2/email-C08JwW2m.ktx2");
+                this.headLineTexture = await this.ktx2Loader.loadAsync("/asset/ktx2/headline-sVnFdBpn.ktx2");
+                this.leafTexture = await this.ktx2Loader.loadAsync("/asset/ktx2/leaf-BuS2QNRk.ktx2");
+                this.noiseSimplexLayeredTexture = await this.ktx2Loader.loadAsync("/asset/ktx2/noise-simplex-layered-Bhb_a_In.ktx2");
+                this.petalTexture = await this.ktx2Loader.loadAsync("/asset/ktx2/petal-Bq8WLeBB.ktx2");
+                this.transitionNomipmapsTexture = await new THREE.TextureLoader(this.manager).load("/asset/jpg/transition-nomipmaps-oWShjGwJ.jpg");
+
+                this.noiseSimplexLayeredTexture.colorSpace = THREE.SRGBColorSpace; // 设置 sRGB 颜色空间
+                this.noiseSimplexLayeredTexture.wrapS = this.noiseSimplexLayeredTexture.wrapT = THREE.RepeatWrapping; // 启用 Repeat
+
+                this.petalTexture.colorSpace = THREE.SRGBColorSpace; // 设置 sRGB 颜色空间
+                this.petalTexture.wrapS = this.petalTexture.wrapT = THREE.ClampToEdgeWrapping; // 边界处理
+
+                this.leafTexture.colorSpace = THREE.SRGBColorSpace; // 设置 sRGB 颜色空间
+                this.leafTexture.wrapS = this.leafTexture.wrapT = THREE.ClampToEdgeWrapping; // 边界处理
+
+                let total = 0;
+                const geometryArray = [
+                    { path: "/asset/drc/needle.drc", key: "needle" },
+                    { path: "/asset/drc/border.drc", key: "border" },
+                    { path: "/asset/drc/leaf.drc", key: "leaf" },
+                    { path: "/asset/drc/petal.drc", key: "petal" },
+                ];
+                for (let i = 0; i < geometryArray.length; i++) {
+                    this[geometryArray[i].key] = await this.dracoLoader.loadAsync(geometryArray[i].path);
+                    this[geometryArray[i].key].name = geometryArray[i].key;
+                    if (geometryArray[i].key === "border") {
+                        this[geometryArray[i].key].setAttribute(
+                            "inset",
+                            new THREE.BufferAttribute(
+                                new Float32Array([
+                                    0.0002442598342895508, 0.0002442598342895508, 0, 0.0002442598342895508, 0.0002442598342895508, 0,
+                                    0.0002442598342895508, 0.0002442598342895508, 0, 0.0002442598342895508, 0.0002442598342895508, 0, -1, -1, 0, -1,
+                                    1, 0, -1, 1, 0, 1, 1, 0, 1, -1, 0, -1, 1, 0, 0.0002442598342895508, 0.0002442598342895508, 0,
+                                    0.0002442598342895508, 0.0002442598342895508, 0, 0.0002442598342895508, 0.0002442598342895508, 0, 1, -1, 0,
+                                    0.0002442598342895508, 0.0002442598342895508, 0,
+                                ]),
+                                3
+                            )
+                        );
+                        this[geometryArray[i].key].setAttribute(
+                            "notch",
+                            new THREE.BufferAttribute(
+                                new Float32Array([
+                                    0, 0, 0, 0, 1, 0, -1, 0, 0, -1, 1, 0, 0, 0, 0, 0, 1, 0, -1, 1, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0, 0, 0,
+                                ]),
+                                3
+                            )
+                        );
+                    }
+                    total += 1;
+                    if (total === geometryArray.length) {
+                        this.initComposer();
+                        this.initEvents();
+                        this.initWorld();
+                        this.resize();
+                        this.initAnimation();
+                        this.loadTarget.setAttribute("class", "loadOk");
+                    }
+                }
+            }
+
+            initWorld() {
+                this.flower = new FlowerCreate(this);
+                this.leaves = new LeavesCreate(this);
+                this.needles = new NeedlesCreate(this);
+                this.foregroundLeavesCreate = new ForegroundLeavesCreate(this);
+                this.bckgroundCreate = new BackgroundCreate(this);
+                this.borderCreate = new BorderCreate(this);
+                this.notchCreate = new NotchCreate(this);
+                this.lineCreate = new LineCreate(this);
+                this.eventManage.emit("webgl_render_active", true);
+                const t = this.finalPass.material;
+                this.gsap.fromTo(
+                    t.uniforms.uProgress1,
+                    { value: 0 },
+                    {
+                        value: 1,
+                        duration: 5,
+                        ease: "power2.out",
+                        delay: 0.25,
+                    }
+                );
+                this.gsap.fromTo(
+                    t.uniforms.uProgress2,
+                    { value: 0 },
+                    {
+                        value: 1,
+                        duration: 5,
+                        ease: "power2.out",
+                        delay: 0.25 + 0.2,
+                    }
+                );
+                this.gsap.fromTo(
+                    t.uniforms.uProgress3,
+                    { value: 0 },
+                    {
+                        value: 1,
+                        duration: 5,
+                        ease: "power2.out",
+                        delay: 0.25 + 0.6,
+                    }
+                );
+                this.gsap.fromTo(
+                    t.uniforms.uProgress4,
+                    { value: 0 },
+                    {
+                        value: 1,
+                        duration: 5,
+                        ease: "power2.out",
+                        delay: 0.25 + 0.9,
+                    }
+                );
+            }
+
+            initAnimation() {
+                let ho = [];
+                let ym = 0;
+                let RI = 0.5;
+                let LI = 5;
+                this.gsap.ticker.add((i, e, t) => {
+                    const n = Math.round((i - this.timeStats.internalTime) * 1e3);
+                    ho.push(n);
+                    if (i - ym >= RI && ho.length >= LI) {
+                        const s = Math.round(1e3 / (ho.reduce((r, a) => r + a, 0) / ho.length));
+                        this.timeStats.recordedMaxFPS = Math.max(this.timeStats.recordedMaxFPS, s);
+                        this.timeStats.smoothedFPS = s;
+                        ho.length = 0;
+                        ym = i;
+                        this.eventManage.emit("webgl_average_fps_update", this.timeStats.smoothedFPS);
+                    }
+                    this.timeStats.internalTime = i;
+                    this.timeStats.frameDelta = n;
+                    this.timeStats.frameCount++;
+                    ["webgl_prerender", "webgl_render", "webgl_postrender"].forEach((event) => {
+                        this.eventManage.emit(event, i, n);
+                    });
+                });
+            }
+
+            initEvents() {
+                this.eventManage.on("resize", ({ w, h }) => {
+                    this.uniforms.resolution.value.set(w, h).multiplyScalar(this.currentDPR).floor();
+                    this.renderer.webgl.setSize(this.uniforms.resolution.value.x, this.uniforms.resolution.value.y);
+                    this.renderer.webgl.domElement.style.width = `${w}px`;
+                    this.renderer.webgl.domElement.style.height = `${h}px`;
+                    this.composer.setSize(this.uniforms.resolution.value.x, this.uniforms.resolution.value.y);
+                });
+                this.eventManage.on("webgl_prerender", (time) => {
+                    this.uniforms.time.value = time;
+                    this.uniforms.dtRatio.value = this.utils.deltaRatio();
+                });
+                this.eventManage.on("webgl_render", (delta) => {
+                    if (!this.active) return;
+                    this.renderer.info?.reset();
+                    // this.renderer.webgl.render(this.scene, this.camera)
+                    this.composer.render(delta);
+                });
+                this.eventManage.on("webgl_render_active", (active) => {
+                    if (active && !this.adaptiveDPR?.hasRun) {
+                        this.adaptiveDPR.start();
+                    }
+                    this.active = active;
+                });
+            }
+
+            initDPRMultiplier(dpr = 1) {
+                this.currentDPR = this.initialDPR * dpr;
+                this.eventManage.emit("resize", { w: this.screen.w, h: this.screen.h });
+            }
+
+            resize() {
+                this.screen.width = this.screen.w = this.target.offsetWidth;
+                this.screen.height = this.screen.h = this.target.offsetHeight;
+                this.screen.aspectRatio = this.screen.w / this.screen.h;
+                this.eventManage.emit("resize", { w: this.screen.w, h: this.screen.h });
+            }
+        }
+    </script>
 </html>

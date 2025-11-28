@@ -1,0 +1,3 @@
+
+if(!window.CPS_SCRIPTS) window.CPS_SCRIPTS = {}
+window.CPS_SCRIPTS.skillIcons = ["githubactions.svg","git.svg","vueUse.svg","sass.svg","taillwindcss.svg","ant.svg","TDeisgn.svg","nuxtjs.svg","nginx.svg","gcp.svg","electron.svg","cloudflare.svg","pinia.svg","linux.svg","neovim.svg","bash.svg","nodejs.svg","pnpm.svg","vite.svg","aws.svg","vscode.svg","sqlite.svg","echarts.svg","swagger.svg","django.svg","figma.svg","js.svg","lottie.svg","github.svg","vuejs.svg","npm.svg","postgresql.svg","docker.svg","vitest.svg","nextjs.svg","reactjs.svg","php.svg","vercel.svg","ae.svg","springboot.svg","obsidian.svg","mysql.svg","css.svg","lua.svg","mongodb.svg","vim.svg","java.svg","html.svg","prisma.svg","arch.svg","ts.svg","fastapi.svg","python.svg","ps.svg"]

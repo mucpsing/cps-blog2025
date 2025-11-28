@@ -7,8 +7,8 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "live-server --port=3080 --ignore=node_modules,*.log,*.ts",
-        "build": "tsc -b",
-        "build:watch": "tsc -b --watch"
+        "build": "nvm use 22 & node ./scripts/createIconsData.mjs & tsc -b",
+        "build:watch": "nvm use 22 & node ./scripts/createIconsData.mjs & tsc -b --watch"
     },
     "keywords": [],
     "devDependencies": {

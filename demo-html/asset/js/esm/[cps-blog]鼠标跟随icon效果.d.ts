@@ -35,6 +35,28 @@ export interface MouseTrackerConfig {
     iconPath?: string;
     iconsList?: string[];
 }
+/**
+ * @description:
+ * @example:
+ *
+ *import { MouseTracker } from "/asset/js/esm/[cps-blog]鼠标跟随icon效果.js";
+ *gsap.registerPlugin(CustomEase);
+ 
+ *console.log(CPS_SCRIPTS);
+ 
+ *const mouseTracker = new MouseTracker(document.body, {
+ *    threshold: 120,
+ *    count: 30,
+ *    parentId: "",
+ *    DEBUG: false,
+ *    iconsList: CPS_SCRIPTS.skillIcons,
+ *    size: 26,
+ *    iconPath: "/asset/icons/skill-icons/",
+ *});
+ 
+ *mouseTracker.addTrackerToMouse();
+ *
+ */
 export declare class MouseTracker {
     /** 默认配置 */
     private readonly defaultConfig;
@@ -43,6 +65,7 @@ export declare class MouseTracker {
     /** 容器元素 */
     private parentEl;
     private pointContainerRangeEL;
+    private eventDistoryMethodList;
     lastPoint: Point;
     distanceTraveled: number;
     pointCount: number;
@@ -58,7 +81,7 @@ export declare class MouseTracker {
      * @param {string} offseDir 来源的方向
      */
     private createParticleAnimation;
+    addTrackerToMouseMove(): void;
     createIcon(coords: Point): Point;
-    private handleMouseMove;
 }
 export {};

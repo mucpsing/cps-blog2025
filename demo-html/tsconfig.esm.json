@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "types": [],
-        "lib": ["DOM", "ES6", "esnext"],
+        "lib": ["DOM", "ES6", "esnext", "ES2019"],
         "composite": true,
         "outDir": "asset/js/esm",
         "module": "ESNext",

@@ -1,3 +1,30 @@
+/*
+ * @Author: cpasion-office-win10 373704015@qq.com
+ * @Date: 2025-11-28 08:49:58
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-11-28 10:29:37
+ * @FilePath: \cps-blog\demo-html\asset\ts\[cps-blog]鼠标跟随icon效果.ts
+ * @Description: 这是一个根据坐标来快速生成指定元素的组件
+ * @example:
+ * <script type="module">
+ *     import { MouseTracker } from "/asset/js/esm/[cps-blog]鼠标跟随icon效果.js";
+ *     gsap.registerPlugin(CustomEase);
+ *
+ *     console.log(CPS_SCRIPTS);
+ *
+ *     const mouseTracker = new MouseTracker(document.body, {
+ *         threshold: 120,
+ *         count: 30,
+ *         parentId: "",
+ *         DEBUG: false,
+ *         iconsList: CPS_SCRIPTS.skillIcons,
+ *         size: 26,
+ *         iconPath: "/asset/icons/skill-icons/",
+ *     });
+ *
+ *     mouseTracker.addTrackerToMouse();
+ * </script>
+ */
 function extendArray(length, arr) {
     if (length <= 0 || arr.length === 0) {
         return [];
@@ -6,7 +33,8 @@ function extendArray(length, arr) {
         return arr.slice(0, length);
     }
     const repeatTimes = Math.ceil(length / arr.length);
-    const repeated = Array(repeatTimes).fill(arr).flat();
+    // const repeated = Array(repeatTimes).fill(arr).flat();
+    const repeated = [].concat(...Array(repeatTimes).fill(arr));
     return repeated.slice(0, length);
 }
 /**
@@ -61,7 +89,28 @@ export const Utils = {
     calculateDistance,
 };
 const DIRECTIONS = ["right", "rightTop", "top", "leftTop", "left", "leftBottom", "bottom", "rightBottom"];
-const gsap = window.gsap;
+/**
+ * @description:
+ * @example:
+ *
+ *import { MouseTracker } from "/asset/js/esm/[cps-blog]鼠标跟随icon效果.js";
+ *gsap.registerPlugin(CustomEase);
+ 
+ *console.log(CPS_SCRIPTS);
+ 
+ *const mouseTracker = new MouseTracker(document.body, {
+ *    threshold: 120,
+ *    count: 30,
+ *    parentId: "",
+ *    DEBUG: false,
+ *    iconsList: CPS_SCRIPTS.skillIcons,
+ *    size: 26,
+ *    iconPath: "/asset/icons/skill-icons/",
+ *});
+ 
+ *mouseTracker.addTrackerToMouse();
+ *
+ */
 export class MouseTracker {
     /** 默认配置 */
     defaultConfig = {
@@ -78,11 +127,12 @@ export class MouseTracker {
     /** 容器元素 */
     parentEl;
     pointContainerRangeEL;
+    eventDistoryMethodList = [];
     lastPoint;
     distanceTraveled = 0;
     pointCount = 0;
     recordedPoints = [];
-    pointPool;
+    pointPool = [];
     CustomEase = { c1: null, c2: null };
     constructor(container, config) {
         // 参数验证
@@ -92,11 +142,16 @@ export class MouseTracker {
         if (!(container instanceof HTMLElement)) {
             throw new Error("容器必须是有效的HTMLElement");
         }
-        // 创建粒子动画
-        if (!window.CustomEase) {
-            console.error("没有依赖：CustomEase");
+        if (!window.gsap) {
+            console.error("没有依赖：gsap");
             return;
         }
+        // 创建粒子动画
+        if (!window.CustomEase) {
+            console.error("没有依赖：gsap CustomEase");
+            return;
+        }
+        gsap.registerPlugin(window.CustomEase);
         this.CustomEase.c1 = window.CustomEase.create("c1", "0.475, -0.210, 0.000, 1.240");
         this.CustomEase.c2 = window.CustomEase.create("c2", "0.000, 0.020, 0.000, 1.650");
         this.parentEl = container;
@@ -118,21 +173,26 @@ export class MouseTracker {
         };
         this.pointPool.length = 0;
         const iconList = extendArray(this.config.count, this.config.iconsList);
-        iconList.forEach((iconPath) => {
-            // console.log(iconPath);
-            const eachPointRef = document.createElement("div");
-            const eachImgEl = document.createElement("img");
-            eachImgEl.src = `/icons/skill-icons/${iconPath}`;
-            eachPointRef.appendChild(eachImgEl);
-            Object.assign(eachPointRef.style, pointInitStyle);
-            this.pointPool.push(eachPointRef);
-            this.pointContainerRangeEL.appendChild(eachPointRef);
+        iconList.forEach((eachIcon, index) => {
+            setTimeout(() => {
+                const eachPointRef = document.createElement("div");
+                const eachImgEl = document.createElement("img");
+                eachImgEl.style.width = "100%";
+                eachImgEl.style.height = "100%";
+                eachImgEl.src = `${this.config.iconPath}/${eachIcon}`;
+                eachPointRef.appendChild(eachImgEl);
+                Object.assign(eachPointRef.style, pointInitStyle);
+                this.pointPool.push(eachPointRef);
+                this.pointContainerRangeEL.appendChild(eachPointRef);
+            }, index * 10); // 每10ms加载一个，避免阻塞
         });
         this.parentEl.appendChild(this.pointContainerRangeEL);
         return this;
     }
     distory() {
         this.pointContainerRangeEL.remove();
+        this.eventDistoryMethodList.forEach((eachDistoryMethod) => eachDistoryMethod());
+        this.eventDistoryMethodList.length = 0;
     }
     /**
      * @param {number} x
@@ -178,6 +238,15 @@ export class MouseTracker {
             },
         });
     }
+    addTrackerToMouseMove() {
+        const handleMouseMove = (e) => {
+            const rect = this.parentEl.getBoundingClientRect();
+            const currentPoint = { x: e.clientX - rect.x, y: e.clientY - rect.y };
+            this.createIcon(currentPoint);
+        };
+        window.addEventListener("mousemove", handleMouseMove);
+        this.eventDistoryMethodList.push(() => window.removeEventListener("mousemove", handleMouseMove));
+    }
     createIcon(coords) {
         if (!this.lastPoint)
             return (this.lastPoint = coords);
@@ -191,21 +260,8 @@ export class MouseTracker {
         }
         this.lastPoint = coords;
     }
-    // Handle mouse movement
-    handleMouseMove(e) {
-        // const rect = document.body.getBoundingClientRect();
-        const rect = this.parentEl.getBoundingClientRect();
-        const currentPoint = { x: e.clientX - rect.x, y: e.clientY - rect.y };
-        if (!this.lastPoint)
-            return (this.lastPoint = currentPoint);
-        const distance = calculateDistance(currentPoint, this.lastPoint);
-        this.distanceTraveled += distance.distance;
-        if (this.distanceTraveled >= this.config.threshold) {
-            this.recordedPoints.push({ ...currentPoint });
-            this.distanceTraveled = 0;
-            this.pointCount = this.recordedPoints.length;
-            this.createParticleAnimation(currentPoint.x, currentPoint.y, distance.direction);
-        }
-        this.lastPoint = currentPoint;
-    }
 }
+if (!window.CPS_SCRIPTS)
+    window.CPS_SCRIPTS = {};
+window.CPS_SCRIPTS.MouseTracker = MouseTracker;
+const gsap = window.gsap;

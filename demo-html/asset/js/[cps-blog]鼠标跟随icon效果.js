@@ -2,8 +2,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2025-11-28 08:49:58
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-11-28 10:29:37
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-11-29 21:16:04
  * @FilePath: \cps-blog\demo-html\asset\ts\[cps-blog]鼠标跟随icon效果.ts
  * @Description: 这是一个根据坐标来快速生成指定元素的组件
  * @example:
@@ -14,7 +14,7 @@
  *     console.log(CPS_SCRIPTS);
  *
  *     const mouseTracker = new MouseTracker(document.body, {
- *         threshold: 120,
+ *         triggerDistance: 120,
  *         count: 30,
  *         parentId: "",
  *         DEBUG: false,
@@ -102,7 +102,7 @@ const DIRECTIONS = ["right", "rightTop", "top", "leftTop", "left", "leftBottom",
  *console.log(CPS_SCRIPTS);
  
  *const mouseTracker = new MouseTracker(document.body, {
- *    threshold: 120,
+ *    triggerDistance: 120,
  *    count: 30,
  *    parentId: "",
  *    DEBUG: false,
@@ -111,14 +111,14 @@ const DIRECTIONS = ["right", "rightTop", "top", "leftTop", "left", "leftBottom",
  *    iconPath: "/asset/icons/skill-icons/",
  *});
  
- *mouseTracker.addTrackerToMouse();
+ *mouseTracker.triggerOnMouseMove();
  *
  */
 class MouseTracker {
     constructor(container, config) {
         /** 默认配置 */
         this.defaultConfig = {
-            threshold: 120,
+            triggerDistance: 120,
             count: 30,
             parentId: "",
             DEBUG: false,
@@ -229,14 +229,18 @@ class MouseTracker {
                             delay: 0.03,
                             ease: "c2",
                             opacity: 0,
+                            onComplete: () => {
+                                gsap.set(availableParticle, { x: 0 });
+                            },
                         });
                     },
                 });
             },
         });
     }
-    addTrackerToMouseMove() {
+    triggerOnMouseMove() {
         const handleMouseMove = (e) => {
+            console.log("triggerOnMouseMove");
             const rect = this.parentEl.getBoundingClientRect();
             const currentPoint = { x: e.clientX - rect.x, y: e.clientY - rect.y };
             this.createIcon(currentPoint);
@@ -244,12 +248,22 @@ class MouseTracker {
         window.addEventListener("mousemove", handleMouseMove);
         this.eventDistoryMethodList.push(() => window.removeEventListener("mousemove", handleMouseMove));
     }
+    triggerOnTouch() {
+        const handleTouchMove = (e) => {
+            console.log("triggerOnTouch");
+            const rect = this.parentEl.getBoundingClientRect();
+            const currentPoint = { x: e.touches[0].clientX - rect.x, y: e.touches[0].clientY - rect.y };
+            this.createIcon(currentPoint);
+        };
+        window.addEventListener("touchmove", handleTouchMove);
+        this.eventDistoryMethodList.push(() => window.removeEventListener("touchmove", handleTouchMove));
+    }
     createIcon(coords) {
         if (!this.lastPoint)
             return (this.lastPoint = coords);
         const distance = calculateDistance(coords, this.lastPoint);
         this.distanceTraveled += distance.distance;
-        if (this.distanceTraveled >= this.config.threshold) {
+        if (this.distanceTraveled >= this.config.triggerDistance) {
             this.recordedPoints.push(Object.assign({}, coords));
             this.distanceTraveled = 0;
             this.pointCount = this.recordedPoints.length;

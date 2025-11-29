@@ -27,7 +27,7 @@ export interface Point {
     dir?: string;
 }
 export interface MouseTrackerConfig {
-    threshold?: number;
+    triggerDistance?: number;
     count?: number;
     parentId?: string;
     DEBUG?: boolean;
@@ -45,7 +45,7 @@ export interface MouseTrackerConfig {
  *console.log(CPS_SCRIPTS);
  
  *const mouseTracker = new MouseTracker(document.body, {
- *    threshold: 120,
+ *    triggerDistance: 120,
  *    count: 30,
  *    parentId: "",
  *    DEBUG: false,
@@ -54,7 +54,7 @@ export interface MouseTrackerConfig {
  *    iconPath: "/asset/icons/skill-icons/",
  *});
  
- *mouseTracker.addTrackerToMouse();
+ *mouseTracker.triggerOnMouseMove();
  *
  */
 export declare class MouseTracker {
@@ -81,7 +81,8 @@ export declare class MouseTracker {
      * @param {string} offseDir 来源的方向
      */
     private createParticleAnimation;
-    addTrackerToMouseMove(): void;
+    triggerOnMouseMove(): void;
+    triggerOnTouch(): void;
     createIcon(coords: Point): Point;
 }
 export {};

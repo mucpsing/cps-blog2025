@@ -1,8 +1,8 @@
 <!--
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-11-27 21:50:28
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-11-28 10:15:32
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-11-29 21:12:28
  * @FilePath: \cps-blog2025\demo-html\[cps-blog]鼠标跟随icon效果.html
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -24,7 +24,7 @@
             console.log(CPS_SCRIPTS);
 
             const mouseTracker = new MouseTracker(document.body, {
-                threshold: 120,
+                triggerDistance: 80,
                 count: 60,
                 parentId: "",
                 DEBUG: false,
@@ -33,7 +33,9 @@
                 iconPath: "/asset/icons/skill-icons/",
             });
 
-            mouseTracker.addTrackerToMouseMove();
+            mouseTracker.triggerOnMouseMove();
+
+            mouseTracker.triggerOnTouch();
         </script>
     </head>
     <body></body>

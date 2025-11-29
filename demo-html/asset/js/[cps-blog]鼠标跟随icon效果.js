@@ -3,7 +3,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2025-11-28 08:49:58
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-11-29 21:16:04
+ * @LastEditTime: 2025-11-29 21:31:24
  * @FilePath: \cps-blog\demo-html\asset\ts\[cps-blog]鼠标跟随icon效果.ts
  * @Description: 这是一个根据坐标来快速生成指定元素的组件
  * @example:
@@ -202,6 +202,7 @@ class MouseTracker {
         if (!availableParticle)
             return;
         const { offsetX, offsetY, rotate1, rotate2 } = calculateOffset(offseDir);
+        const parentRect = this.parentEl.getBoundingClientRect();
         // 设置元素初始位置
         // 这里嵌套编写目的时为了过度效果更加跟手和丝滑
         gsap.set(availableParticle, {
@@ -223,14 +224,14 @@ class MouseTracker {
                     onComplete: () => {
                         // 元素放大后设置落下效果
                         gsap.to(availableParticle, {
-                            y: window.innerHeight + 100,
+                            y: parentRect.height || window.innerHeight + 100,
                             rotate: rotate2,
                             duration: 3,
                             delay: 0.03,
                             ease: "c2",
                             opacity: 0,
                             onComplete: () => {
-                                gsap.set(availableParticle, { x: 0 });
+                                gsap.set(availableParticle, { x: 0, y: parentRect.height || window.innerHeight });
                             },
                         });
                     },

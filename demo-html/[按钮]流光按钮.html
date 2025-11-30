@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>流光边框按钮效果</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                background-color: #eee;
+                font-family: "Arial", sans-serif;
+                padding: 20px;
+                z-index: 1;
+            }
+
+            .box {
+                border-radius: 4vmin;
+                width: 200px;
+                height: 200px;
+                position: relative;
+                color: #000;
+                text-align: center;
+                z-index: 1;
+                /* border: 2px red solid; */
+            }
+
+            @keyframes rotate {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .box::before {
+                content: "";
+                width: 200%;
+                height: 200%;
+                left: -50%;
+                top: -50%;
+                position: absolute;
+                background-image: conic-gradient(transparent, #66ddf7, transparent 30%);
+                z-index: -2;
+                animation: rotate 5s linear infinite;
+            }
+
+            .box::after {
+                content: "";
+                position: absolute;
+                inset: 1px;
+                background-color: #eee;
+                border-radius: 4vmin;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="box">流光效果1</div>
+    </body>
+</html>

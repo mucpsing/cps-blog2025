@@ -198,7 +198,7 @@
                 margin-top: 2rem;
             }
 
-            .loading-btn-warp button {
+            .loading-btn-warp .btn-to-home,.loading-btn-warp .btn-to-docs  {
                 border: 0;
                 outline: none;
                 padding: 10px;
@@ -235,6 +235,12 @@
                 border-color: rgba(255, 255, 255, 0);
                 color: rgba(0, 0, 0, 0.8);
             }
+
+            .btn-to-home-warp{
+                padding: 2px;
+                background-size: contain;
+                background-image: conic-gradient(from var(--border-gradient-angle) at 50% 50%, transparent, #70ffaf 14%, transparent 17%);
+            }
         </style>
     </head>
     <body>
@@ -257,7 +263,9 @@
             </div>
 
             <div class="loading-btn-warp">
-                <button type="button" class="btn-to-home">🏠 博客首页</button>
+                <div class="btn-to-home-warp">
+                    <button type="button" class="btn-to-home">🏠 博客首页</button>
+                </div>
                 <button type="button" class="btn-to-docs">📔 学习笔记</button>
                 <button type="button" class="btn-to-home">旧版首页 🏠</button>
             </div>

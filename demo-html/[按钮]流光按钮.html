@@ -1,3 +1,11 @@
+<!--
+ * @Author: Capsion 373704015@qq.com
+ * @Date: 2025-11-30 09:23:28
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-12-04 20:49:42
+ * @FilePath: \cps-blog2025\demo-html\[按钮]流光按钮.html
+ * @Description: 这是参考这个视频实现的流水边框效果https://www.bilibili.com/video/BV1VJ4m1T7vH/
+-->
 <!DOCTYPE html>
 <html lang="zh-CN">
     <head>
@@ -25,11 +33,12 @@
             .box {
                 border-radius: 4vmin;
                 width: 200px;
-                height: 200px;
+                height: 100px;
                 position: relative;
                 color: #000;
                 text-align: center;
                 z-index: 1;
+                overflow: hidden;
                 /* border: 2px red solid; */
             }
 
@@ -38,7 +47,6 @@
                     transform: rotate(360deg);
                 }
             }
-
             .box::before {
                 content: "";
                 width: 200%;
@@ -56,6 +64,7 @@
                 position: absolute;
                 inset: 1px;
                 background-color: #eee;
+                z-index: -1;
                 border-radius: 4vmin;
             }
         </style>

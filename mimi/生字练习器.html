@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小学生识字乐园 ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #5D9CEC;
+            --success-color: #A0D468;
+            --danger-color: #ED5565;
+            --warning-color: #FFCE54;
+            --light-color: #F5F7FA;
+            --dark-color: #656D78;
+            --border-radius: 16px;
+            --shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        /* 标题栏 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .title-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            background: none;
+            border: 2px dashed transparent;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            min-width: 200px;
+        }
+
+        .title:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            background-color: rgba(93, 156, 236, 0.1);
+        }
+
+        .header-emoji {
+            font-size: 2rem;
+        }
+
+        .config-btn {
+            background: var(--light-color);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .config-btn:hover {
+            transform: rotate(30deg);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* 主内容区域 */
+        .main-container {
+            display: flex;
+            gap: 20px;
+            height: calc(100vh - 150px);
+        }
+
+        /* 认字区域 */
+        .character-area {
+            flex: 1;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 田字格 */
+        .tianzi-container {
+            width: 300px;
+            height: 300px;
+            position: relative;
+            margin: 20px 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tianzi-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid #333;
+            border-radius: 4px;
+            background: repeating-linear-gradient(0deg, transparent, transparent 149px, #333 150px),
+                        repeating-linear-gradient(90deg, transparent, transparent 149px, #333 150px);
+            background-size: 100% 150px, 150px 100%;
+            opacity: 0.7;
+        }
+
+        .character-display {
+            position: relative;
+            z-index: 2;
+            font-size: 180px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1;
+            color: #2C3E50;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+        }
+
+        /* 控制按钮 */
+        .control-buttons {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+        }
+
+        .btn-remember {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-forget {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-emoji {
+            font-size: 1.5rem;
+        }
+
+        /* 信息记录区域 */
+        .info-area {
+            flex: 1;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            flex: 1;
+            background: var(--light-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--dark-color);
+        }
+
+        .word-lists {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .word-list {
+            flex: 1;
+            background: var(--light-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .word-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .word-list-title {
+            font-size: 1.3rem;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .list-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .list-btn {
+            background: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .list-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .clear-all-btn {
+            color: var(--danger-color);
+        }
+
+        .word-list-container {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .word-list-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .word-list-container::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+        }
+
+        .word-item {
+            background: white;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .word-item:hover {
+            transform: translateX(5px);
+        }
+
+        .word-character {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .word-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .remove-word-btn {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .remove-word-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* 配置面板 */
+        .config-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 450px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+            padding: 30px;
+            transform: translateX(100%);
+            transition: transform 0.4s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .config-panel.active {
+            transform: translateX(0);
+        }
+
+        .config-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .config-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .close-config {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--dark-color);
+        }
+
+        .config-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .config-section:last-child {
+            border-bottom: none;
+        }
+
+        .config-section-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .font-selector, .wordset-selector {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            background: var(--light-color);
+        }
+
+        .custom-words-input {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            resize: vertical;
+            margin-bottom: 15px;
+            background: var(--light-color);
+        }
+
+        .file-upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            background: var(--light-color);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--primary-color);
+            background: rgba(93, 156, 236, 0.05);
+        }
+
+        .file-upload-area.dragover {
+            border-color: var(--primary-color);
+            background: rgba(93, 156, 236, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+
+        .upload-hint {
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .custom-font-upload {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .custom-font-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: var(--light-color);
+        }
+
+        .upload-font-btn {
+            padding: 12px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .upload-font-btn:hover {
+            background: #4a8be0;
+        }
+
+        .hint {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .config-btn-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .config-btn-save, .config-btn-reset {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .config-btn-save {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .config-btn-reset {
+            background: var(--light-color);
+            color: var(--dark-color);
+        }
+
+        /* 遮罩层 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .character-area, .info-area {
+                min-height: 500px;
+            }
+            
+            .config-panel {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .control-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .stats-container {
+                flex-direction: column;
+            }
+            
+            .word-lists {
+                flex-direction: column;
+            }
+            
+            .tianzi-container {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .character-display {
+                font-size: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 遮罩层 -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- 标题栏 -->
+    <header class="header">
+        <div class="title-container">
+            <span class="header-emoji">📚</span>
+            <input type="text" class="title" id="appTitle" value="小学生识字乐园" maxlength="20">
+        </div>
+        <button class="config-btn" id="configBtn">⚙️</button>
+    </header>
+
+    <!-- 主内容区域 -->
+    <div class="main-container">
+        <!-- 认字区域 -->
+        <div class="character-area">
+            <div class="tianzi-container">
+                <div class="tianzi-grid"></div>
+                <div class="character-display" id="currentCharacter">学</div>
+            </div>
+            <div class="control-buttons">
+                <button class="btn btn-remember" id="rememberBtn">
+                    <span class="btn-emoji">✅</span> 我记得
+                </button>
+                <button class="btn btn-forget" id="forgetBtn">
+                    <span class="btn-emoji">❌</span> 不记得
+                </button>
+            </div>
+        </div>
+
+        <!-- 信息记录区域 -->
+        <div class="info-area">
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-label">已认识</div>
+                    <div class="stat-value" id="knownCount">0</div>
+                    <div class="stat-label">个字</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">不认识</div>
+                    <div class="stat-value" id="unknownCount">0</div>
+                    <div class="stat-label">个字</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">学习进度</div>
+                    <div class="stat-value" id="progress">0%</div>
+                    <div class="stat-label">已完成</div>
+                </div>
+            </div>
+            <div class="word-lists">
+                <div class="word-list">
+                    <div class="word-list-header">
+                        <div class="word-list-title">
+                            <span>✅</span> 已认识的字
+                        </div>
+                        <div class="list-controls">
+                            <button class="list-btn clear-all-btn" data-list="known" title="清空全部">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="word-list-container" id="knownWordsList"></div>
+                </div>
+                <div class="word-list">
+                    <div class="word-list-header">
+                        <div class="word-list-title">
+                            <span>❌</span> 不认识的字
+                        </div>
+                        <div class="list-controls">
+                            <button class="list-btn clear-all-btn" data-list="unknown" title="清空全部">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="word-list-container" id="unknownWordsList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 配置面板 -->
+    <div class="config-panel" id="configPanel">
+        <div class="config-header">
+            <h2 class="config-title">⚙️ 应用设置</h2>
+            <button class="close-config" id="closeConfigBtn">×</button>
+        </div>
+        
+        <div class="config-section">
+            <h3 class="config-section-title">🎨 字体设置</h3>
+            <select class="font-selector" id="fontSelector">
+                <option value="'Arial Rounded MT Bold', 'Arial', sans-serif">默认字体 (圆体)</option>
+                <option value="'KaiTi', '楷体', STKaiti, serif">系统楷体</option>
+                <option value="'SimSun', '宋体', serif">宋体</option>
+                <option value="'Microsoft YaHei', '微软雅黑', sans-serif">微软雅黑</option>
+                <option value="'SimHei', '黑体', sans-serif">黑体</option>
+            </select>
+            <p class="hint">选择系统内置字体</p>
+        </div>
+        
+        <div class="config-section">
+            <h3 class="config-section-title">🔤 自定义字体</h3>
+            <div class="custom-font-upload">
+                <input type="text" class="custom-font-input" id="customFontInput" placeholder="输入自定义字体名称，如：'MyPinyinFont', sans-serif">
+                <button class="upload-font-btn" id="applyCustomFontBtn">应用字体</button>
+            </div>
+            <p class="hint">如需使用带拼音的字体，请先安装字体到系统，然后在此输入字体名称</p>
+        </div>
+        
+        <div class="config-section">
+            <h3 class="config-section-title">📚 字库管理</h3>
+            <select class="wordset-selector" id="wordsetSelector">
+                <option value="default">默认字库 (小学一年级常用100字)</option>
+            </select>
+            
+            <div class="file-upload-area" id="fileUploadArea">
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">点击或拖拽上传TXT字库文件</div>
+                <div class="upload-hint">支持.txt文件，每行一个汉字或逗号/分号分隔</div>
+                <input type="file" class="file-input" id="wordFileInput" accept=".txt">
+            </div>
+            
+            <textarea class="custom-words-input" id="customWordsInput" placeholder="或直接输入汉字，用逗号、分号或空格分隔。例如：人, 口, 手; 上, 中, 下"></textarea>
+            
+            <div class="config-btn-group">
+                <button class="config-btn-save" id="addWordsetBtn">➕ 添加字库</button>
+                <button class="config-btn-reset" id="removeWordsetBtn">➖ 删除字库</button>
+            </div>
+        </div>
+        
+        <div class="config-section">
+            <h3 class="config-section-title">📊 数据管理</h3>
+            <div class="config-btn-group">
+                <button class="config-btn-save" id="exportDataBtn">💾 导出数据</button>
+                <button class="config-btn-reset" id="importDataBtn">📥 导入数据</button>
+            </div>
+            <p class="hint">导出/导入学习进度和字库设置</p>
+        </div>
+        
+        <div class="config-btn-group">
+            <button class="config-btn-save" id="saveConfigBtn">💾 保存设置</button>
+            <button class="config-btn-reset" id="resetConfigBtn">🔄 重置进度</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // 默认字库 - 小学一年级常用100字
+        const DEFAULT_WORDS = [
+            "一", "二", "三", "四", "五", "六", "七", "八", "九", "十",
+            "人", "口", "手", "大", "小", "多", "少", "上", "中", "下",
+            "天", "地", "日", "月", "水", "火", "山", "石", "田", "土",
+            "木", "禾", "米", "竹", "刀", "车", "门", "马", "牛", "羊",
+            "花", "草", "树", "林", "云", "雨", "风", "电", "春", "夏",
+            "秋", "冬", "东", "南", "西", "北", "左", "右", "前", "后",
+            "爸", "妈", "爷", "奶", "哥", "姐", "弟", "妹", "我", "你",
+            "他", "她", "它", "的", "了", "是", "不", "在", "有", "和",
+            "学", "生", "老", "师", "同", "书", "本", "字", "文", "语",
+            "数", "音", "体", "美", "校", "园", "教", "室", "课", "桌"
+        ];
+
+        class LiteracyApp {
+            constructor() {
+                // 应用状态
+                this.state = {
+                    words: [...DEFAULT_WORDS],
+                    currentIndex: 0,
+                    knownWords: new Set(),
+                    unknownWords: new Set(),
+                    isConfigOpen: false,
+                    wordsets: new Map([['default', {name: '默认字库', words: DEFAULT_WORDS}]]),
+                    currentWordset: 'default'
+                };
+                
+                // DOM元素
+                this.elements = {
+                    currentCharacter: document.getElementById('currentCharacter'),
+                    knownCount: document.getElementById('knownCount'),
+                    unknownCount: document.getElementById('unknownCount'),
+                    progress: document.getElementById('progress'),
+                    knownWordsList: document.getElementById('knownWordsList'),
+                    unknownWordsList: document.getElementById('unknownWordsList'),
+                    rememberBtn: document.getElementById('rememberBtn'),
+                    forgetBtn: document.getElementById('forgetBtn'),
+                    configBtn: document.getElementById('configBtn'),
+                    configPanel: document.getElementById('configPanel'),
+                    closeConfigBtn: document.getElementById('closeConfigBtn'),
+                    overlay: document.getElementById('overlay'),
+                    fontSelector: document.getElementById('fontSelector'),
+                    customWordsInput: document.getElementById('customWordsInput'),
+                    saveConfigBtn: document.getElementById('saveConfigBtn'),
+                    resetConfigBtn: document.getElementById('resetConfigBtn'),
+                    appTitle: document.getElementById('appTitle'),
+                    wordsetSelector: document.getElementById('wordsetSelector'),
+                    fileUploadArea: document.getElementById('fileUploadArea'),
+                    wordFileInput: document.getElementById('wordFileInput'),
+                    addWordsetBtn: document.getElementById('addWordsetBtn'),
+                    removeWordsetBtn: document.getElementById('removeWordsetBtn'),
+                    customFontInput: document.getElementById('customFontInput'),
+                    applyCustomFontBtn: document.getElementById('applyCustomFontBtn'),
+                    exportDataBtn: document.getElementById('exportDataBtn'),
+                    importDataBtn: document.getElementById('importDataBtn')
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                // 加载保存的数据
+                this.loadState();
+                
+                // 设置初始字
+                this.updateCharacter();
+                
+                // 更新统计信息
+                this.updateStats();
+                
+                // 更新字库选择器
+                this.updateWordsetSelector();
+                
+                // 绑定事件
+                this.bindEvents();
+            }
+            
+            bindEvents() {
+                // 按钮事件
+                this.elements.rememberBtn.addEventListener('click', () => this.handleRemember());
+                this.elements.forgetBtn.addEventListener('click', () => this.handleForget());
+                
+                // 配置面板事件
+                this.elements.configBtn.addEventListener('click', () => this.openConfig());
+                this.elements.closeConfigBtn.addEventListener('click', () => this.closeConfig());
+                this.elements.overlay.addEventListener('click', () => this.closeConfig());
+                
+                // 配置保存事件
+                this.elements.saveConfigBtn.addEventListener('click', () => this.saveConfig());
+                this.elements.resetConfigBtn.addEventListener('click', () => this.resetProgress());
+                
+                // 标题编辑事件
+                this.elements.appTitle.addEventListener('blur', () => this.saveTitle());
+                this.elements.appTitle.addEventListener('keyup', (e) => {
+                    if (e.key === 'Enter') this.elements.appTitle.blur();
+                });
+                
+                // 字体切换事件
+                this.elements.fontSelector.addEventListener('change', (e) => {
+                    this.applyFont(e.target.value);
+                });
+                
+                // 自定义字体应用
+                this.elements.applyCustomFontBtn.addEventListener('click', () => {
+                    const fontFamily = this.elements.customFontInput.value.trim();
+                    if (fontFamily) {
+                        this.applyFont(fontFamily);
+                        localStorage.setItem('customFontFamily', fontFamily);
+                        alert('✅ 自定义字体已应用');
+                    }
+                });
+                
+                // 字库管理事件
+                this.elements.wordsetSelector.addEventListener('change', (e) => {
+                    this.switchWordset(e.target.value);
+                });
+                
+                this.elements.addWordsetBtn.addEventListener('click', () => this.addWordset());
+                this.elements.removeWordsetBtn.addEventListener('click', () => this.removeWordset());
+                
+                // 文件上传事件
+                this.elements.fileUploadArea.addEventListener('click', () => {
+                    this.elements.wordFileInput.click();
+                });
+                
+                this.elements.fileUploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    this.elements.fileUploadArea.classList.add('dragover');
+                });
+                
+                this.elements.fileUploadArea.addEventListener('dragleave', () => {
+                    this.elements.fileUploadArea.classList.remove('dragover');
+                });
+                
+                this.elements.fileUploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    this.elements.fileUploadArea.classList.remove('dragover');
+                    
+                    if (e.dataTransfer.files.length > 0) {
+                        this.handleFileUpload(e.dataTransfer.files[0]);
+                    }
+                });
+                
+                this.elements.wordFileInput.addEventListener('change', (e) => {
+                    if (e.target.files.length > 0) {
+                        this.handleFileUpload(e.target.files[0]);
+                    }
+                });
+                
+                // 数据导入导出
+                this.elements.exportDataBtn.addEventListener('click', () => this.exportData());
+                this.elements.importDataBtn.addEventListener('click', () => this.importData());
+                
+                // 清空列表按钮事件委托
+                document.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('clear-all-btn')) {
+                        const listType = e.target.dataset.list;
+                        this.clearList(listType);
+                    }
+                    
+                    if (e.target.classList.contains('remove-word-btn')) {
+                        const character = e.target.dataset.character;
+                        const listType = e.target.dataset.list;
+                        this.removeWordFromList(character, listType);
+                    }
+                });
+            }
+            
+            updateCharacter() {
+                if (this.state.words.length === 0) {
+                    this.elements.currentCharacter.textContent = "完";
+                    return;
+                }
+                
+                const currentChar = this.state.words[this.state.currentIndex];
+                this.elements.currentCharacter.textContent = currentChar;
+            }
+            
+            applyFont(fontFamily) {
+                this.elements.currentCharacter.style.fontFamily = fontFamily;
+            }
+            
+            nextCharacter() {
+                if (this.state.words.length === 0) return;
+                
+                this.state.currentIndex = (this.state.currentIndex + 1) % this.state.words.length;
+                this.updateCharacter();
+            }
+            
+            handleRemember() {
+                const currentChar = this.state.words[this.state.currentIndex];
+                this.state.knownWords.add(currentChar);
+                this.state.unknownWords.delete(currentChar);
+                
+                this.saveState();
+                this.updateStats();
+                this.nextCharacter();
+                
+                // 添加动画反馈
+                this.animateButton(this.elements.rememberBtn);
+            }
+            
+            handleForget() {
+                const currentChar = this.state.words[this.state.currentIndex];
+                this.state.unknownWords.add(currentChar);
+                this.state.knownWords.delete(currentChar);
+                
+                this.saveState();
+                this.updateStats();
+                this.nextCharacter();
+                
+                // 添加动画反馈
+                this.animateButton(this.elements.forgetBtn);
+            }
+            
+            animateButton(button) {
+                button.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    button.style.transform = 'scale(1)';
+                }, 150);
+            }
+            
+            updateStats() {
+                // 更新计数
+                this.elements.knownCount.textContent = this.state.knownWords.size;
+                this.elements.unknownCount.textContent = this.state.unknownWords.size;
+                
+                // 更新进度
+                const totalLearned = this.state.knownWords.size + this.state.unknownWords.size;
+                const progress = this.state.words.length > 0 
+                    ? Math.round((totalLearned / this.state.words.length) * 100) 
+                    : 0;
+                this.elements.progress.textContent = `${progress}%`;
+                
+                // 更新字列表
+                this.updateWordLists();
+            }
+            
+            updateWordLists() {
+                // 清空列表
+                this.elements.knownWordsList.innerHTML = '';
+                this.elements.unknownWordsList.innerHTML = '';
+                
+                // 添加已认识的字
+                Array.from(this.state.knownWords).forEach(char => {
+                    this.addWordToList(this.elements.knownWordsList, char, 'known');
+                });
+                
+                // 添加不认识的字
+                Array.from(this.state.unknownWords).forEach(char => {
+                    this.addWordToList(this.elements.unknownWordsList, char, 'unknown');
+                });
+                
+                // 如果列表为空，显示提示
+                if (this.state.knownWords.size === 0) {
+                    this.elements.knownWordsList.innerHTML = '<div class="word-item" style="justify-content: center; color: #999;">暂无已认识的字</div>';
+                }
+                
+                if (this.state.unknownWords.size === 0) {
+                    this.elements.unknownWordsList.innerHTML = '<div class="word-item" style="justify-content: center; color: #999;">暂无不认识的字</div>';
+                }
+            }
+            
+            addWordToList(listElement, character, type) {
+                const wordItem = document.createElement('div');
+                wordItem.className = 'word-item';
+                
+                wordItem.innerHTML = `
+                    <div>
+                        <div class="word-character">${character}</div>
+                    </div>
+                    <div class="word-controls">
+                        <button class="remove-word-btn" data-character="${character}" data-list="${type}" title="移除此字">×</button>
+                    </div>
+                `;
+                
+                listElement.appendChild(wordItem);
+            }
+            
+            removeWordFromList(character, listType) {
+                if (listType === 'known') {
+                    this.state.knownWords.delete(character);
+                } else if (listType === 'unknown') {
+                    this.state.unknownWords.delete(character);
+                }
+                
+                this.saveState();
+                this.updateStats();
+            }
+            
+            clearList(listType) {
+                if (!confirm(`确定要清空${listType === 'known' ? '已认识' : '不认识'}的字列表吗？`)) {
+                    return;
+                }
+                
+                if (listType === 'known') {
+                    this.state.knownWords.clear();
+                } else if (listType === 'unknown') {
+                    this.state.unknownWords.clear();
+                }
+                
+                this.saveState();
+                this.updateStats();
+            }
+            
+            openConfig() {
+                this.elements.configPanel.classList.add('active');
+                this.elements.overlay.classList.add('active');
+                this.state.isConfigOpen = true;
+                
+                // 填充当前设置
+                this.elements.customWordsInput.value = '';
+                
+                // 加载自定义字体
+                const savedFont = localStorage.getItem('customFontFamily');
+                if (savedFont) {
+                    this.elements.customFontInput.value = savedFont;
+                }
+            }
+            
+            closeConfig() {
+                this.elements.configPanel.classList.remove('active');
+                this.elements.overlay.classList.remove('active');
+                this.state.isConfigOpen = false;
+            }
+            
+            saveConfig() {
+                // 保存字体设置
+                const selectedFont = this.elements.fontSelector.value;
+                this.applyFont(selectedFont);
+                localStorage.setItem('literacyFont', selectedFont);
+                
+                this.closeConfig();
+                alert('✅ 设置已保存');
+            }
+            
+            resetProgress() {
+                if (confirm('确定要重置学习进度吗？已认识和不认识的字列表将被清空。')) {
+                    this.state.knownWords.clear();
+                    this.state.unknownWords.clear();
+                    this.state.currentIndex = 0;
+                    
+                    this.updateCharacter();
+                    this.updateStats();
+                    this.saveState();
+                    
+                    alert('🔄 学习进度已重置');
+                }
+            }
+            
+            saveTitle() {
+                const title = this.elements.appTitle.value.trim() || '小学生识字乐园';
+                localStorage.setItem('literacyTitle', title);
+            }
+            
+            updateWordsetSelector() {
+                const selector = this.elements.wordsetSelector;
+                selector.innerHTML = '';
+                
+                for (const [id, wordset] of this.state.wordsets) {
+                    const option = document.createElement('option');
+                    option.value = id;
+                    option.textContent = `${wordset.name} (${wordset.words.length}个字)`;
+                    if (id === this.state.currentWordset) {
+                        option.selected = true;
+                    }
+                    selector.appendChild(option);
+                }
+            }
+            
+            switchWordset(wordsetId) {
+                if (this.state.wordsets.has(wordsetId)) {
+                    const wordset = this.state.wordsets.get(wordsetId);
+                    this.state.words = [...wordset.words];
+                    this.state.currentWordset = wordsetId;
+                    this.state.currentIndex = 0;
+                    this.state.knownWords.clear();
+                    this.state.unknownWords.clear();
+                    
+                    this.updateCharacter();
+                    this.updateStats();
+                    this.saveState();
+                    
+                    console.log(`切换到字库: ${wordset.name}`);
+                }
+            }
+            
+            async handleFileUpload(file) {
+                if (!file.name.endsWith('.txt')) {
+                    alert('⚠️ 请上传TXT格式的文件');
+                    return;
+                }
+                
+                try {
+                    const text = await file.text();
+                    const words = this.parseWordText(text);
+                    
+                    if (words.length === 0) {
+                        alert('⚠️ 文件中没有找到有效的汉字');
+                        return;
+                    }
+                    
+                    // 使用文件名作为字库名
+                    const wordsetName = file.name.replace('.txt', '');
+                    const wordsetId = `custom_${Date.now()}`;
+                    
+                    this.state.wordsets.set(wordsetId, {
+                        name: wordsetName,
+                        words: words
+                    });
+                    
+                    this.updateWordsetSelector();
+                    this.saveState();
+                    
+                    alert(`✅ 已添加字库 "${wordsetName}"，包含 ${words.length} 个汉字`);
+                    
+                } catch (error) {
+                    console.error('文件读取错误:', error);
+                    alert('❌ 文件读取失败，请重试');
+                }
+            }
+            
+            parseWordText(text) {
+                // 使用正则表达式分割多种分隔符
+                const words = text.split(/[,，;；\s\n]+/);
+                
+                // 过滤空字符、非汉字字符和重复项
+                const filteredWords = [...new Set(words
+                    .map(word => word.trim())
+                    .filter(word => {
+                        // 只保留单个汉字
+                        if (word.length !== 1) return false;
+                        // 检查是否为汉字
+                        const code = word.charCodeAt(0);
+                        return code >= 0x4E00 && code <= 0x9FA5;
+                    }))];
+                
+                return filteredWords;
+            }
+            
+            addWordset() {
+                const input = this.elements.customWordsInput.value.trim();
+                
+                if (!input) {
+                    alert('⚠️ 请输入汉字或上传TXT文件');
+                    return;
+                }
+                
+                const words = this.parseWordText(input);
+                
+                if (words.length === 0) {
+                    alert('⚠️ 没有找到有效的汉字');
+                    return;
+                }
+                
+                const wordsetName = `自定义字库 ${new Date().toLocaleDateString()}`;
+                const wordsetId = `custom_${Date.now()}`;
+                
+                this.state.wordsets.set(wordsetId, {
+                    name: wordsetName,
+                    words: words
+                });
+                
+                this.updateWordsetSelector();
+                this.elements.customWordsInput.value = '';
+                this.saveState();
+                
+                alert(`✅ 已添加字库 "${wordsetName}"，包含 ${words.length} 个汉字`);
+            }
+            
+            removeWordset() {
+                const selector = this.elements.wordsetSelector;
+                const selectedId = selector.value;
+                
+                if (selectedId === 'default') {
+                    alert('⚠️ 不能删除默认字库');
+                    return;
+                }
+                
+                if (!confirm('确定要删除这个字库吗？')) {
+                    return;
+                }
+                
+                this.state.wordsets.delete(selectedId);
+                this.updateWordsetSelector();
+                this.saveState();
+                
+                alert('🗑️ 字库已删除');
+            }
+            
+            exportData() {
+                const data = {
+                    title: this.elements.appTitle.value,
+                    font: localStorage.getItem('literacyFont') || this.elements.fontSelector.value,
+                    customFont: localStorage.getItem('customFontFamily') || '',
+                    currentWordset: this.state.currentWordset,
+                    wordsets: Array.from(this.state.wordsets.entries()),
+                    state: {
+                        words: this.state.words,
+                        currentIndex: this.state.currentIndex,
+                        knownWords: Array.from(this.state.knownWords),
+                        unknownWords: Array.from(this.state.unknownWords)
+                    }
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `识字学习数据_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert('✅ 数据已导出为JSON文件');
+            }
+            
+            importData() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                
+                input.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    try {
+                        const text = await file.text();
+                        const data = JSON.parse(text);
+                        
+                        // 恢复数据
+                        if (data.title) {
+                            this.elements.appTitle.value = data.title;
+                            localStorage.setItem('literacyTitle', data.title);
+                        }
+                        
+                        if (data.font) {
+                            this.elements.fontSelector.value = data.font;
+                            this.applyFont(data.font);
+                            localStorage.setItem('literacyFont', data.font);
+                        }
+                        
+                        if (data.customFont) {
+                            this.elements.customFontInput.value = data.customFont;
+                            localStorage.setItem('customFontFamily', data.customFont);
+                        }
+                        
+                        if (data.wordsets) {
+                            this.state.wordsets = new Map(data.wordsets);
+                            this.updateWordsetSelector();
+                        }
+                        
+                        if (data.currentWordset) {
+                            this.state.currentWordset = data.currentWordset;
+                            this.elements.wordsetSelector.value = data.currentWordset;
+                        }
+                        
+                        if (data.state) {
+                            this.state.words = data.state.words || [...DEFAULT_WORDS];
+                            this.state.currentIndex = data.state.currentIndex || 0;
+                            this.state.knownWords = new Set(data.state.knownWords || []);
+                            this.state.unknownWords = new Set(data.state.unknownWords || []);
+                        }
+                        
+                        this.updateCharacter();
+                        this.updateStats();
+                        this.saveState();
+                        
+                        alert('✅ 数据导入成功');
+                    } catch (error) {
+                        console.error('数据导入错误:', error);
+                        alert('❌ 数据导入失败，请检查文件格式');
+                    }
+                };
+                
+                input.click();
+            }
+            
+            saveState() {
+                const stateToSave = {
+                    words: this.state.words,
+                    currentIndex: this.state.currentIndex,
+                    knownWords: Array.from(this.state.knownWords),
+                    unknownWords: Array.from(this.state.unknownWords),
+                    currentWordset: this.state.currentWordset,
+                    wordsets: Array.from(this.state.wordsets.entries())
+                };
+                
+                localStorage.setItem('literacyState', JSON.stringify(stateToSave));
+            }
+            
+            loadState() {
+                // 加载保存的标题
+                const savedTitle = localStorage.getItem('literacyTitle');
+                if (savedTitle) {
+                    this.elements.appTitle.value = savedTitle;
+                }
+                
+                // 加载保存的字体
+                const savedFont = localStorage.getItem('literacyFont');
+                if (savedFont) {
+                    this.elements.fontSelector.value = savedFont;
+                    this.applyFont(savedFont);
+                }
+                
+                // 加载自定义字体
+                const savedCustomFont = localStorage.getItem('customFontFamily');
+                if (savedCustomFont) {
+                    this.elements.customFontInput.value = savedCustomFont;
+                }
+                
+                // 加载字库和学习进度
+                const savedState = localStorage.getItem('literacyState');
+                if (savedState) {
+                    try {
+                        const parsedState = JSON.parse(savedState);
+                        
+                        // 加载字库
+                        if (parsedState.wordsets) {
+                            this.state.wordsets = new Map(parsedState.wordsets);
+                        }
+                        
+                        if (parsedState.currentWordset) {
+                            this.state.currentWordset = parsedState.currentWordset;
+                        }
+                        
+                        // 加载学习进度
+                        if (parsedState.words) {
+                            this.state.words = parsedState.words;
+                            this.state.currentIndex = parsedState.currentIndex || 0;
+                            this.state.knownWords = new Set(parsedState.knownWords || []);
+                            this.state.unknownWords = new Set(parsedState.unknownWords || []);
+                        }
+                    } catch (e) {
+                        console.error('解析保存的状态失败', e);
+                    }
+                }
+            }
+        }
+        
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', () => {
+            new LiteracyApp();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <title>首页的Terminal效果</title>
+
+        <style>
+            .your-element {
+                background-color: #fafafa;
+                width: 300px;
+                height: 300px;
+                border-radius: 20px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 20px;
+                color: #333;
+                box-shadow: 0 10px 20px -8px rgba(0);
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <section style="height: 100vh; width: 100%; display: flex; justify-content: center; align-items: center">
+            <div
+                data-tilt
+                data-tilt-scale="1.2"
+                style="
+                    transform-style: preserve-3d;
+                    background-color: aqua;
+                    width: 500px;
+                    height: 500px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                "
+            >
+                <div style="transform: translateZ(30px); width: 200px; height: 200px; background-color: #fff">首页的Terminal效果</div>
+            </div>
+        </section>
+    </body>
+    <script type="text/javascript" src="/asset/vanilla-tilt/vanilla-tilt.min.js"></script>
+</html>

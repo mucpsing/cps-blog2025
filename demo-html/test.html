@@ -1,356 +1,369 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
+        <title>原生 JavaScript 终端</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: "Courier New", monospace;
+                background-color: #1e1e1e;
+                color: #fff;
+                min-height: 100vh;
+                padding: 20px;
+            }
+
+            #terminal {
+                background-color: #0c0c0c;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+            #terminal-titlebar {
+                background-color: #333;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                padding: 0 15px;
+                color: #aaa;
+                font-size: 12px;
+            }
+
+            #terminal-body {
+                background-color: #0c0c0c;
+                padding: 20px;
+                height: 500px;
+                overflow-y: auto;
+                line-height: 1.5;
+            }
+
+            .posted {
+                color: #00ff00;
+                margin-bottom: 5px;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+
+            #commandline {
+                display: flex;
+                align-items: center;
+                margin-top: 10px;
+            }
+
+            .prompt {
+                color: #fff;
+                background: transparent;
+                border: none;
+                outline: none;
+                font-family: "Courier New", monospace;
+                font-size: 16px;
+                flex: 1;
+                padding: 0 5px;
+            }
+
+            .prompt-label {
+                color: #00ffff;
+            }
+        </style>
     </head>
     <body>
-        <div id="flower" style="width: 100vw; height: 100vh"></div>
+        <div id="terminal">
+            <div id="terminal-titlebar">终端</div>
+            <div id="terminal-body">
+                <div class="posted">欢迎使用原生 JavaScript 终端！输入 "help" 查看可用命令。</div>
+            </div>
+        </div>
 
-        <div id="loading"></div>
-    </body>
+        <script>
+            class Terminal {
+                constructor() {
+                    this.history = [];
+                    this.commands = {
+                        help: "显示命令列表，或获取特定命令的帮助。(语法: 'help [参数]')",
+                        clear: "清除终端中的所有内容。",
+                        color: "更改终端文本颜色。(语法: 'color [颜色]')",
+                        bgcolor: "更改终端背景颜色。(语法: 'bgcolor [颜色]')",
+                        wincolor: "更改窗口背景颜色。(语法: 'wincolor [颜色]')",
+                        dir: "显示数据库中的文件列表",
+                        read: "显示文件内容 (语法: 'read [文件名]')",
+                        write: "将内容写入文件 (语法: 'write [文件名] [内容]')",
+                        del: "从数据库中删除文件 (语法: 'del [文件名]')",
+                        run: "将存储的文件解释为 JavaScript 代码 (语法: 'run [文件名]')",
+                        echo: "直接在终端中输出文本 (语法: 'echo [文本]')",
+                        rps: "玩一轮石头剪刀布 (语法: 'rps [rock/paper/scissors]')",
+                    };
 
-    <script type="module">
-        import * as THREE from "/asset/js/threejs/0.160.0/three.js";
-        import EventEmitter from "/asset/js/events@3.3.0/events.esm.js";
-        import gsap from "/asset/js/gsap@3.12.7/esm/gsap.js";
-        import { CustomEase } from "/asset/js/gsap@3.12.7/esm/CustomEase.min.js";
-        import { DRACOLoader } from "/asset/js/threejs/0.160.0/DRACOLoader.js";
-        import { KTX2Loader } from "/asset/js/threejs/0.160.0/KTX2Loader.js";
-        import { EffectComposer } from "/asset/js/threejs/0.160.0/EffectComposer.js";
-        import { RenderPass } from "/asset/js/threejs/0.160.0/RenderPass.js";
-        import { OutputPass } from "/asset/js/threejs/0.160.0/OutputPass.js";
-        import { SMAAPass } from "/asset/js/threejs/0.160.0/SMAAPass.js";
-        import { ShaderPass } from "/asset/js/threejs/0.160.0/ShaderPass.js";
-        import { GammaCorrectionShader } from "/asset/js/threejs/0.160.0/GammaCorrectionShader.js";
-        import {
-            AdaptiveDPRController,
-            TimeStats,
-            Utils,
-            InputManager,
-            RenderCreate,
-            customScene,
-            customCamera,
-            MultipleRenderPass,
-            FinalPass,
-        } from "/asset/js/test/7493729054869651492.js";
+                    this.files = {
+                        "hello.txt": "Hello world!",
+                        "nietzsche.txt": "To live is to suffer, to survive is to find some meaning in the suffering.",
+                    };
 
-        import {
-            FluidSimCreate,
-            FlowerCreate,
-            LeavesCreate,
-            NeedlesCreate,
-            ForegroundLeavesCreate,
-            BackgroundCreate,
-            BorderCreate,
-            NotchCreate,
-            LineCreate,
-        } from "/asset/js/test/7494111749197561883.js";
+                    this.initialize();
+                }
 
-        window.onload = () => {
-            const main = new MainCreate();
-        };
+                initialize() {
+                    this.terminalBody = document.getElementById("terminal-body");
+                    this.terminal = document.getElementById("terminal");
 
-        class MainCreate {
-            fingers = 1;
-            active = !1;
-            audio = null;
-            initialDPR = 1;
-            currentDPR = 1;
-            adaptiveDPR = null;
-            uniforms = {
-                resolution: { value: new THREE.Vector2(2, 2), global: !0 },
-                time: { value: 0, global: !0 },
-                dtRatio: { value: 1, global: !0 },
-            };
-            composer = null;
-            renderPass = null;
-            DPR = window.devicePixelRatio <= 2 ? Math.min(window.devicePixelRatio, 1.25) : Math.min(window.devicePixelRatio, 1.5) || 1;
-            screen = { dpr: window.devicePixelRatio || 1, aspectRatio: 1, width: 0, height: 0, w: 0, h: 0 };
-            start = false;
+                    this.createCommandLine();
+                    this.setupEventListeners();
+                    this.focusInput();
+                }
 
-            constructor() {
-                this.target = document.getElementById("flower");
-                this.loadTarget = document.getElementById("loading");
-                this.screen.width = this.target.offsetWidth;
-                this.screen.height = this.target.offsetHeight;
-                this.screen.w = this.screen.width;
-                this.screen.h = this.screen.height;
-                this.screen.aspectRatio = this.screen.w / this.screen.h;
-                this.initUBO();
-                this.initDPR();
-                this.initUtils();
-                this.initRenderer();
-                this.initCamera();
-                this.initScene();
-                this.initScene();
-                this.initDPRMultiplier();
-                this.initLoader();
-            }
+                createCommandLine() {
+                    const commandLine = document.createElement("div");
+                    commandLine.id = "commandline";
+                    commandLine.innerHTML = `
+                    <span class="prompt-label">C:\\></span>
+                    <input type="text" class="prompt" autocomplete="off">
+                `;
+                    this.terminalBody.appendChild(commandLine);
+                    this.promptInput = commandLine.querySelector(".prompt");
+                }
 
-            initUBO() {
-                this.UBO = new THREE.UniformsGroup();
-                this.UBO.setName("Global");
-                this.UBO.add(this.uniforms.resolution);
-                this.UBO.add(this.uniforms.time);
-                this.UBO.add(this.uniforms.dtRatio);
-            }
+                setupEventListeners() {
+                    // 输入框按键事件
+                    this.promptInput.addEventListener("keyup", (e) => {
+                        if (e.key === "Enter") {
+                            this.handleCommand();
+                        }
+                    });
 
-            initDPR() {
-                this.initialDPR = this.DPR;
-                this.adaptiveDPR = new AdaptiveDPRController(this);
-            }
+                    // 点击终端聚焦输入框
+                    this.terminal.addEventListener("click", () => {
+                        this.focusInput();
+                    });
 
-            initUtils() {
-                this.gsap = gsap;
-                this.gsap.registerPlugin(CustomEase);
-                this.gsap.config({ force3D: !0 });
-                this.gsap.defaults({ ease: "power2.inOut", duration: 0.6, overwrite: "auto" });
-                CustomEase.create("inOut1", "M0,0 C0.5,0 0.1,1 1,1");
-                CustomEase.create("inOut2", "M0,0 C0.56,0 0,1 1,1");
-                CustomEase.create("inOut3", "M0,0 C0.6,0 0,1 1,1");
-                CustomEase.create("inOut4", "M0,0 C0.4,0 -0.06,1 1,1");
-                this.eventManage = new EventEmitter();
-                this.timeStats = new TimeStats();
-                this.utils = new Utils(this);
-                this.inputManager = new InputManager(this);
-            }
+                    // 全局按键事件聚焦输入框
+                    document.addEventListener("keydown", (e) => {
+                        if ((!e.ctrlKey && !e.altKey && !e.metaKey && e.key.length === 1) || e.key === "Enter" || e.key === "Backspace") {
+                            this.focusInput();
+                        }
+                    });
 
-            initRenderer() {
-                this.renderer = new RenderCreate();
-                this.renderer.info.autoReset = false;
-                this.renderer.webgl.setSize(this.screen.width, this.screen.height);
-                this.renderer.webgl.toneMapping = THREE.LinearToneMapping;
-                this.target.appendChild(this.renderer.webgl.domElement);
-            }
+                    // 防止Ctrl+A等操作导致失焦
+                    document.addEventListener("keydown", (e) => {
+                        if (e.ctrlKey && e.key === "a") {
+                            e.preventDefault();
+                            this.promptInput.select();
+                        }
+                    });
+                }
 
-            initCamera() {
-                this.camera = new customCamera(this);
-                this.camera.basePosition.set(0, 0, 4);
-                this.camera.baseTarget.set(0, 0, 0);
-                this.camera.displacement.position.set(0.03, 0.015);
-                this.camera.lerpPosition = 0.035;
-            }
+                handleCommand() {
+                    const input = this.promptInput.value.trim();
+                    if (!input) return;
 
-            initScene() {
-                this.scene = new customScene(this);
-                this.fluidSim = new FluidSimCreate(this);
-            }
+                    this.log(`C:\\> ${input}`);
+                    this.promptInput.value = "";
 
-            initComposer() {
-                this.composer = new EffectComposer(this.renderer.webgl);
-                this.renderPass = new RenderPass(this.scene, this.camera);
-                this.SMAAPass = new SMAAPass(this.screen.width, this.screen.height);
-                this.multipleRenderPass = new MultipleRenderPass(this);
-                this.finalPass = new FinalPass(this).pass;
+                    const args = input.split(" ");
+                    this.executeCommand(args[0], args.slice(1));
 
-                // 获取多个渲染目标的贴图
-                const n = this.multipleRenderPass.multipleRenderTarget.texture;
-                // 命名多个输出贴图，便于调试
-                n[0].name = "color";
-                n[1].name = "info";
-                // 将第二个贴图 (info) 传入 shader 的 tInfo
-                this.finalPass.uniforms.tInfo.value = n[1];
-                this.finalPass.uniforms.uCameraNear.value = this.camera.near;
-                this.finalPass.uniforms.uCameraFar.value = this.camera.far;
+                    this.scrollToBottom();
+                }
 
-                this.gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
-                this.outPass = new OutputPass();
+                log(message) {
+                    const entry = document.createElement("div");
+                    entry.className = "posted";
+                    entry.textContent = message;
+                    this.terminalBody.appendChild(entry);
+                    this.history.push(message);
+                }
 
-                this.composer.addPass(this.renderPass);
-                this.composer.addPass(this.SMAAPass);
-                this.composer.addPass(this.multipleRenderPass);
-                this.composer.addPass(this.finalPass);
-                this.composer.addPass(this.gammaCorrectionPass);
-            }
+                clear() {
+                    this.terminalBody.innerHTML = "";
+                    this.history = [];
+                    this.createCommandLine();
+                    this.focusInput();
+                }
 
-            async initLoader() {
-                this.manager = new THREE.LoadingManager();
-                this.fileLoader = new THREE.FileLoader(this.manager).setResponseType("arraybuffer");
-                this.dracoLoader = new DRACOLoader(this.manager).setDecoderPath("/asset/js/threejs/0.160.0/gltf/").setWorkerLimit(1).preload();
-                this.ktx2Loader = new KTX2Loader(this.manager)
-                    .setTranscoderPath("/asset/js/threejs/0.160.0/basis/")
-                    .detectSupport(this.renderer.webgl);
-
-                this.emailTexture = await this.ktx2Loader.loadAsync("/asset/ktx2/email-C08JwW2m.ktx2");
-                this.headLineTexture = await this.ktx2Loader.loadAsync("/asset/ktx2/headline-sVnFdBpn.ktx2");
-                this.leafTexture = await this.ktx2Loader.loadAsync("/asset/ktx2/leaf-BuS2QNRk.ktx2");
-                this.noiseSimplexLayeredTexture = await this.ktx2Loader.loadAsync("/asset/ktx2/noise-simplex-layered-Bhb_a_In.ktx2");
-                this.petalTexture = await this.ktx2Loader.loadAsync("/asset/ktx2/petal-Bq8WLeBB.ktx2");
-                this.transitionNomipmapsTexture = await new THREE.TextureLoader(this.manager).load("/asset/jpg/transition-nomipmaps-oWShjGwJ.jpg");
-
-                this.noiseSimplexLayeredTexture.colorSpace = THREE.SRGBColorSpace; // 设置 sRGB 颜色空间
-                this.noiseSimplexLayeredTexture.wrapS = this.noiseSimplexLayeredTexture.wrapT = THREE.RepeatWrapping; // 启用 Repeat
-
-                this.petalTexture.colorSpace = THREE.SRGBColorSpace; // 设置 sRGB 颜色空间
-                this.petalTexture.wrapS = this.petalTexture.wrapT = THREE.ClampToEdgeWrapping; // 边界处理
-
-                this.leafTexture.colorSpace = THREE.SRGBColorSpace; // 设置 sRGB 颜色空间
-                this.leafTexture.wrapS = this.leafTexture.wrapT = THREE.ClampToEdgeWrapping; // 边界处理
-
-                let total = 0;
-                const geometryArray = [
-                    { path: "/asset/drc/needle.drc", key: "needle" },
-                    { path: "/asset/drc/border.drc", key: "border" },
-                    { path: "/asset/drc/leaf.drc", key: "leaf" },
-                    { path: "/asset/drc/petal.drc", key: "petal" },
-                ];
-                for (let i = 0; i < geometryArray.length; i++) {
-                    this[geometryArray[i].key] = await this.dracoLoader.loadAsync(geometryArray[i].path);
-                    this[geometryArray[i].key].name = geometryArray[i].key;
-                    if (geometryArray[i].key === "border") {
-                        this[geometryArray[i].key].setAttribute(
-                            "inset",
-                            new THREE.BufferAttribute(
-                                new Float32Array([
-                                    0.0002442598342895508, 0.0002442598342895508, 0, 0.0002442598342895508, 0.0002442598342895508, 0,
-                                    0.0002442598342895508, 0.0002442598342895508, 0, 0.0002442598342895508, 0.0002442598342895508, 0, -1, -1, 0, -1,
-                                    1, 0, -1, 1, 0, 1, 1, 0, 1, -1, 0, -1, 1, 0, 0.0002442598342895508, 0.0002442598342895508, 0,
-                                    0.0002442598342895508, 0.0002442598342895508, 0, 0.0002442598342895508, 0.0002442598342895508, 0, 1, -1, 0,
-                                    0.0002442598342895508, 0.0002442598342895508, 0,
-                                ]),
-                                3
-                            )
-                        );
-                        this[geometryArray[i].key].setAttribute(
-                            "notch",
-                            new THREE.BufferAttribute(
-                                new Float32Array([
-                                    0, 0, 0, 0, 1, 0, -1, 0, 0, -1, 1, 0, 0, 0, 0, 0, 1, 0, -1, 1, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                    0, 0, 0, 0, 0, 0, 0, 0,
-                                ]),
-                                3
-                            )
-                        );
+                focusInput() {
+                    if (this.promptInput) {
+                        this.promptInput.focus();
                     }
-                    total += 1;
-                    if (total === geometryArray.length) {
-                        this.initComposer();
-                        this.initEvents();
-                        this.initWorld();
-                        this.resize();
-                        this.initAnimation();
-                        this.loadTarget.setAttribute("class", "loadOk");
+                }
+
+                scrollToBottom() {
+                    this.terminalBody.scrollTop = this.terminalBody.scrollHeight;
+                }
+
+                readFile(fileName) {
+                    if (this.files[fileName] !== undefined) {
+                        return this.files[fileName];
+                    } else {
+                        throw new Error(`文件 '${fileName}' 未找到。`);
                     }
+                }
+
+                writeFile(name, contents) {
+                    this.files[name] = contents;
+                }
+
+                executeCommand(command, args) {
+                    const argc = args.length;
+                    const argv = [command, ...args];
+
+                    switch (command.toLowerCase()) {
+                        case "clear":
+                            this.clear();
+                            console.clear();
+                            break;
+
+                        case "help":
+                            if (argc < 1) {
+                                this.log("可用命令: " + Object.keys(this.commands).join(", "));
+                            } else {
+                                if (args[0] in this.commands) {
+                                    this.log(`${args[0]}: ${this.commands[args[0]]}`);
+                                } else {
+                                    this.log(`命令 '${args[0]}' 不存在。`);
+                                }
+                            }
+                            break;
+
+                        case "color":
+                            if (argc < 1) {
+                                this.log("错误: 未指定颜色。");
+                            } else {
+                                this.terminalBody.style.color = args[0];
+                                this.log(`已将文本颜色设置为 ${args[0]}`);
+                            }
+                            break;
+
+                        case "bgcolor":
+                            if (argc < 1) {
+                                this.log("错误: 未指定颜色。");
+                            } else {
+                                this.terminalBody.style.backgroundColor = args[0];
+                                this.log(`已将终端背景颜色设置为 ${args[0]}`);
+                            }
+                            break;
+
+                        case "wincolor":
+                            if (argc < 1) {
+                                this.log("错误: 未指定颜色。");
+                            } else {
+                                document.body.style.backgroundColor = args[0];
+                                this.log(`已将窗口背景颜色设置为 ${args[0]}`);
+                            }
+                            break;
+
+                        case "dir":
+                            const fileNames = Object.keys(this.files);
+                            if (fileNames.length < 1) {
+                                this.log("没有文件。");
+                            } else {
+                                this.log(fileNames.join(", "));
+                            }
+                            break;
+
+                        case "read":
+                            try {
+                                this.log(this.readFile(args[0]));
+                            } catch (e) {
+                                this.log(e.message);
+                            }
+                            break;
+
+                        case "write":
+                            if (argc < 1) {
+                                this.log("错误: 未指定文件名。");
+                            } else if (argc < 2) {
+                                this.log("错误: 未指定文件内容。");
+                            } else {
+                                const fileName = args[0];
+                                const fileContents = args.slice(1).join(" ");
+                                this.writeFile(fileName, fileContents);
+                                this.log(`已写入文件 ${fileName}`);
+                            }
+                            break;
+
+                        case "run":
+                            try {
+                                this.log("执行程序 '" + args[0] + "'...");
+                                const code = this.readFile(args[0]);
+                                const result = eval(code);
+                                this.log(result !== undefined ? result.toString() : "已执行");
+                            } catch (e) {
+                                this.log("执行错误: " + e.message);
+                            }
+                            break;
+
+                        case "del":
+                            if (args[0] in this.files) {
+                                delete this.files[args[0]];
+                                this.log("已删除 " + args[0]);
+                            } else {
+                                this.log("错误: 文件未找到。");
+                            }
+                            break;
+
+                        case "echo":
+                            if (argc < 1) {
+                                this.log("错误: 未指定要输出的内容。");
+                            } else {
+                                this.log(args.join(" "));
+                            }
+                            break;
+
+                        case "rps":
+                            if (argc < 1) {
+                                this.log("未指定选择。(语法: rps [rock/paper/scissors])");
+                                break;
+                            }
+
+                            const playerChoice = args[0].toLowerCase();
+                            this.log("你选择了: " + playerChoice);
+
+                            let cpuChoice = Math.random();
+                            cpuChoice = cpuChoice <= 0.33 ? "rock" : cpuChoice <= 0.66 ? "paper" : "scissors";
+                            this.log("CPU 选择了: " + cpuChoice);
+
+                            switch (playerChoice) {
+                                case "rock":
+                                    if (cpuChoice === "rock") this.log("平局！");
+                                    else if (cpuChoice === "paper") this.log("CPU 赢了。");
+                                    else this.log("你赢了！");
+                                    break;
+                                case "paper":
+                                    if (cpuChoice === "paper") this.log("平局！");
+                                    else if (cpuChoice === "rock") this.log("你赢了！");
+                                    else this.log("CPU 赢了。");
+                                    break;
+                                case "scissors":
+                                    if (cpuChoice === "scissors") this.log("平局！");
+                                    else if (cpuChoice === "rock") this.log("CPU 赢了。");
+                                    else this.log("你赢了！");
+                                    break;
+                                default:
+                                    this.log("无效选择。(语法: rps [rock/paper/scissors])");
+                                    break;
+                            }
+                            break;
+
+                        default:
+                            this.log(`命令 '${command}' 不存在。输入 "help" 查看可用命令。`);
+                            break;
+                    }
+
+                    this.scrollToBottom();
                 }
             }
 
-            initWorld() {
-                this.flower = new FlowerCreate(this);
-                this.leaves = new LeavesCreate(this);
-                this.needles = new NeedlesCreate(this);
-                this.foregroundLeavesCreate = new ForegroundLeavesCreate(this);
-                this.bckgroundCreate = new BackgroundCreate(this);
-                this.borderCreate = new BorderCreate(this);
-                this.notchCreate = new NotchCreate(this);
-                this.lineCreate = new LineCreate(this);
-                this.eventManage.emit("webgl_render_active", true);
-                const t = this.finalPass.material;
-                this.gsap.fromTo(
-                    t.uniforms.uProgress1,
-                    { value: 0 },
-                    {
-                        value: 1,
-                        duration: 5,
-                        ease: "power2.out",
-                        delay: 0.25,
-                    }
-                );
-                this.gsap.fromTo(
-                    t.uniforms.uProgress2,
-                    { value: 0 },
-                    {
-                        value: 1,
-                        duration: 5,
-                        ease: "power2.out",
-                        delay: 0.25 + 0.2,
-                    }
-                );
-                this.gsap.fromTo(
-                    t.uniforms.uProgress3,
-                    { value: 0 },
-                    {
-                        value: 1,
-                        duration: 5,
-                        ease: "power2.out",
-                        delay: 0.25 + 0.6,
-                    }
-                );
-                this.gsap.fromTo(
-                    t.uniforms.uProgress4,
-                    { value: 0 },
-                    {
-                        value: 1,
-                        duration: 5,
-                        ease: "power2.out",
-                        delay: 0.25 + 0.9,
-                    }
-                );
-            }
-
-            initAnimation() {
-                let ho = [];
-                let ym = 0;
-                let RI = 0.5;
-                let LI = 5;
-                this.gsap.ticker.add((i, e, t) => {
-                    const n = Math.round((i - this.timeStats.internalTime) * 1e3);
-                    ho.push(n);
-                    if (i - ym >= RI && ho.length >= LI) {
-                        const s = Math.round(1e3 / (ho.reduce((r, a) => r + a, 0) / ho.length));
-                        this.timeStats.recordedMaxFPS = Math.max(this.timeStats.recordedMaxFPS, s);
-                        this.timeStats.smoothedFPS = s;
-                        ho.length = 0;
-                        ym = i;
-                        this.eventManage.emit("webgl_average_fps_update", this.timeStats.smoothedFPS);
-                    }
-                    this.timeStats.internalTime = i;
-                    this.timeStats.frameDelta = n;
-                    this.timeStats.frameCount++;
-                    ["webgl_prerender", "webgl_render", "webgl_postrender"].forEach((event) => {
-                        this.eventManage.emit(event, i, n);
-                    });
-                });
-            }
-
-            initEvents() {
-                this.eventManage.on("resize", ({ w, h }) => {
-                    this.uniforms.resolution.value.set(w, h).multiplyScalar(this.currentDPR).floor();
-                    this.renderer.webgl.setSize(this.uniforms.resolution.value.x, this.uniforms.resolution.value.y);
-                    this.renderer.webgl.domElement.style.width = `${w}px`;
-                    this.renderer.webgl.domElement.style.height = `${h}px`;
-                    this.composer.setSize(this.uniforms.resolution.value.x, this.uniforms.resolution.value.y);
-                });
-                this.eventManage.on("webgl_prerender", (time) => {
-                    this.uniforms.time.value = time;
-                    this.uniforms.dtRatio.value = this.utils.deltaRatio();
-                });
-                this.eventManage.on("webgl_render", (delta) => {
-                    if (!this.active) return;
-                    this.renderer.info?.reset();
-                    // this.renderer.webgl.render(this.scene, this.camera)
-                    this.composer.render(delta);
-                });
-                this.eventManage.on("webgl_render_active", (active) => {
-                    if (active && !this.adaptiveDPR?.hasRun) {
-                        this.adaptiveDPR.start();
-                    }
-                    this.active = active;
-                });
-            }
-
-            initDPRMultiplier(dpr = 1) {
-                this.currentDPR = this.initialDPR * dpr;
-                this.eventManage.emit("resize", { w: this.screen.w, h: this.screen.h });
-            }
-
-            resize() {
-                this.screen.width = this.screen.w = this.target.offsetWidth;
-                this.screen.height = this.screen.h = this.target.offsetHeight;
-                this.screen.aspectRatio = this.screen.w / this.screen.h;
-                this.eventManage.emit("resize", { w: this.screen.w, h: this.screen.h });
-            }
-        }
-    </script>
+            // 初始化终端
+            document.addEventListener("DOMContentLoaded", () => {
+                window.terminal = new Terminal();
+            });
+        </script>
+    </body>
 </html>

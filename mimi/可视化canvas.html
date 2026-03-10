@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <title>数字可视化教学工具</title>
+        <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding-top: 50px;
+                background-color: #f5f5f5;
+            }
+            canvas {
+                border: 2px solid #333;
+                background-color: #fff;
+            }
+            .tip {
+                margin-top: 20px;
+                font-size: 16px;
+                color: #666;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="numberCanvas1" width="350" height="600"></canvas>
+        <canvas id="numberCanvas2" width="350" height="600"></canvas>
+        <script>
+            /**
+             * 数字可视化 Canvas 类
+             * 用于将数字转换为可视化矩形，帮助小学生理解数字与数量的关联
+             */
+            class NumberVisualizer {
+                /**
+                 * 构造函数
+                 * @param {string} canvasId - Canvas 元素的ID
+                 * @param {number} number - 要可视化的数字（非负整数）
+                 * @param {Object} [config={}] - 配置对象
+                 */
+                constructor(canvasId, number, config = {}) {
+                    // 获取 Canvas 元素和 2D 上下文
+                    this.canvas = document.getElementById(canvasId);
+                    if (!this.canvas) {
+                        throw new Error(`未找到ID为"${canvasId}"的Canvas元素`);
+                    }
+                    this.ctx = this.canvas.getContext("2d");
+
+                    // 处理数字（确保为非负整数）
+                    this.number = Math.max(0, Math.floor(Number(number) || 0));
+
+                    // 默认配置
+                    this.defaultConfig = {
+                        rectColor: "#42b983", // 默认矩形颜色（清新绿色，适合小学生）
+                        rectWidth: 40, // 矩形宽度
+                        rectHeight: 40, // 矩形高度
+                        baseGap: 10, // 基础间距（矩形之间/同组内行间距）
+                        groupExtraGap: 20, // 组间额外间距（组间总间距 = baseGap + groupExtraGap）
+                    };
+
+                    // 合并用户配置与默认配置
+                    this.config = { ...this.defaultConfig, ...config };
+                }
+
+                /**
+                 * 清空 Canvas 画布
+                 */
+                clearCanvas() {
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                }
+
+                /**
+                 * 核心渲染方法：根据数字绘制可视化矩形
+                 */
+                render() {
+                    // 清空画布
+                    this.clearCanvas();
+
+                    const { rectColor, rectWidth, rectHeight, baseGap, groupExtraGap } = this.config;
+                    const n = this.number;
+
+                    // 若数字为0，提示无对应矩形
+                    if (n === 0) {
+                        this.ctx.fillStyle = "#333";
+                        this.ctx.font = "20px Arial";
+                        this.ctx.textAlign = "center";
+                        this.ctx.fillText("数字 0 没有对应的矩形哦", this.canvas.width / 2, this.canvas.height / 2);
+                        return;
+                    }
+
+                    // 计算总组数（10个为一组）
+                    const totalGroups = Math.ceil(n / 10);
+
+                    // 步骤1：计算整体最大宽度（每行固定5个，宽度固定）
+                    const perRowWidth = 5 * rectWidth + 4 * baseGap; // 5个矩形 + 4个间距
+
+                    // 步骤2：计算整体总高度（逐组计算高度 + 组间额外间距）
+                    let totalHeight = 0;
+                    for (let g = 0; g < totalGroups; g++) {
+                        // 当前组的元素数量
+                        const groupItemCount = g === totalGroups - 1 ? n % 10 || 10 : 10;
+                        // 当前组的行数（每5个一行）
+                        const groupRowCount = Math.ceil(groupItemCount / 5);
+                        // 当前组的高度
+                        const groupHeight = groupRowCount * rectHeight + (groupRowCount - 1) * baseGap;
+                        // 累加组高度
+                        totalHeight += groupHeight;
+                        // 非最后一组，累加组间额外间距
+                        if (g !== totalGroups - 1) {
+                            totalHeight += groupExtraGap;
+                        }
+                    }
+
+                    // 步骤3：计算居中偏移量（让所有矩形在Canvas中水平、垂直居中）
+                    const offsetX = (this.canvas.width - perRowWidth) / 2;
+                    const offsetY = (this.canvas.height - totalHeight) / 2;
+
+                    // 步骤4：遍历每个数字，绘制对应的矩形
+                    for (let i = 0; i < n; i++) {
+                        // 计算当前元素的 组索引、组内索引、行索引、列索引
+                        const groupIndex = Math.floor(i / 10); // 组索引（0开始）
+                        const groupInnerIndex = i % 10; // 组内索引（0-9）
+                        const rowIndex = Math.floor(groupInnerIndex / 5); // 组内行索引（0-1）
+                        const colIndex = groupInnerIndex % 5; // 组内列索引（0-4）
+
+                        // 计算当前组的起始Y坐标（累加前面所有组的高度 + 组间间距）
+                        let groupStartY = 0;
+                        for (let j = 0; j < groupIndex; j++) {
+                            const jGroupItemCount = j === totalGroups - 1 ? n % 10 || 10 : 10;
+                            const jGroupRowCount = Math.ceil(jGroupItemCount / 5);
+                            const jGroupHeight = jGroupRowCount * rectHeight + (jGroupRowCount - 1) * baseGap;
+                            groupStartY += jGroupHeight;
+                            // 非最后一组，加组间额外间距
+                            if (j !== totalGroups - 1) {
+                                groupStartY += groupExtraGap;
+                            }
+                        }
+
+                        // 计算当前矩形的X、Y坐标
+                        const rectX = offsetX + colIndex * (rectWidth + baseGap);
+                        const rectY = offsetY + groupStartY + rowIndex * (rectHeight + baseGap);
+
+                        // 绘制矩形（填充色 + 白色边框，更醒目）
+                        this.ctx.fillStyle = rectColor;
+                        this.ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
+                        this.ctx.strokeStyle = "#ffffff";
+                        this.ctx.lineWidth = 2;
+                        this.ctx.strokeRect(rectX, rectY, rectWidth, rectHeight);
+                    }
+                }
+
+                /**
+                 * 更新要可视化的数字并重新渲染
+                 * @param {number} newNumber - 新的数字
+                 */
+                updateNumber(newNumber) {
+                    this.number = Math.max(0, Math.floor(Number(newNumber) || 0));
+                    this.render();
+                }
+
+                /**
+                 * 更新配置并重新渲染
+                 * @param {Object} newConfig - 新的配置对象
+                 */
+                updateConfig(newConfig) {
+                    this.config = { ...this.config, ...newConfig };
+                    this.render();
+                }
+            }
+        </script>
+
+        <script>
+            // ============== 调用示例 ==============
+
+            const customConfig = {
+                rectColor: "#e74c3c", // 红色矩形
+                baseGap: 5, // 更大的基础间距
+                groupExtraGap: 30, // 更大的组间间距
+                rectWidth: 50, // 更宽的矩形
+                rectHeight: 50, // 更高的矩形
+            };
+            let conut = 10;
+
+            const visualizer = new NumberVisualizer("numberCanvas", conut, customConfig);
+            visualizer.render();
+
+            // 3. 动态更新数字（可取消注释测试）
+            // setInterval(() => {
+            //     conut += 2;
+            //     visualizer.updateNumber(conut + 2); // 5秒后更新为数字8
+            // }, 1000);
+        </script>
+    </body>
+</html>

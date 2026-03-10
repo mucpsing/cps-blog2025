@@ -41,7 +41,63 @@
                     align-items: center;
                 "
             >
-                <div style="transform: translateZ(30px); width: 200px; height: 200px; background-color: #fff">首页的Terminal效果</div>
+                <div style="transform: translateZ(30px); width: 200px; height: 200px; background-color: #fff">
+                    <div class="terminal theme-default">
+                        <!-- 终端标题栏 -->
+                        <div class="terminal-header">
+                            <!-- 窗口控制按钮 -->
+                            <div class="window-controls">
+                                <button class="control-btn close" aria-label="关闭"></button>
+                                <button class="control-btn minimize" aria-label="最小化"></button>
+                                <button class="control-btn maximize" aria-label="最大化"></button>
+                            </div>
+
+                            <!-- 终端标题 -->
+                            <div class="terminal-title">
+                                <span class="title-text">Terminal</span>
+                            </div>
+                        </div>
+
+                        <!-- 终端内容区域 -->
+                        <div class="terminal-body">
+                            <!-- 历史输出区域 -->
+                            <div class="output-container">
+                                <!-- 欢迎消息 -->
+                                <div class="output-line">
+                                    <span class="prompt-symbol">$</span>
+                                    <span class="output-text">欢迎使用 Terminal 演示组件</span>
+                                </div>
+
+                                <div class="output-line">
+                                    <span class="prompt-symbol">$</span>
+                                    <span class="output-text">输入 'help' 查看可用命令</span>
+                                </div>
+
+                                <div class="output-line">
+                                    <span class="prompt-symbol">$</span>
+                                    <span class="output-text">当前时间: <span class="time-display">14:30:22</span></span>
+                                </div>
+
+                                <!-- 命令输出示例 -->
+                                <div class="output-line command-output">
+                                    <span class="prompt-symbol">$</span>
+                                    <span class="command">help</span>
+                                </div>
+                                <div class="output-line">
+                                    <span class="output-text indent">可用命令: help, clear, theme, about</span>
+                                </div>
+                            </div>
+
+                            <!-- 输入区域 -->
+                            <div class="input-container">
+                                <div class="input-line">
+                                    <span class="prompt-symbol">$</span>
+                                    <input type="text" class="command-input" placeholder="输入命令..." aria-label="终端命令输入" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     </body>

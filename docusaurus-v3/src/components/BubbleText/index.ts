@@ -1,48 +1,32 @@
 import * as utils from "./utils";
 import { throttle } from "lodash";
 
-export interface BubbleProps {
-  DEBUG?: boolean;
-  image?: string;
-  width?: number;
-  height?: number;
-  offsetX?: number;
-  offsetY?: number;
-  bubbleSize?: number;
-  bubbleCount?: number; // 泡泡数量步长，默认10
-  bubbleSizeMin?: number; // 泡泡的最小尺寸
-  intervalTime?: number;
-  bubbleScale?: number;
-  positionElementId?: string;
-  opacity?: number;
-  opacityMax?: number;
-  opacitymin?: number;
-  autoSwitch?: boolean;
-  bubbleRangeId?: string;
-  hoverGather?: boolean;
-}
+const _DEFAULT_PROPS = {
+  DEBUG: process.env.NODE_ENV === "development", // 是否开启调试模式
+  positionElementId: "CpsBubble.positionElement", // 用于定位的元素id，泡泡文字会在这个元素的范围内生成
+  image: "/logo/capsion.png",
+  offsetX: 0,
+  offsetY: 0,
+  width: 600,
+  height: 200,
+  bubbleScale: 1,
+  bubbleSize: 10,
+  bubbleCount: 10,
+  bubbleSizeMin: 5,
+  intervalTime: 8000, // 泡泡往复的时间，这里需要重构
+  opacityMax: 0.9,
+  opacitymin: 0.7,
+  autoSwitch: true,
+  bubbleRangeId: "body",
+  hoverGather: true,
+  engine: "dom" as "dom" | "canvas" | "svg",
+};
+
+export type BubbleProps = typeof _DEFAULT_PROPS;
 
 export class CpsBubbleComponent {
-  private DEFAULT_PROPS: BubbleProps = {
-    DEBUG: process.env.NODE_ENV === "development", // 是否开启调试模式
-    positionElementId: "CpsBubble.positionElement", // 用于定位的元素id，泡泡文字会在这个元素的范围内生成
-    image: "/logo/capsion.png",
-    offsetX: 0,
-    offsetY: 0,
-    width: 600,
-    height: 200,
-    bubbleScale: 1,
-    bubbleSize: 10,
-    bubbleCount: 10,
-    bubbleSizeMin: 5,
-    intervalTime: 8000, // 泡泡往复的时间，这里需要重构
-    opacityMax: 0.9,
-    opacitymin: 0.7,
-    autoSwitch: true,
-    bubbleRangeId: "body",
-    hoverGather: true,
-  };
-  private props: BubbleProps = {};
+  private DEFAULT_PROPS = _DEFAULT_PROPS;
+  private props: Partial<BubbleProps> = {};
   private pointArray = [];
   public INTERVAL_LIST = [];
   private id = "CpsBubble";

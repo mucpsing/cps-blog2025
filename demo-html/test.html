@@ -90,6 +90,8 @@
                     this.commands = {
                         help: "显示命令列表，或获取特定命令的帮助。(语法: 'help [参数]')",
                         clear: "清除终端中的所有内容。",
+                        cls: "清除终端中的所有内容。",
+                        reset: "清除终端中的所有内容。",
                         color: "更改终端文本颜色。(语法: 'color [颜色]')",
                         bgcolor: "更改终端背景颜色。(语法: 'bgcolor [颜色]')",
                         wincolor: "更改窗口背景颜色。(语法: 'wincolor [颜色]')",
@@ -214,6 +216,8 @@
                     const argv = [command, ...args];
 
                     switch (command.toLowerCase()) {
+                        case "cls":
+                        case "reset":
                         case "clear":
                             this.clear();
                             console.clear();
